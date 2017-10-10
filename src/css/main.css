@@ -95,12 +95,12 @@ input {
 }
 
 .collapsible.collapsed .static .collapse-button {
-  border-left-color: #1faaf2;
+  border-left-color: #30D7A9;
   margin-top: 2px;
 }
 
 .collapsible:not(.collapsed) .static .collapse-button {
-  border-top-color: #1faaf2;
+  border-top-color: #30D7A9;
   margin-top: 6px;
 }
 
@@ -127,9 +127,14 @@ input {
   background-color: rgb(228, 43, 90);
 }
 
+.scenegraph-header{
+  margin: 0;
+  padding: 8px;
+  border-bottom: 1px solid #30D7A9;
+}
+
 .scenegraph {
   border-top: 1px solid #111;
-  padding-top: 32px;
 }
 
 .scenegraph .search {
@@ -255,7 +260,7 @@ input[type=color] {
 }
 
 .texture canvas:hover {
-  border-color: #1faaf2;
+  border-color: #30D7A9;
 }
 
 input[type=color] {
@@ -427,7 +432,7 @@ a.button {
 }
 
 a.button:hover {
-  color: #1faaf2;
+  color: #30D7A9;
 }
 
 .scenegraph-bottom a {
@@ -737,7 +742,7 @@ span.subcomponent {
 }
 
 .toolbar .active {
-  background-color: #1faaf2;
+  background-color: #30D7A9;
   color: #fff;
 }
 
@@ -779,12 +784,12 @@ span.subcomponent {
 }
 
 .outliner .option.active {
-  background-color: #1faaf2;
+  background-color: #30D7A9;
   color: #fff;
 }
 
 .outliner .option .component:hover {
-  color: #1faaf2;
+  color: #30D7A9;
 }
 
 .outliner .option.active .component:hover {
@@ -823,7 +828,7 @@ a.flat-button {
 }
 
 a.flat-button:hover {
-  color: #1faaf2;
+  color: #30D7A9;
 }
 
 .component-title {
@@ -908,7 +913,7 @@ span.entity-name {
   background-color: #222 !important;
   border: none;
   border-radius: 0;
-  color: #1faaf2;
+  color: #30D7A9;
 }
 
 .Select-menu-outer {
@@ -916,7 +921,7 @@ span.entity-name {
 }
 
 .Select-menu-outer .is-focused {
-  background-color: #1faaf2 !important;
+  background-color: #30D7A9 !important;
   color: #fff;
 }
 
@@ -931,11 +936,11 @@ span.entity-name {
 
 .Select-placeholder,
 .Select--single > .Select-control .Select-value {
-  color: #1faaf2 !important;
+  color: #30D7A9 !important;
 }
 
 .Select-value-label {
-  color: #1faaf2 !important;
+  color: #30D7A9 !important;
 }
 
 .row .Select-control {
@@ -958,7 +963,7 @@ span.entity-name {
 .row input.number {
   background: #222;
   border: 1px solid transparent;
-  color: #1faaf2;
+  color: #30D7A9;
   min-height: 20px;
   padding-left: 5px;
   padding-right: 5px;
@@ -1027,7 +1032,7 @@ span.entity-name {
 }
 
 .add-component .option span {
-  color: #1faaf2;
+  color: #30D7A9;
 }
 
 .Select-menu-outer .is-focused span {
@@ -1049,7 +1054,7 @@ span.entity-name {
 }
 
 .aregistry-button:hover {
-  background-color: #1faaf2;
+  background-color: #30D7A9;
 }
 
 .aregistry-button img {
@@ -1139,7 +1144,7 @@ span.entity-name {
 }
 
 .toggle-sidebar a:hover {
-  background-color: #1faaf2;
+  background-color: #30D7A9;
   color: #fff;
 }
 
@@ -1183,7 +1188,7 @@ span.entity-name {
 }
 
 .dropdown:hover .dropbtn {
-  color: #1faaf2;
+  color: #30D7A9;
 }
 
 .savedRecordings {
