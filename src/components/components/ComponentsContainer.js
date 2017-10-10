@@ -28,10 +28,11 @@ export default class ComponentsContainer extends React.Component {
         name={key}/>;
     });
 
+    // <AddComponent entity={entity}/>
+
     return (
       <div className='components'>
         <CommonComponents entity={entity}/>
-        <AddComponent entity={entity}/>
         {renderedComponents}
       </div>
     );
