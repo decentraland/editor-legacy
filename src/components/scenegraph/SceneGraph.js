@@ -273,6 +273,9 @@ export default class SceneGraph extends React.Component {
 
     return (
       <div id={this.props.id} className='scenegraph'>
+        <h3 className='scenegraph-header'>
+          Decentraland Editor
+        </h3>
         <div className='scenegraph-toolbar'>
           <Toolbar/>
           <div className='search'>

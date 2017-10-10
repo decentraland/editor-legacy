@@ -44,8 +44,8 @@ export default class Toolbar extends React.Component {
     saveString(generateHtml(), sceneName, 'text/html');
   }
 
-  addEntity () {
-    Events.emit('createnewentity', {element: 'a-entity', components: {}});
+  addEntity (nodeType) {
+    Events.emit('createnewentity', {element: nodeType, components: {}});
   }
 
   toggleMotionCaptureUI = () => {
@@ -57,18 +57,10 @@ export default class Toolbar extends React.Component {
     return (
       <div id="scenegraphToolbar">
         <div className='scenegraph-actions'>
-          <a className='button fa fa-video-camera' title='Open motion capture development tools' onClick={this.toggleMotionCaptureUI} style={this.state.motionCaptureUIEnabled ? {color: '#FFF'} : {}}></a>
-          <a className='button fa fa-clipboard' title='Copy HTML to clipboard' data-action='copy-scene-to-clipboard'></a>
-          <a className='button fa fa-download' title='Export to HTML' onClick={this.saveSceneToHTML}></a>
-          <a className='button fa fa-plus' title='Add a new entity' onClick={this.addEntity}></a>
-
-          <div className="dropdown">
-            <a className='dropbtn button fa fa-download' title='Export'></a>
-            <div className="dropdown-content">
-              <a className='' title='Export to HTML' onClick={this.exportSceneToHTML}>HTML</a>
-              <a className='' title='Export to GLTF' onClick={this.exportSceneToGLTF}>GLTF</a>
-            </div>
-          </div>
+          <a className='button fa fa-download' title='Save HTML' onClick={this.exportSceneToHTML}></a>
+          <a className='button fa fa-plus' title='Add a box' onClick={() => this.addEntity('a-box')}></a>
+          <a className='button fa fa-plus' title='Add a model' onClick={() => this.addEntity('a-obj-model')}></a>
+          <a className='button fa fa-plus' title='Add a sphere' onClick={() => this.addEntity('a-sphere')}></a>
         </div>
 
         {this.state.motionCaptureUIEnabled && <MotionCapture/>}
