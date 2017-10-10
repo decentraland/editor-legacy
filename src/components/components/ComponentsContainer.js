@@ -4,6 +4,8 @@ import Component from './Component';
 import CommonComponents from './CommonComponents';
 import DEFAULT_COMPONENTS from './DefaultComponents';
 
+const HIDDEN_COMPONENTS = ['geometry'];
+
 export default class ComponentsContainer extends React.Component {
   static propTypes = {
     entity: React.PropTypes.object
@@ -17,7 +19,7 @@ export default class ComponentsContainer extends React.Component {
     const entity = this.props.entity;
     const components = entity ? entity.components : {};
     const renderedComponents = Object.keys(components).filter(function (key) {
-      return DEFAULT_COMPONENTS.indexOf(key) === -1;
+      return (DEFAULT_COMPONENTS.indexOf(key) === -1) && (HIDDEN_COMPONENTS.indexOf(key) === -1);
     }).sort().map(function (key) {
       return <Component
         component={components[key]}
