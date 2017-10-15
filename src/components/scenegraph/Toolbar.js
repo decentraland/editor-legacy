@@ -39,9 +39,11 @@ export default class Toolbar extends React.Component {
     });
   }
 
-  exportSceneToHTML () {
-    var sceneName = getSceneName(AFRAME.scenes[0]);
-    saveString(generateHtml(), sceneName, 'text/html');
+  saveScene () {
+    var sceneName = getSceneName(AFRAME.scenes[0])
+    var html = generateHtml()
+
+    console.log(html) // , sceneName, 'text/html');
   }
 
   addEntity (nodeType) {
@@ -57,7 +59,7 @@ export default class Toolbar extends React.Component {
     return (
       <div id="scenegraphToolbar">
         <div className='scenegraph-actions'>
-          <a className='button fa fa-download' title='Save HTML' onClick={this.exportSceneToHTML}></a>
+          <a className='button fa fa-download' title='Save HTML' onClick={this.saveScene}></a>
           <a className='button fa fa-plus' title='Add a box' onClick={() => this.addEntity('a-box')}></a>
           <a className='button fa fa-plus' title='Add a model' onClick={() => this.addEntity('a-obj-model')}></a>
           <a className='button fa fa-plus' title='Add a sphere' onClick={() => this.addEntity('a-sphere')}></a>

@@ -44,7 +44,7 @@ function Viewport (inspector) {
 
   var grid = new THREE.GridHelper(30, 60, 0x555555, 0x292929);
 
-  sceneHelpers.add(grid);
+  // sceneHelpers.add(grid);
 
   var camera = inspector.inspectorCameraEl.getObject3D('camera');
 
@@ -201,6 +201,10 @@ function Viewport (inspector) {
           var object = intersects[i].object;
 
           if (object.el && !object.el.getAttribute('visible')) {
+            continue;
+          }
+
+          if (object.el && object.el.getAttribute('fixed')) {
             continue;
           }
 

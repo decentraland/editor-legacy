@@ -148,6 +148,9 @@ Inspector.prototype = {
 
     return function (object) {
       var helper;
+
+      return;
+
       if (object instanceof THREE.Camera) {
         this.cameraHelper = helper = new THREE.CameraHelper(object, 0.1);
       } else if (object instanceof THREE.PointLight) {
