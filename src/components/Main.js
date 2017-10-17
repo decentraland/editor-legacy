@@ -17,6 +17,10 @@ import {injectCSS, injectJS} from '../lib/utils';
 
 import '../css/main.css';
 
+import Patch from '../../vendor/patch'
+import Apply from '../../vendor/apply'
+
+
 // Megahack to include font-awesome.
 injectCSS('https://maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css');
 injectCSS('https://fonts.googleapis.com/css?family=Roboto:400,300,500');
@@ -62,6 +66,11 @@ export default class Main extends React.Component {
     });
     var config = {attributes: true, childList: true, characterData: true};
     observer.observe(this.state.sceneEl, config);
+
+    new Patch(window, document.querySelector('a-scene'), (events) => {
+      console.log('Patch generated...')
+      console.log(events) // ws.send(events);
+    })
 
     Events.on('opentexturesmodal', function (selectedTexture, textureOnClose) {
       this.setState({selectedTexture: selectedTexture, isModalTexturesOpen: true, textureOnClose: textureOnClose});
