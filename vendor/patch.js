@@ -19,6 +19,8 @@ const SNAPSHOT_NODE_NAME = 'snapshot'
 function Patch (global, root, broadcast, filter) {
   var document = root.ownerDocument
 
+  this.suppressed = new Set()
+
   function generateUUID () {
     return uuid.v4()
   }
@@ -40,7 +42,7 @@ function Patch (global, root, broadcast, filter) {
     return el.getAttribute(UUID_KEY)
   }
 
-  this.getSnapshot = function () {
+  this.getSnapshot = () => {
     var snapshot = document.createElement(SNAPSHOT_NODE_NAME)
     snapshot.appendChild(root.cloneNode(true))
     return snapshot.outerHTML
@@ -48,28 +50,25 @@ function Patch (global, root, broadcast, filter) {
 
   treeUUID(root, true)
 
-  const debouncedObserver = debounce((mutations) => {
+  // todo - merge all the mutations and send at the debounced rate, or maybe
+  //    just remove the debounce altogether and spam each other? Dunno.
+  const obs = (mutations) => {
     var patch = document.createElement(PATCH_NODE_NAME)
 
-    mutations.forEach(function (mutation) {
-      treeUUID(mutation.target, true)
+    mutations.forEach((mutation) => {
+      var uuid = treeUUID(mutation.target, true)
 
-      console.log(mutation)
-
-      // var uuid = mutation.target.getAttribute(UUID_KEY)
-      // var el
-
-      // if (mutation.type === 'attributes' && attributeMutations[uuid]) {
-      //   el = attributeMutations[uuid]
-      // } else {
-
-      patch.appendChild(mutation.target.cloneNode(true))
+      if (this.suppressed.has(uuid)) {
+        // nope
+      } else {
+        patch.appendChild(mutation.target.cloneNode(true))
+      }
     })
 
     broadcast(patch.outerHTML)
-  }, 25)
+  }
 
-  var observer = new global.MutationObserver(debouncedObserver)
+  var observer = new global.MutationObserver(obs)
   var config = { attributes: true, subtree: true, childList: true, characterData: true }
   observer.observe(root, config)
 }

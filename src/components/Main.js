@@ -14,11 +14,11 @@ import ModalHelp from './modals/ModalHelp';
 import SceneGraph from './scenegraph/SceneGraph';
 import ToolBar from './ToolBar';
 import {injectCSS, injectJS} from '../lib/utils';
-
 import '../css/main.css';
 
 import Patch from '../../vendor/patch'
 import Apply from '../../vendor/apply'
+import WebrtcClient from '../lib/webrtc-client'
 
 
 // Megahack to include font-awesome.
@@ -60,6 +60,12 @@ export default class Main extends React.Component {
   }
 
   componentDidMount () {
+    console.log('mounted!')
+
+    const getRoot = () => {
+      return document.querySelector('a-entity#parcel')
+    }
+
     // Create an observer to notify the changes in the scene
     var observer = new MutationObserver(function (mutations) {
       Events.emit('dommodified', mutations);
@@ -67,10 +73,49 @@ export default class Main extends React.Component {
     var config = {attributes: true, childList: true, characterData: true};
     observer.observe(this.state.sceneEl, config);
 
-    new Patch(window, document.querySelector('a-scene'), (events) => {
-      console.log('Patch generated...')
-      console.log(events) // ws.send(events);
+    var webrtcClient = new WebrtcClient()
+
+    // Watch for changes and stream over webrtc
+    var patcher = new Patch(window, getRoot(), (events) => {
+      webrtcClient.sendPatch(events)
     })
+
+    var apply = new Apply(getRoot(), patcher);
+
+    webrtcClient.on('connect', (user) => {
+      console.log(user)
+    })
+
+    // Sent once a connection is established, sends the startedAt
+    // time of the other clients webrtc connection, so if we have
+    // a newer copy of the scene than the other user, we send them
+    // a snapshot
+    webrtcClient.on('hello', (packet) => {
+
+      // We started editing the scene first, so send a snapshot
+      // with all the data-uuids and current scene state
+      if (webrtcClient.startedAt < packet.startedAt) {
+        packet.user.send({
+          type: 'snapshot',
+          html: getRoot().innerHTML
+        })
+      }
+    })
+
+    webrtcClient.on('snapshot', (packet) => {
+      console.log('Got snapshot...')
+      getRoot().innerHTML = packet.html
+    })
+
+    const parser = new DOMParser()
+
+    webrtcClient.on('patch', (packet) => {
+      const doc = parser.parseFromString(packet.patch, 'application/xml')
+      const message = doc.querySelector('patch')
+      apply.onMessage(message);
+    })
+
+    webrtcClient.connect()
 
     Events.on('opentexturesmodal', function (selectedTexture, textureOnClose) {
       this.setState({selectedTexture: selectedTexture, isModalTexturesOpen: true, textureOnClose: textureOnClose});

@@ -3,8 +3,17 @@ const DEAD_NODE_NAME = 'dead'
 const PATCH_NODE_NAME = 'patch'
 const SNAPSHOT_NODE_NAME = 'snapshot'
 
-function Apply (root) {
+function Apply (root, patcher) {
   var document = root.ownerDocument
+
+  // The patcher will ignore updates
+  function suppress (uuid) {
+    patcher.suppressed.add(uuid)
+
+    setTimeout(() => {
+      patcher.suppressed.delete(uuid)
+    }, 25)
+  }
 
   function copyChildren (source, destination) {
     Array.from(source.childNodes).forEach((n) => {
@@ -57,6 +66,8 @@ function Apply (root) {
       var uuid = n.getAttribute(UUID_KEY)
       var target = root.querySelector(`[${UUID_KEY}='${uuid}']`)
 
+      suppress(uuid)
+
       if (!target && root.getAttribute(UUID_KEY) === uuid) {
         target = root
       }
@@ -70,6 +81,7 @@ function Apply (root) {
       Array.from(n.childNodes).forEach((n) => {
         var uuid = n.getAttribute(UUID_KEY)
         var child = root.querySelector(`[${UUID_KEY}='${uuid}']`)
+        suppress(uuid)
 
         if (child && n.nodeName.toLowerCase() === DEAD_NODE_NAME) {
           target.removeChild(child)
