@@ -19,6 +19,7 @@ import '../css/main.css';
 import Patch from '../../vendor/patch'
 import Apply from '../../vendor/apply'
 import WebrtcClient from '../lib/webrtc-client'
+import {setEntityInnerHTML} from '../actions/entity';
 
 
 // Megahack to include font-awesome.
@@ -104,7 +105,7 @@ export default class Main extends React.Component {
 
     webrtcClient.on('snapshot', (packet) => {
       console.log('Got snapshot...')
-      getRoot().innerHTML = packet.html
+      setEntityInnerHTML(getRoot(), packet.html)
     })
 
     const parser = new DOMParser()

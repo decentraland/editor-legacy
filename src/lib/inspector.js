@@ -20,6 +20,11 @@ function Inspector () {
   } else {
     document.addEventListener('DOMContentLoaded', this.onDomLoaded.bind(this));
   }
+
+  // fixme - this is used by event.setEntityInnerHTML to update the inspectror and
+  //    needs to be removed, I couldn't quite follow the logic of the event dispatcher
+  //    so hacked this in here - @bnolan
+  window.inspector = this;
 }
 
 Inspector.prototype = {

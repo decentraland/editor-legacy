@@ -2,6 +2,45 @@ var Events = require('../lib/Events.js');
 
 import {equal} from '../lib/utils.js';
 
+export function setEntityInnerHTML (entity, html) {
+  Array.from(entity.childNodes).forEach((child) => {
+    if (child.nodeType === 1) {
+      removeEntity(child, true)
+    }
+  })
+
+  var clone = entity.cloneNode()
+  clone.innerHTML = html
+
+  Array.from(clone.childNodes).forEach((child) => {
+    // entity.flushToDOM();
+
+    var copy = child
+    copy.addEventListener('loaded', function (e) {
+      // AFRAME.INSPECTOR.selectEntity(copy)
+      Events.emit('dommodified')
+    })
+
+    // Get a valid unique ID for the entity
+    if (entity.id) {
+      copy.id = getUniqueId(entity.id)
+    }
+
+    copy.addEventListener('loaded', function () {
+      // AFRAME.INSPECTOR.selectEntity(copy)
+      Events.emit('dommodified')
+
+      window.inspector.addObject(copy.object3D)
+    })
+
+    entity.appendChild(child)
+
+    // Events.emit('objectadded', object);
+  })
+
+  Events.emit('dommodified')
+}
+
 /**
  * Update a component.
  *
