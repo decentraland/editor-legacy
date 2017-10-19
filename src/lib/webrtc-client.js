@@ -209,6 +209,9 @@ export default class WebrtcClient extends EventEmitter {
       }
     }
 
+    // So we can get the user uuid from the peer
+    peer.user = user
+
     const audio = document.createElement('audio')
 
     peer.on('connect', () => {
