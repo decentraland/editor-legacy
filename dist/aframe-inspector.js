@@ -103,6 +103,8 @@
 
 	var _webrtcClient2 = _interopRequireDefault(_webrtcClient);
 
+	var _entity = __webpack_require__(221);
+
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
@@ -186,6 +188,12 @@
 	    value: function componentDidMount() {
 	      var _this2 = this;
 
+	      console.log('mounted!');
+
+	      var getRoot = function getRoot() {
+	        return document.querySelector('a-entity#parcel');
+	      };
+
 	      // Create an observer to notify the changes in the scene
 	      var observer = new MutationObserver(function (mutations) {
 	        Events.emit('dommodified', mutations);
@@ -193,18 +201,49 @@
 	      var config = { attributes: true, childList: true, characterData: true };
 	      observer.observe(this.state.sceneEl, config);
 
-	      var webrtcClient = new WebrtcClient();
+	      var webrtcClient = new _webrtcClient2.default();
+
+	      // Watch for changes and stream over webrtc
+	      var patcher = new _patch2.default(window, getRoot(), function (events) {
+	        webrtcClient.sendPatch(events);
+	      });
+
+	      var apply = new _apply2.default(getRoot(), patcher);
 
 	      webrtcClient.on('connect', function (user) {
 	        console.log(user);
 	      });
 
-	      webrtcClient.connect();
+	      // Sent once a connection is established, sends the startedAt
+	      // time of the other clients webrtc connection, so if we have
+	      // a newer copy of the scene than the other user, we send them
+	      // a snapshot
+	      webrtcClient.on('hello', function (packet) {
 
-	      new _patch2.default(window, document.querySelector('a-scene'), function (events) {
-	        console.log('Patch generated...');
-	        console.log(events); // ws.send(events);
+	        // We started editing the scene first, so send a snapshot
+	        // with all the data-uuids and current scene state
+	        if (webrtcClient.startedAt < packet.startedAt) {
+	          packet.user.send({
+	            type: 'snapshot',
+	            html: getRoot().innerHTML
+	          });
+	        }
 	      });
+
+	      webrtcClient.on('snapshot', function (packet) {
+	        console.log('Got snapshot...');
+	        (0, _entity.setEntityInnerHTML)(getRoot(), packet.html);
+	      });
+
+	      var parser = new DOMParser();
+
+	      webrtcClient.on('patch', function (packet) {
+	        var doc = parser.parseFromString(packet.patch, 'application/xml');
+	        var message = doc.querySelector('patch');
+	        apply.onMessage(message);
+	      });
+
+	      webrtcClient.connect();
 
 	      Events.on('opentexturesmodal', function (selectedTexture, textureOnClose) {
 	        this.setState({ selectedTexture: selectedTexture, isModalTexturesOpen: true, textureOnClose: textureOnClose });
@@ -315,7 +354,7 @@
 	  window.addEventListener('inspector-loaded', function () {
 	    _reactDom2.default.render(_react2.default.createElement(Main, null), div);
 	  });
-	  console.log('A-Frame Inspector Version:', ("0.7.1"), '(' + ("17-10-2017") + ' Commit: ' + ("f6e6c448665083ea9edb89d362632e0053c7fe64\n").substr(0, 7) + ')');
+	  console.log('A-Frame Inspector Version:', ("0.7.1"), '(' + ("19-10-2017") + ' Commit: ' + ("481a7b48669117c95cd332533054b7da419ecf43\n").substr(0, 7) + ')');
 	})();
 
 /***/ }),
@@ -26181,6 +26220,11 @@
 	  } else {
 	    document.addEventListener('DOMContentLoaded', this.onDomLoaded.bind(this));
 	  }
+
+	  // fixme - this is used by action.setEntityInnerHTML to update the inspectror and
+	  //    needs to be removed, I couldn't quite follow the logic of the event dispatcher
+	  //    so hacked this in here - @bnolan
+	  window.inspector = this;
 	}
 
 	Inspector.prototype = {
@@ -30076,6 +30120,7 @@
 	Object.defineProperty(exports, "__esModule", {
 	  value: true
 	});
+	exports.setEntityInnerHTML = setEntityInnerHTML;
 	exports.updateEntity = updateEntity;
 	exports.removeEntity = removeEntity;
 	exports.removeSelectedEntity = removeSelectedEntity;
@@ -30086,6 +30131,45 @@
 	var _utils = __webpack_require__(216);
 
 	var Events = __webpack_require__(188);
+
+	function setEntityInnerHTML(entity, html) {
+	  Array.from(entity.childNodes).forEach(function (child) {
+	    if (child.nodeType === 1) {
+	      removeEntity(child, true);
+	    }
+	  });
+
+	  var clone = entity.cloneNode();
+	  clone.innerHTML = html;
+
+	  Array.from(clone.childNodes).forEach(function (child) {
+	    // entity.flushToDOM();
+
+	    var copy = child;
+	    copy.addEventListener('loaded', function (e) {
+	      // AFRAME.INSPECTOR.selectEntity(copy)
+	      Events.emit('dommodified');
+	    });
+
+	    // Get a valid unique ID for the entity
+	    if (entity.id) {
+	      copy.id = getUniqueId(entity.id);
+	    }
+
+	    copy.addEventListener('loaded', function () {
+	      // AFRAME.INSPECTOR.selectEntity(copy)
+	      Events.emit('dommodified');
+
+	      window.inspector.addObject(copy.object3D);
+	    });
+
+	    entity.appendChild(child);
+
+	    // Events.emit('objectadded', object);
+	  });
+
+	  Events.emit('dommodified');
+	}
 
 	/**
 	 * Update a component.
@@ -35935,7 +36019,11 @@
 	var SNAPSHOT_NODE_NAME = 'snapshot';
 
 	function Patch(global, root, broadcast, filter) {
+	  var _this = this;
+
 	  var document = root.ownerDocument;
+
+	  this.suppressed = new Set();
 
 	  function generateUUID() {
 	    return uuid.v4();
@@ -35968,18 +36056,23 @@
 
 	  // todo - merge all the mutations and send at the debounced rate, or maybe
 	  //    just remove the debounce altogether and spam each other? Dunno.
-	  var debouncedObserver = debounce(function (mutations) {
+	  var obs = function obs(mutations) {
 	    var patch = document.createElement(PATCH_NODE_NAME);
 
 	    mutations.forEach(function (mutation) {
-	      treeUUID(mutation.target, true);
-	      patch.appendChild(mutation.target.cloneNode(true));
+	      var uuid = treeUUID(mutation.target, true);
+
+	      if (_this.suppressed.has(uuid)) {
+	        // nope
+	      } else {
+	        patch.appendChild(mutation.target.cloneNode(true));
+	      }
 	    });
 
 	    broadcast(patch.outerHTML);
-	  }, 25);
+	  };
 
-	  var observer = new global.MutationObserver(debouncedObserver);
+	  var observer = new global.MutationObserver(obs);
 	  var config = { attributes: true, subtree: true, childList: true, characterData: true };
 	  observer.observe(root, config);
 	}
@@ -36221,8 +36314,17 @@
 	var PATCH_NODE_NAME = 'patch';
 	var SNAPSHOT_NODE_NAME = 'snapshot';
 
-	function Apply(root) {
+	function Apply(root, patcher) {
 	  var document = root.ownerDocument;
+
+	  // The patcher will ignore updates
+	  function suppress(uuid) {
+	    patcher.suppressed.add(uuid);
+
+	    setTimeout(function () {
+	      patcher.suppressed.delete(uuid);
+	    }, 25);
+	  }
 
 	  function copyChildren(source, destination) {
 	    Array.from(source.childNodes).forEach(function (n) {
@@ -36275,6 +36377,8 @@
 	      var uuid = n.getAttribute(UUID_KEY);
 	      var target = root.querySelector('[' + UUID_KEY + '=\'' + uuid + '\']');
 
+	      suppress(uuid);
+
 	      if (!target && root.getAttribute(UUID_KEY) === uuid) {
 	        target = root;
 	      }
@@ -36288,6 +36392,7 @@
 	      Array.from(n.childNodes).forEach(function (n) {
 	        var uuid = n.getAttribute(UUID_KEY);
 	        var child = root.querySelector('[' + UUID_KEY + '=\'' + uuid + '\']');
+	        suppress(uuid);
 
 	        if (child && n.nodeName.toLowerCase() === DEAD_NODE_NAME) {
 	          target.removeChild(child);
@@ -36365,10 +36470,16 @@
 
 	    _this.uuid = (0, _v2.default)();
 	    _this.peers = {};
+	    _this.startedAt = _this.getEpoch();
 	    return _this;
 	  }
 
 	  _createClass(WebrtcClient, [{
+	    key: 'getEpoch',
+	    value: function getEpoch() {
+	      return new Date(new Date().toUTCString()).getTime();
+	    }
+	  }, {
 	    key: 'connect',
 	    value: function connect() {
 	      var _this2 = this;
@@ -36413,24 +36524,13 @@
 	    key: 'sendAnnounce',
 	    value: function sendAnnounce() {
 	      if (this.connected) {
-	        var p = this.position.toArray().map(function (c) {
-	          return c.toFixed(3);
-	        });
-
-	        if (p.join() === this.priorPosition) {
-	          return;
-	        }
-
 	        fetch(SERVER_URL + '/announce', {
 	          method: 'POST',
 	          headers: this.headers,
 	          body: JSON.stringify({
-	            position: p,
 	            uuid: this.uuid
 	          })
 	        });
-
-	        this.priorPosition = p.join();
 	      }
 	    }
 	  }, {
@@ -36572,12 +36672,20 @@
 	      // This user object has properties added to it by
 	      // other parts of the code, so it needs to be consistent
 	      // across all emitted events
-	      var user = { uuid: uuid };
+	      var user = {
+	        uuid: uuid,
+	        send: function send(packet) {
+	          if (peer.connected) {
+	            peer.send(JSON.stringify(packet));
+	          }
+	        }
+	      };
+
 	      var audio = document.createElement('audio');
 
 	      peer.on('connect', function () {
 	        console.log('[client] connected to peer ' + uuid);
-	        peer.send(JSON.stringify({ type: 'hello' }));
+	        peer.send(JSON.stringify({ type: 'hello', startedAt: _this6.startedAt }));
 	        _this6.emit('connect', user);
 	      });
 
@@ -36589,8 +36697,8 @@
 	      peer.on('stream', function (stream) {
 	        // got remote audio stream, now let's play it in a audio tag
 	        document.body.appendChild(audio);
-	        audio.src = window.URL.createObjectURL(stream);
-	        audio.play();
+	        // audio.src = window.URL.createObjectURL(stream)
+	        // audio.play()
 	      });
 
 	      peer.on('data', function (data) {
@@ -43246,16 +43354,17 @@
 /* 299 */
 /***/ (function(module, exports) {
 
-	'use strict';
+	"use strict";
 
-	(function (i, s, o, g, r, a, m) {
-	  i['GoogleAnalyticsObject'] = r;i[r] = i[r] || function () {
-	    (i[r].q = i[r].q || []).push(arguments);
-	  }, i[r].l = 1 * new Date();a = s.createElement(o), m = s.getElementsByTagName(o)[0];a.async = 1;a.src = g;a.setAttribute('data-aframe-inspector', '');m.parentNode.insertBefore(a, m);
-	})(window, document, 'script', 'https://www.google-analytics.com/analytics.js', 'ga');
+	// (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+	// (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+	// m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;a.setAttribute('data-aframe-inspector','');m.parentNode.insertBefore(a,m)
+	// })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
 
-	ga('create', 'UA-80530812-1', 'auto');
-	ga('send', 'pageview');
+	// ga('create', 'UA-80530812-1', 'auto');
+	// ga('send', 'pageview');
+
+	window.ga = function () {};
 
 /***/ })
 /******/ ]);

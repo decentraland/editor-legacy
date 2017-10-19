@@ -12,7 +12,6 @@
     "lint": "npm run lintfile src/",
     "lint:css": "stylelint src/css/main.css",
     "lintfile": "node --harmony node_modules/.bin/eslint",
-    "postinstall": "npm run build",
     "start": "node server.js",
     "test": "jest --watch",
     "test:ci": "jest"
