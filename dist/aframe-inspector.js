@@ -83,23 +83,23 @@
 
 	var _SceneGraph2 = _interopRequireDefault(_SceneGraph);
 
-	var _ToolBar = __webpack_require__(260);
+	var _ToolBar = __webpack_require__(261);
 
 	var _ToolBar2 = _interopRequireDefault(_ToolBar);
 
 	var _utils = __webpack_require__(216);
 
-	__webpack_require__(261);
+	__webpack_require__(262);
 
-	var _patch = __webpack_require__(263);
+	var _patch = __webpack_require__(264);
 
 	var _patch2 = _interopRequireDefault(_patch);
 
-	var _apply = __webpack_require__(269);
+	var _apply = __webpack_require__(270);
 
 	var _apply2 = _interopRequireDefault(_apply);
 
-	var _webrtcClient = __webpack_require__(270);
+	var _webrtcClient = __webpack_require__(271);
 
 	var _webrtcClient2 = _interopRequireDefault(_webrtcClient);
 
@@ -114,13 +114,15 @@
 	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
 	/* global VERSION BUILD_TIMESTAMP COMMIT_HASH */
-	__webpack_require__(299);
+	__webpack_require__(300);
 	var INSPECTOR = __webpack_require__(210);
 
 	THREE.ImageUtils.crossOrigin = '';
 
 	var Events = __webpack_require__(188);
 
+
+	var webrtcClient = new _webrtcClient2.default();
 
 	// Megahack to include font-awesome.
 	(0, _utils.injectCSS)('https://maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css');
@@ -200,8 +202,6 @@
 	      });
 	      var config = { attributes: true, childList: true, characterData: true };
 	      observer.observe(this.state.sceneEl, config);
-
-	      var webrtcClient = new _webrtcClient2.default();
 
 	      // Watch for changes and stream over webrtc
 	      var patcher = new _patch2.default(window, getRoot(), function (events) {
@@ -316,7 +316,13 @@
 	          'div',
 	          { id: 'aframe-inspector-panels', className: this.state.inspectorEnabled ? '' : 'hidden' },
 	          _react2.default.createElement(_ModalTextures2.default, { ref: 'modaltextures', isOpen: this.state.isModalTexturesOpen, selectedTexture: this.state.selectedTexture, onClose: this.onModalTextureOnClose }),
-	          _react2.default.createElement(_SceneGraph2.default, { id: 'left-sidebar', scene: scene, selectedEntity: this.state.entity, visible: this.state.visible.scenegraph }),
+	          _react2.default.createElement(_SceneGraph2.default, {
+	            id: 'left-sidebar',
+	            scene: scene,
+	            selectedEntity: this.state.entity,
+	            visible: this.state.visible.scenegraph,
+	            webrtcClient: webrtcClient
+	          }),
 	          showScenegraph,
 	          showAttributes,
 	          _react2.default.createElement(
@@ -354,7 +360,7 @@
 	  window.addEventListener('inspector-loaded', function () {
 	    _reactDom2.default.render(_react2.default.createElement(Main, null), div);
 	  });
-	  console.log('A-Frame Inspector Version:', ("0.7.1"), '(' + ("19-10-2017") + ' Commit: ' + ("481a7b48669117c95cd332533054b7da419ecf43\n").substr(0, 7) + ')');
+	  console.log('A-Frame Inspector Version:', ("0.7.1"), '(' + ("21-10-2017") + ' Commit: ' + ("dd8a2090418ad9f20ce240235675d22922fef7f2\n").substr(0, 7) + ')');
 	})();
 
 /***/ }),
@@ -34407,6 +34413,10 @@
 
 	var _Toolbar2 = _interopRequireDefault(_Toolbar);
 
+	var _Chat = __webpack_require__(260);
+
+	var _Chat2 = _interopRequireDefault(_Chat);
+
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
@@ -34746,7 +34756,8 @@
 	          { className: 'outliner', tabIndex: '0', onKeyDown: this.onKeyDown,
 	            onKeyUp: this.onKeyUp },
 	          this.renderOptions()
-	        )
+	        ),
+	        _react2.default.createElement(_Chat2.default, { webrtcClient: this.props.webrtcClient })
 	      );
 	    }
 	  }]);
@@ -34758,7 +34769,8 @@
 	  onChange: _react2.default.PropTypes.func,
 	  scene: _react2.default.PropTypes.object,
 	  value: _react2.default.PropTypes.string,
-	  visible: _react2.default.PropTypes.bool
+	  visible: _react2.default.PropTypes.bool,
+	  webrtcClient: _react2.default.PropTypes.object
 	};
 	SceneGraph.defaultProps = {
 	  value: '',
@@ -35858,6 +35870,251 @@
 
 	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
+	var _react = __webpack_require__(2);
+
+	var _react2 = _interopRequireDefault(_react);
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+	function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+	var Chat = function (_React$Component) {
+	  _inherits(Chat, _React$Component);
+
+	  function Chat(props) {
+	    _classCallCheck(this, Chat);
+
+	    var _this = _possibleConstructorReturn(this, (Chat.__proto__ || Object.getPrototypeOf(Chat)).call(this, props));
+
+	    _this.state = {
+	      messages: [],
+	      content: [],
+	      emojis: ['😂', '😜', '😊', '😮', '😢', '💩', '🎉']
+	    };
+	    return _this;
+	  }
+
+	  _createClass(Chat, [{
+	    key: 'focussed',
+	    value: function focussed() {
+	      return document.activeElement && document.activeElement.nodeName === 'INPUT';
+	    }
+	  }, {
+	    key: 'scrollToBottom',
+	    value: function scrollToBottom() {
+	      var el = this.chatMessages;
+
+	      if (el && el.lastChild) {
+	        el.lastChild.scrollIntoView({ behavior: 'smooth' });
+	      }
+	    }
+	  }, {
+	    key: 'componentDidMount',
+	    value: function componentDidMount() {
+	      var _this2 = this;
+
+	      document.body.addEventListener('keydown', function (e) {
+	        if (_this2.focussed) {
+	          return;
+	        }
+
+	        if (e.keyCode === 13) {
+	          _this2.inputField.focus();
+	        }
+	      });
+
+	      this.props.webrtcClient.on('chat', function (packet) {
+	        _this2.addMessage({
+	          user: packet.user,
+	          content: packet.content
+	        });
+	      });
+	      this.props.webrtcClient.on('emote', function (packet) {
+	        /* if (!packet.user.avatar) {
+	          return
+	        } */
+
+	        //packet.user.avatar.emote(packet.emoji)
+
+	        _this2.addMessage({
+	          user: packet.user,
+	          content: packet.emoji
+	        });
+	      });
+	    }
+	  }, {
+	    key: 'componentDidUpdate',
+	    value: function componentDidUpdate() {
+	      this.scrollToBottom();
+	    }
+	  }, {
+	    key: 'addMessage',
+	    value: function addMessage(message) {
+	      this.setState({
+	        messages: this.state.messages.concat([message])
+	      });
+	    }
+	  }, {
+	    key: 'send',
+	    value: function send(e) {
+	      var webrtcClient = this.props.webrtcClient;
+
+	      var content = e.target.value;
+
+	      if (content === '') {
+	        return;
+	      }
+
+	      var message = {
+	        user: { name: 'Me', uuid: 'Me' },
+	        content: content
+	      };
+
+	      this.addMessage(message);
+	      webrtcClient.sendChat(message);
+
+	      this.setState({
+	        content: ''
+	      });
+
+	      // Clear input field
+	      this.inputField.value = "";
+	      // Don't loose focus after sending the message
+	      this.inputField.focus();
+	    }
+	  }, {
+	    key: 'sendEmote',
+	    value: function sendEmote(emoji) {
+	      var webrtcClient = this.props.webrtcClient;
+
+	      var message = {
+	        user: { name: 'Me', uuid: 'Me' },
+	        content: emoji
+	      };
+
+	      this.addMessage(message);
+	      webrtcClient.sendEmote(emoji);
+
+	      this.setState({
+	        content: ''
+	      });
+
+	      // Clear input field
+	      this.inputField.value = "";
+	      // Don't loose focus after sending the message
+	      this.inputField.focus();
+	    }
+	  }, {
+	    key: 'onKeyDown',
+	    value: function onKeyDown(e) {
+	      if (e.keyCode === 13) {
+	        e.preventDefault();
+	        this.send(e);
+	      }
+
+	      if (e.keyCode === 27) {
+	        this.blur();
+	      }
+	    }
+	  }, {
+	    key: 'blur',
+	    value: function blur() {
+	      this.inputField.blur();
+	      document.querySelector('canvas').focus();
+	    }
+	  }, {
+	    key: 'render',
+	    value: function render() {
+	      var _this3 = this;
+
+	      var messages = this.state.messages.map(function (m) {
+	        return _react2.default.createElement(
+	          'div',
+	          null,
+	          _react2.default.createElement(
+	            'b',
+	            null,
+	            m.user.uuid.slice(0, 4),
+	            ':'
+	          ),
+	          ' ',
+	          m.content
+	        );
+	      });
+
+	      var collapsed = this.state.messages.length === 0 && 'chat-collapsed';
+
+	      var emojis = this.state.emojis.slice(0, 7).map(function (e) {
+	        return _react2.default.createElement(
+	          'button',
+	          { onClick: function onClick() {
+	              return _this3.sendEmote(e);
+	            } },
+	          e
+	        );
+	      });
+
+	      return _react2.default.createElement(
+	        'div',
+	        { className: 'chat' },
+	        _react2.default.createElement(
+	          'h3',
+	          null,
+	          'Chat'
+	        ),
+	        this.state.messages.length > 0 && _react2.default.createElement(
+	          'div',
+	          {
+	            ref: function ref(e) {
+	              _this3.chatMessages = e;
+	            },
+	            className: 'chat__messages',
+	            style: { overflow: 'auto' } // somehow the CSS gets rewritten so using force
+	          },
+	          messages
+	        ),
+	        _react2.default.createElement(
+	          'div',
+	          { className: 'chat__emoji' },
+	          emojis
+	        ),
+	        _react2.default.createElement('input', {
+	          className: 'chat__input',
+	          type: 'text',
+	          defaultValue: this.state.content,
+	          ref: function ref(e) {
+	            _this3.inputField = e;
+	          },
+	          onKeyUp: function onKeyUp(e) {
+	            return _this3.setState({ content: e.target.value });
+	          },
+	          onKeyDown: this.onKeyDown.bind(this)
+	        })
+	      );
+	    }
+	  }]);
+
+	  return Chat;
+	}(_react2.default.Component);
+
+	exports.default = Chat;
+
+/***/ }),
+/* 261 */
+/***/ (function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+
+	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
 	function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
 
 	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
@@ -35955,13 +36212,13 @@
 	exports.default = Toolbar;
 
 /***/ }),
-/* 261 */
+/* 262 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	// style-loader: Adds some css to the DOM by adding a <style> tag
 
 	// load the styles
-	var content = __webpack_require__(262);
+	var content = __webpack_require__(263);
 	if(typeof content === 'string') content = [[module.id, content, '']];
 	// add the styles to the DOM
 	var update = __webpack_require__(209)(content, {});
@@ -35981,7 +36238,7 @@
 	}
 
 /***/ }),
-/* 262 */
+/* 263 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	exports = module.exports = __webpack_require__(208)();
@@ -35989,13 +36246,13 @@
 
 
 	// module
-	exports.push([module.id, "body.aframe-inspector-opened,\n.toggle-edit {\n  font-family: BlinkMacSystemFont, -apple-system, \"Segoe UI\", Helvetica, Arial, sans-serif;\n}\n\n.wf-roboto-n4-active body.aframe-inspector-opened,\n.wf-roboto-n4-active .toggle-edit {\n  font-family: Roboto, BlinkMacSystemFont, -apple-system, \"Segoe UI\", Helvetica, Arial, sans-serif;\n}\n\n.Select,\ncode,\npre,\ninput,\ntextarea,\nselect {\n  font-family: Consolas, Andale Mono, Monaco, Courier New, monospace;\n}\n\n.wf-robotomono-n4-active .Select,\n.wf-robotomono-n4-active code,\n.wf-robotomono-n4-active pre,\n.wf-robotomono-n4-active input,\n.wf-robotomono-n4-active textarea,\n.wf-robotomono-n4-active select {\n  font-family: Roboto Mono, Consolas, Andale Mono, Monaco, Courier New, monospace;\n}\n\nbody.aframe-inspector-opened {\n  color: #fff;\n  font-size: 12px;\n  margin: 0;\n  overflow: hidden;\n}\n\nhr {\n  border: 0;\n  border-top: 1px solid #ccc;\n}\n\na {\n  cursor: pointer;\n}\n\nbutton {\n  position: relative;\n}\n\ncode {\n  font-family: Consolas, Andale Mono, Monaco, Monaco, Lucida Console, Liberation Mono, DejaVu Sans Mono, Bitstream Vera Sans Mono, Courier New, monospace;\n}\n\ntextarea {\n  -moz-tab-size: 4;\n    -o-tab-size: 4;\n       tab-size: 4;\n  white-space: pre;\n  word-wrap: normal;\n}\n\ntextarea.success {\n  border-color: #8b8 !important;\n}\n\ntextarea.fail {\n  background-color: rgba(255, 0, 0, 0.05);\n  border-color: #f00 !important;\n}\n\ntextarea,\ninput {\n  outline: none; /* osx */\n}\n\n#left-sidebar,\n#right-panels {\n  z-index: 9998;\n}\n\n#sidebar,\n#left-sidebar,\n.panel {\n  cursor: default;\n  -webkit-user-select: none;\n     -moz-user-select: none;\n      -ms-user-select: none;\n          user-select: none;\n}\n\n.collapsible .static {\n  margin: 0;\n}\n\n.collapsible .static .collapse-button {\n  border: 6px solid transparent;\n  float: left;\n  height: 0;\n  margin-right: 6px;\n  width: 0;\n}\n\n.collapsible.collapsed .static .collapse-button {\n  border-left-color: #30D7A9;\n  margin-top: 2px;\n}\n\n.collapsible:not(.collapsed) .static .collapse-button {\n  border-top-color: #30D7A9;\n  margin-top: 6px;\n}\n\n.collapsible.collapsed .content {\n  display: none;\n}\n\n.toggle-edit {\n  background-color: #ed3160;\n  color: #fff;\n  font-size: 12px;\n  left: 3px;\n  margin: 0;\n  padding: 6px 10px;\n  position: fixed;\n  text-align: center;\n  text-decoration: none;\n  top: 3px;\n  width: 204px;\n  z-index: 99999;\n}\n\n.toggle-edit:hover {\n  background-color: rgb(228, 43, 90);\n}\n\n.scenegraph-header{\n  margin: 0;\n  padding: 8px;\n  border-bottom: 1px solid #30D7A9;\n}\n\n.scenegraph {\n  border-top: 1px solid #111;\n}\n\n.scenegraph .search {\n  padding: 5px;\n}\n\n.scenegraph-toolbar {\n  background-color: #333;\n}\n\n.scenegraph-actions {\n  padding: 9px 0 5px;\n}\n\n.search {\n  color: #aaa;\n  font-size: 16px;\n  position: relative;\n}\n\n.search input {\n  background: #222;\n  border-radius: 5px;\n  height: 22px;\n  text-indent: 10px;\n  width: 216px;\n}\n\n.search .fa-search {\n  position: absolute;\n  right: 11px;\n  top: 10px;\n}\n\n.search .fa-times {\n  position: absolute;\n  right: 32px;\n  top: 10px;\n}\n\ninput {\n  background-color: transparent;\n  border: 1px solid #555;\n  color: #fff;\n}\n\ninput,\n.texture canvas {\n  transition: 0.1s background-color ease-in-out, 0.1s border-color ease-in-out, 0.1s color ease-in-out;\n}\n\ninput[type=text],\ninput[type=number],\ninput.string,\ninput.number {\n  min-height: 14px;\n  outline: none;\n}\n\ninput.number {\n  background-color: transparent !important;\n  border: 0;\n  color: #20b1fb !important;\n  cursor: col-resize;\n  font-size: 12px;\n  padding: 2px;\n}\n\ninput.string:focus,\ninput.number:focus {\n  border: 1px solid #20b1fb;\n  color: #fff;\n  cursor: auto;\n}\n\ninput.error {\n  border: 1px solid #a00;\n}\n\n#left-sidebar {\n  background: #2b2b2b;\n  bottom: 0;\n  display: -webkit-box;\n  display: -ms-flexbox;\n  display: flex;\n  -webkit-box-orient: vertical;\n  -webkit-box-direction: normal;\n      -ms-flex-direction: column;\n          flex-direction: column;\n  left: 0;\n  overflow: auto;\n  position: fixed;\n  top: 0;\n  width: 230px;\n}\n\n#sidebar {\n  background: #2b2b2b;\n  width: 331px;\n}\n\n#sidebar * {\n  vertical-align: middle;\n}\n\ninput,\ntextarea,\nselect {\n  background: #222;\n  border: 1px solid transparent;\n  color: #888;\n}\n\n.row {\n  margin-bottom: 10px;\n  min-height: 20px;\n}\n\ninput[type=color] {\n  background-color: #333;\n  border: 1px solid #111;\n  cursor: pointer;\n}\n\n.texture canvas {\n  border: 1px solid #222;\n  cursor: pointer;\n}\n\n.texture canvas:hover {\n  border-color: #30D7A9;\n}\n\ninput[type=color] {\n  cursor: pointer;\n  height: 16px;\n  padding: 0;\n  width: 64px;\n}\n\n/* Note: these vendor-prefixed selectors cannot be grouped! */\n\ninput[type=color]::-webkit-color-swatch {\n  border: 0;  /* To remove the gray border. */\n}\n\ninput[type=color]::-webkit-color-swatch-wrapper {\n  padding: 0;  /* To remove the inner padding. */\n}\n\ninput[type=color]::-moz-color-swatch {\n  border: 0;\n}\n\ninput[type=color]::-moz-focus-inner {\n  border: 0;  /* To remove the inner border (specific to Firefox). */\n  padding: 0;\n}\n\n.components {\n  background-color: #323232;\n  color: #bcbcbc;\n  height: 100%;\n  overflow: auto;\n  position: fixed;\n  width: 331px;\n}\n\ndiv.vec2,\ndiv.vec3,\ndiv.vec4 {\n  display: inline;\n}\n\n.vec2 input.number,\n.vec3 input.number {\n  width: 46px;\n}\n\n.vec4 input.number {\n  width: 34px;\n}\n\n.collapsible-header {\n  display: -webkit-box;\n  display: -ms-flexbox;\n  display: flex;\n  -webkit-box-pack: justify;\n      -ms-flex-pack: justify;\n          justify-content: space-between;\n}\n\n.component-title span {\n  float: left;\n  max-width: 110px;\n  overflow: hidden;\n  text-overflow: ellipsis;\n  text-transform: uppercase;\n  white-space: nowrap;\n}\n\n.collapsible .static {\n  background-color: #323232;\n  border-bottom: 1px solid #262626;\n  border-top: 1px solid #262626;\n  color: #fff;\n  height: 16px;\n  padding: 10px;\n  vertical-align: middle;\n}\n\n.collapsible .menu {\n  text-align: right;\n}\n\n.collapsible .menu::after {\n  color: #bbb;\n  content: '\\2807';\n  font-size: 12px;\n  padding: 5px;\n  text-align: right;\n}\n\n.collapsible .static .collapse-button {\n  border-left: 5px solid transparent;\n  border-right: 5px solid transparent;\n  float: left;\n  height: 0;\n  margin-right: 10px;\n  margin-top: 2px;\n  width: 0;\n}\n\n.collapsible.collapsed .static .collapse-button {\n  border-left-color: #bbb;\n}\n\n.collapsible:not(.collapsed) .static .collapse-button {\n  border-top-color: #bbb;\n}\n\n.collapsible .content {\n  background-color: #2b2b2b;\n  padding: 10px;\n}\n\n.components .row {\n  margin-bottom: 10px;\n  min-height: 20px;\n}\n\n.components * {\n  vertical-align: middle;\n}\n\n.components .row .text {\n  cursor: default;\n  display: inline-block;\n  overflow: hidden;\n  text-overflow: ellipsis;\n  vertical-align: middle;\n  width: 120px;\n}\n\n.components .row .map_value {\n  margin: 0 0 0 5px;\n  width: 68px;\n}\n\n.hidden {\n  visibility: hidden;\n}\n\n.uploader-normal-button .hidden {\n  display: none;\n}\n\n.texture canvas + input {\n  margin-left: 5px;\n}\n\n.texture .fa {\n  padding-right: 5px;\n}\n\n.texture .fa-external-link {\n  font-size: 14px;\n  padding-top: 2px;\n}\n\n.scenegraph-bottom {\n  background-color: #323232;\n  border-top: 1px solid #111;\n  bottom: 10;\n  height: 40px;\n  left: 0;\n  z-index: 100;\n}\n\na.button {\n  color: #bcbcbc;\n  font-size: 16px;\n  margin-left: 10px;\n  text-decoration: none;\n}\n\na.button:hover {\n  color: #30D7A9;\n}\n\n.scenegraph-bottom a {\n  float: right;\n  margin: 10px;\n}\n\n.modal {\n  -webkit-animation: animateopacity 0.2s ease-out;\n          animation: animateopacity 0.2s ease-out;\n  background-color: rgb(0, 0, 0);\n  background-color: rgba(0, 0, 0, 0.6);\n  display: -webkit-box;\n  display: -ms-flexbox;\n  display: flex;\n  height: 100%;\n  left: 0;\n  overflow: auto;\n  position: fixed;\n  top: 0;\n  width: 100%;\n  z-index: 9999;\n}\n\n.modal h3 {\n  font-size: 18px;\n  font-weight: 100;\n  margin: 0.6em 0;\n}\n\n#texture-modal .modal-content {\n  height: calc(100% - 50px);\n  width: calc(100% - 50px);\n}\n\n.modal-content {\n  -webkit-animation: animatetop 0.2s ease-out;\n          animation: animatetop 0.2s ease-out;\n  -webkit-animation-duration: 0.2s;\n          animation-duration: 0.2s;\n  -webkit-animation-name: animatetop;\n          animation-name: animatetop;\n  background-color: #232323;\n  box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.5), 0 6px 20px 0 rgba(0, 0, 0, 0.5);\n  margin: auto;\n  overflow: hidden;\n  padding: 0;\n}\n\n@-webkit-keyframes animateopacity {\n  from { opacity: 0; }\n  to { opacity: 1; }\n}\n\n@keyframes animateopacity {\n  from { opacity: 0; }\n  to { opacity: 1; }\n}\n\n.close {\n  color: white;\n  float: right;\n  font-size: 28px;\n  font-weight: bold;\n}\n\n.close:hover,\n.close:focus {\n  color: #08f;\n  cursor: pointer;\n  text-decoration: none;\n}\n\n.modal-header {\n  color: white;\n  padding: 2px 16px;\n}\n\n.modal-body {\n  overflow: auto;\n  padding: 16px;\n}\n\n.modal-footer {\n  color: white;\n  padding: 2px 16px;\n}\n\n/* Gallery */\n\n.gallery {\n  background: #232323;\n  display: -webkit-box;\n  display: -ms-flexbox;\n  display: flex;\n  -ms-flex-wrap: wrap;\n      flex-wrap: wrap;\n  margin: 15px auto 0;\n  max-height: 50vh;\n  overflow: auto;\n  padding: 15px 3px 3px;\n}\n\n.newimage .gallery {\n  padding: 16px;\n}\n\n.gallery li {\n  border-radius: 2px;\n  box-shadow: 0 0 6px rgba(0, 0, 0, 0.6);\n  cursor: pointer;\n  margin: 8px;\n  overflow: hidden;\n  width: 155px;\n}\n\n.gallery li.selected,\n.gallery li:hover {\n  box-shadow: 0 0 0 2px #1eaaf1;\n}\n\n.gallery li .detail {\n  background-color: #323232;\n  margin: 0;\n  min-height: 60px;\n  padding: 3px 10px;\n}\n\n.gallery li .button.fa-external-link {\n  margin-left: 136px;\n  margin-top: 5px;\n  position: fixed;\n}\n\n.preview {\n  padding: 10px;\n  width: 150px;\n}\n\n.preview input {\n  display: block;\n  margin: 8px 0;\n  width: 144px;\n}\n\n.preview button {\n  width: 155px;\n}\n\n.preview .detail .title {\n  color: #fff;\n  display: inline-block;\n  max-width: 155px;\n  overflow: hidden;\n  text-overflow: ellipsis;\n  white-space: nowrap;\n}\n\n.gallery li.selected .detail,\n.gallery li:hover .detail {\n  background-color: #444;\n}\n\n.gallery li .detail span {\n  color: #777;\n  display: block;\n  margin-top: 4px;\n  overflow: hidden;\n  text-overflow: ellipsis;\n  white-space: nowrap;\n  width: 140px;\n}\n\n.gallery li.selected .detail span,\n.gallery li:hover .detail span {\n  color: #888;\n}\n\n.gallery li .detail span.title {\n  color: #fff !important;\n}\n\n.modal button {\n  -webkit-appearance: none;\n     -moz-appearance: none;\n          appearance: none;\n  border-radius: 0;\n  box-shadow: none;\n  cursor: pointer;\n  display: inline-block;\n  font-size: 12px;\n  line-height: 1.8;\n  margin: 0 10px 0 0;\n  padding: 5px 10px;\n}\n\n.modal button:focus {\n  outline: none;\n}\n\n.modal button {\n  background-color: #1eaaf1;\n  border: none;\n  color: #fff;\n}\n\n.modal button:hover,\n.modal button.hover {\n  background-color: #346392;\n  text-shadow: -1px 1px #27496d;\n}\n\n.modal button:active,\n.modal button.active {\n  background-color: #27496d;\n  text-shadow: -1px 1px #193047;\n}\n\n.modal button:disabled {\n  background-color: #888;\n  cursor: none;\n}\n\n.newimage {\n  background-color: #323232;\n  color: #bcbcbc;\n  display: -webkit-box;\n  display: -ms-flexbox;\n  display: flex;\n  font-size: 13px;\n  -webkit-box-pack: justify;\n      -ms-flex-pack: justify;\n          justify-content: space-between;\n  margin-top: 10px;\n  overflow: auto;\n  padding: 10px;\n}\n\n.newimage input {\n  color: #1eaaf1;\n  padding: 3px 5px;\n}\n\n.hide {\n  display: none;\n}\n\nspan.value {\n  color: #fff;\n  display: inline-block;\n}\n\nspan.mixinlist {\n  color: #888 !important;\n  display: inline-block;\n}\n\nspan.mixinlist ul {\n  background-color: #222;\n  list-style-type: none;\n  margin: 5px 0 0;\n  padding: 5px;\n}\n\nspan.mixinlist ul li {\n  font-size: 11px;\n  margin-bottom: 3px;\n}\n\nspan.mixinlist ul li:last-child {\n  margin-bottom: 0;\n}\n\nspan.mixin {\n  display: inline-block;\n  width: 100px;\n}\n\n.mixinlist {\n  margin-left: 120px;\n}\n\nspan.subcomponent {\n  color: #999;\n  float: none !important;\n  margin-left: 10px;\n  vertical-align: top !important;\n}\n\n.collapsible .static {\n  cursor: pointer;\n}\n\n.a-canvas.state-dragging {\n  cursor: -webkit-grabbing;\n  cursor: grabbing;\n}\n\n.tagName {\n  font-weight: 500;\n}\n\n.sidebar-title {\n  background-color: #444;\n  color: #aaa;\n  display: -webkit-box;\n  display: -ms-flexbox;\n  display: flex;\n  font-size: 12px;\n  -webkit-box-pack: justify;\n      -ms-flex-pack: justify;\n          justify-content: space-between;\n  padding: 6px 10px;\n  position: relative;\n  text-align: center;\n}\n\n.toolbar {\n  background-color: #262626;\n  color: #333;\n  height: 32px;\n  position: relative;\n}\n\n.toolbar * {\n  margin-left: 0;\n  padding: 8px;\n  vertical-align: middle;\n}\n\n.toolbar a.button {\n  margin: 0 6px 0 0;\n}\n\n.toolbar .active {\n  background-color: #30D7A9;\n  color: #fff;\n}\n\n.toolbar .active:hover {\n  color: #fff !important;\n}\n\n.local-transform {\n  padding-left: 10px;\n}\n\n.local-transform label {\n  color: #aaa;\n  padding-left: 5px;\n}\n\n.local-transform a.button {\n  padding-top: 0;\n}\n\n.outliner {\n  background: #2b2b2b;\n  color: #868686;\n  cursor: default;\n  -webkit-box-flex: 1;\n      -ms-flex: 1 1 auto;\n          flex: 1 1 auto;\n  font-size: 12px;\n  height: calc(100% - 98px);\n  outline: none;\n  overflow-y: auto;\n  padding: 0;\n  width: 230px;\n}\n\n.outliner .option {\n  display: -webkit-box;\n  display: -ms-flexbox;\n  display: flex;\n  -webkit-box-pack: justify;\n      -ms-flex-pack: justify;\n          justify-content: space-between;\n  padding: 4px;\n  white-space: nowrap;\n}\n\n.outliner .option.active {\n  background-color: #30D7A9;\n  color: #fff;\n}\n\n.outliner .option .component:hover {\n  color: #30D7A9;\n}\n\n.outliner .option.active .component:hover {\n  color: #1888c1;\n}\n\n.outliner .option .icons {\n  display: none;\n  margin: 0 3px 0 10px;\n}\n\n.outliner .option .icons .button {\n  color: #fff;\n  font-size: 12px;\n}\n\n.outliner .option.active .icons {\n  display: inline;\n}\n\n.outliner .fa {\n  color: #aaa;\n}\n\n.outliner .active .fa {\n  color: #fff;\n}\n\na.flat-button {\n  background-color: #262626;\n  color: #bcbcbc;\n  font-size: 11px;\n  margin-left: 10px;\n  padding: 5px;\n  text-decoration: none;\n}\n\na.flat-button:hover {\n  color: #30D7A9;\n}\n\n.component-title {\n  -webkit-box-align: center;\n      -ms-flex-align: center;\n          align-items: center;\n  display: -webkit-box;\n  display: -ms-flexbox;\n  display: flex;\n}\n\na.help-link {\n  opacity: 0.4;\n}\n\na.help-link:hover {\n  opacity: 1;\n}\n\n#right-panels {\n  -webkit-box-align: stretch;\n      -ms-flex-align: stretch;\n          align-items: stretch;\n  display: -webkit-box;\n  display: -ms-flexbox;\n  display: flex;\n  -webkit-box-pack: end;\n      -ms-flex-pack: end;\n          justify-content: flex-end;\n  position: fixed;\n  right: 0;\n  top: 0;\n}\n\n#aframe-inspector-panels {\n  display: -webkit-box;\n  display: -ms-flexbox;\n  display: flex;\n  -webkit-box-pack: justify;\n      -ms-flex-pack: justify;\n          justify-content: space-between;\n}\n\n/* This is a temporaly hack, we should style the editor instead of overwriting\n   the a-scene to fix the \"display: block\" issue. */\n\n.aframe-inspector-opened a-scene {\n  display: inline !important;\n}\n\n.aframe-inspector-opened a-scene .a-canvas {\n  background-color: #191919;\n  z-index: 9998;\n}\n\n.uploadcare-widget-button-open {\n  background-color: #1eaaf1;\n  border-radius: 0;\n  cursor: pointer;\n  margin-left: 10px;\n  padding: 10px 15px;\n}\n\n.uploadcare-widget-button-open:hover {\n  background-color: #346392;\n}\n\n.new_asset_options {\n  margin: 10px;\n}\n\n.new_asset_options > ul {\n  margin-left: 10px;\n  padding: 5px;\n}\n\n.new_asset_options > ul > li {\n  padding: 10px 0;\n}\n\n.new_asset_options .imageUrl {\n  margin-left: 5px;\n  width: 350px;\n}\n\nspan.entity-name {\n  color: #fff;\n  font-family: Consolas, Andale Mono, Monaco, Courier New, monospace;\n  font-size: 16px;\n}\n\n.add-component {\n  width: 200px;\n}\n\n.Select-control {\n  background-color: #222 !important;\n  border: none;\n  border-radius: 0;\n  color: #30D7A9;\n}\n\n.Select-menu-outer {\n  border: none;\n}\n\n.Select-menu-outer .is-focused {\n  background-color: #30D7A9 !important;\n  color: #fff;\n}\n\n.Select-option {\n  background-color: #222 !important;\n}\n\n.select-widget {\n  display: inline-block;\n  width: 157px;\n}\n\n.Select-placeholder,\n.Select--single > .Select-control .Select-value {\n  color: #30D7A9 !important;\n}\n\n.Select-value-label {\n  color: #30D7A9 !important;\n}\n\n.row .Select-control {\n  font-size: 11px;\n  height: 24px;\n}\n\n.row .Select-placeholder,\n.row .Select--single > .Select-control .Select-value {\n  line-height: 19px;\n}\n\n.row .Select-input {\n  height: 22px;\n}\n\n.row input[type=text],\n.row input[type=number],\n.row input.string,\n.row input.number {\n  background: #222;\n  border: 1px solid transparent;\n  color: #30D7A9;\n  min-height: 20px;\n  padding-left: 5px;\n  padding-right: 5px;\n}\n\n.row input.string {\n  box-sizing: border-box;\n  width: 165px;\n}\n\n.help-lists {\n  display: -webkit-box;\n  display: -ms-flexbox;\n  display: flex;\n  -ms-flex-pack: distribute;\n      justify-content: space-around;\n}\n\n.help-list {\n  list-style: none;\n  margin: 0;\n  padding: 0 0 10px;\n  width: 350px;\n}\n\n.help-list li {\n  margin-right: 40px;\n}\n\n.help-key-unit {\n  line-height: 1.8;\n  margin-right: 2em;\n  padding: 5px 0;\n}\n\n.help-key {\n  bottom: 2px;\n  margin-right: 4px;\n  min-width: 60px;\n  position: relative;\n}\n\n.help-key span {\n  background-color: #2e2e2e;\n  background-repeat: repeat-x;\n  border: 1px solid #666;\n  border-radius: 3px;\n  box-shadow: 0 0 5px #000;\n  color: #999;\n  display: inline-block;\n  font-size: 12px;\n  padding: 0 8px;\n  text-align: center;\n}\n\n.help-key-def {\n  color: #bbb;\n  display: inline-block;\n  margin-left: 1em;\n}\n\n.add-component {\n  text-align: left;\n}\n\n.add-component .option {\n  display: -webkit-box;\n  display: -ms-flexbox;\n  display: flex;\n  -webkit-box-pack: justify;\n      -ms-flex-pack: justify;\n          justify-content: space-between;\n}\n\n.add-component .option span {\n  color: #30D7A9;\n}\n\n.Select-menu-outer .is-focused span {\n  color: #fff;\n}\n\n.add-component-container {\n  -webkit-box-align: center;\n      -ms-flex-align: center;\n          align-items: center;\n  background-color: #2b2b2b;\n  display: -webkit-box;\n  display: -ms-flexbox;\n  display: flex;\n  -webkit-box-pack: center;\n      -ms-flex-pack: center;\n          justify-content: center;\n  padding: 10px;\n}\n\n.aregistry-button {\n  font-size: 12px;\n  margin-left: 10px;\n  padding: 8px;\n}\n\n.aregistry-button:hover {\n  background-color: #30D7A9;\n}\n\n.aregistry-button img {\n  height: 20px;\n  width: 20px;\n}\n\n.components .row .color_value {\n  margin: 0 0 0 5px;\n  width: 68px;\n}\n\n.assets.search {\n  margin-top: 10px;\n  width: 200px;\n}\n\n.assets.search .fa-search {\n  top: 7px;\n}\n\n.gallery a.fa.texture-link {\n  box-shadow: 0 0 14px -1px rgba(0, 0, 0, 0.75);\n  position: fixed;\n}\n\n.outliner .id {\n  color: #ccc;\n}\n\n.outliner .option.active .id {\n  color: #fff;\n}\n\n.outliner .collasespace {\n  color: #eee;\n  display: inline-block;\n  text-align: center;\n  width: 14px;\n}\n\n.outliner .fa-eye {\n  color: #bbb;\n}\n\n.outliner .option {\n  white-space: pre;\n}\n\n.option span:first-child {\n  overflow: hidden;\n  text-overflow: ellipsis;\n}\n\n.outliner .option.novisible span,\n.outliner .option.novisible .fa,\n.outliner .option.novisible .collasespace,\n.outliner .option.novisible .id {\n  color: #575757;\n}\n\n.outliner .option .icons a.button {\n  color: #fff;\n}\n\n.toggle-sidebar {\n  -webkit-box-align: center;\n      -ms-flex-align: center;\n          align-items: center;\n  display: -webkit-box;\n  display: -ms-flexbox;\n  display: flex;\n  height: 100%;\n  position: absolute;\n  z-index: 9998;\n}\n\n.toggle-sidebar.left {\n  left: 0;\n}\n\n.toggle-sidebar.right {\n  right: 0;\n}\n\n.toggle-sidebar a {\n  background-color: #262626;\n  color: #bcbcbc;\n  padding: 5px;\n  z-index: 9998;\n}\n\n.toggle-sidebar a:hover {\n  background-color: #30D7A9;\n  color: #fff;\n}\n\n/* Dropdown menu */\n\n.dropbtn {\n  border: none;\n  color: white;\n  cursor: pointer;\n}\n\n.dropdown {\n  display: inline-block;\n  position: relative;\n}\n\n.dropdown-content {\n  background-color: #f9f9f9;\n  box-shadow: 0 8px 16px 0 rgba(0, 0, 0, 0.2);\n  display: none;\n  left: 8px;\n  min-width: 38px;\n  position: absolute;\n  z-index: 999;\n}\n\n.dropdown-content a {\n  background-color: #232323;\n  color: #7d7d7d;\n  display: block;\n  padding: 10px 14px;\n  text-decoration: none;\n}\n\n.dropdown-content a:hover {\n  background-color: #4ecbff;\n  color: #fff;\n}\n\n.dropdown:hover .dropdown-content {\n  display: block;\n}\n\n.dropdown:hover .dropbtn {\n  color: #30D7A9;\n}\n\n.savedRecordings {\n  display: inline-block;\n  margin-top: 10px;\n  vertical-align: middle;\n  width: 80%;\n}\n", ""]);
+	exports.push([module.id, "body.aframe-inspector-opened,\n.toggle-edit {\n  font-family: BlinkMacSystemFont, -apple-system, \"Segoe UI\", Helvetica, Arial, sans-serif;\n}\n\n.wf-roboto-n4-active body.aframe-inspector-opened,\n.wf-roboto-n4-active .toggle-edit {\n  font-family: Roboto, BlinkMacSystemFont, -apple-system, \"Segoe UI\", Helvetica, Arial, sans-serif;\n}\n\n.Select,\ncode,\npre,\ninput,\ntextarea,\nselect {\n  font-family: Consolas, Andale Mono, Monaco, Courier New, monospace;\n}\n\n.wf-robotomono-n4-active .Select,\n.wf-robotomono-n4-active code,\n.wf-robotomono-n4-active pre,\n.wf-robotomono-n4-active input,\n.wf-robotomono-n4-active textarea,\n.wf-robotomono-n4-active select {\n  font-family: Roboto Mono, Consolas, Andale Mono, Monaco, Courier New, monospace;\n}\n\nbody.aframe-inspector-opened {\n  color: #fff;\n  font-size: 12px;\n  margin: 0;\n  overflow: hidden;\n}\n\nhr {\n  border: 0;\n  border-top: 1px solid #ccc;\n}\n\na {\n  cursor: pointer;\n}\n\nbutton {\n  position: relative;\n}\n\ncode {\n  font-family: Consolas, Andale Mono, Monaco, Monaco, Lucida Console, Liberation Mono, DejaVu Sans Mono, Bitstream Vera Sans Mono, Courier New, monospace;\n}\n\ntextarea {\n  -moz-tab-size: 4;\n    -o-tab-size: 4;\n       tab-size: 4;\n  white-space: pre;\n  word-wrap: normal;\n}\n\ntextarea.success {\n  border-color: #8b8 !important;\n}\n\ntextarea.fail {\n  background-color: rgba(255, 0, 0, 0.05);\n  border-color: #f00 !important;\n}\n\ntextarea,\ninput {\n  outline: none; /* osx */\n}\n\n#left-sidebar,\n#right-panels {\n  z-index: 9998;\n}\n\n#sidebar,\n#left-sidebar,\n.panel {\n  cursor: default;\n  -webkit-user-select: none;\n     -moz-user-select: none;\n      -ms-user-select: none;\n          user-select: none;\n}\n\n.collapsible .static {\n  margin: 0;\n}\n\n.collapsible .static .collapse-button {\n  border: 6px solid transparent;\n  float: left;\n  height: 0;\n  margin-right: 6px;\n  width: 0;\n}\n\n.collapsible.collapsed .static .collapse-button {\n  border-left-color: #30D7A9;\n  margin-top: 2px;\n}\n\n.collapsible:not(.collapsed) .static .collapse-button {\n  border-top-color: #30D7A9;\n  margin-top: 6px;\n}\n\n.collapsible.collapsed .content {\n  display: none;\n}\n\n.toggle-edit {\n  background-color: #ed3160;\n  color: #fff;\n  font-size: 12px;\n  left: 3px;\n  margin: 0;\n  padding: 6px 10px;\n  position: fixed;\n  text-align: center;\n  text-decoration: none;\n  top: 3px;\n  width: 204px;\n  z-index: 99999;\n}\n\n.toggle-edit:hover {\n  background-color: rgb(228, 43, 90);\n}\n\n.scenegraph-header{\n  margin: 0;\n  padding: 8px;\n  border-bottom: 1px solid #30D7A9;\n}\n\n.scenegraph {\n  border-top: 1px solid #111;\n}\n\n.scenegraph .search {\n  padding: 5px;\n}\n\n.scenegraph-toolbar {\n  background-color: #333;\n}\n\n.scenegraph-actions {\n  padding: 9px 0 5px;\n}\n\n.search {\n  color: #aaa;\n  font-size: 16px;\n  position: relative;\n}\n\n.search input {\n  background: #222;\n  border-radius: 5px;\n  height: 22px;\n  text-indent: 10px;\n  width: 216px;\n}\n\n.search .fa-search {\n  position: absolute;\n  right: 11px;\n  top: 10px;\n}\n\n.search .fa-times {\n  position: absolute;\n  right: 32px;\n  top: 10px;\n}\n\ninput {\n  background-color: transparent;\n  border: 1px solid #555;\n  color: #fff;\n}\n\ninput,\n.texture canvas {\n  transition: 0.1s background-color ease-in-out, 0.1s border-color ease-in-out, 0.1s color ease-in-out;\n}\n\ninput[type=text],\ninput[type=number],\ninput.string,\ninput.number {\n  min-height: 14px;\n  outline: none;\n}\n\ninput.number {\n  background-color: transparent !important;\n  border: 0;\n  color: #20b1fb !important;\n  cursor: col-resize;\n  font-size: 12px;\n  padding: 2px;\n}\n\ninput.string:focus,\ninput.number:focus {\n  border: 1px solid #20b1fb;\n  color: #fff;\n  cursor: auto;\n}\n\ninput.error {\n  border: 1px solid #a00;\n}\n\n#left-sidebar {\n  background: #2b2b2b;\n  bottom: 0;\n  display: -webkit-box;\n  display: -ms-flexbox;\n  display: flex;\n  -webkit-box-orient: vertical;\n  -webkit-box-direction: normal;\n      -ms-flex-direction: column;\n          flex-direction: column;\n  left: 0;\n  overflow: auto;\n  position: fixed;\n  top: 0;\n  width: 230px;\n}\n\n#sidebar {\n  background: #2b2b2b;\n  width: 331px;\n}\n\n#sidebar * {\n  vertical-align: middle;\n}\n\ninput,\ntextarea,\nselect {\n  background: #222;\n  border: 1px solid transparent;\n  color: #888;\n}\n\n.row {\n  margin-bottom: 10px;\n  min-height: 20px;\n}\n\ninput[type=color] {\n  background-color: #333;\n  border: 1px solid #111;\n  cursor: pointer;\n}\n\n.texture canvas {\n  border: 1px solid #222;\n  cursor: pointer;\n}\n\n.texture canvas:hover {\n  border-color: #30D7A9;\n}\n\ninput[type=color] {\n  cursor: pointer;\n  height: 16px;\n  padding: 0;\n  width: 64px;\n}\n\n/* Note: these vendor-prefixed selectors cannot be grouped! */\n\ninput[type=color]::-webkit-color-swatch {\n  border: 0;  /* To remove the gray border. */\n}\n\ninput[type=color]::-webkit-color-swatch-wrapper {\n  padding: 0;  /* To remove the inner padding. */\n}\n\ninput[type=color]::-moz-color-swatch {\n  border: 0;\n}\n\ninput[type=color]::-moz-focus-inner {\n  border: 0;  /* To remove the inner border (specific to Firefox). */\n  padding: 0;\n}\n\n.components {\n  background-color: #323232;\n  color: #bcbcbc;\n  height: 100%;\n  overflow: auto;\n  position: fixed;\n  width: 331px;\n}\n\ndiv.vec2,\ndiv.vec3,\ndiv.vec4 {\n  display: inline;\n}\n\n.vec2 input.number,\n.vec3 input.number {\n  width: 46px;\n}\n\n.vec4 input.number {\n  width: 34px;\n}\n\n.collapsible-header {\n  display: -webkit-box;\n  display: -ms-flexbox;\n  display: flex;\n  -webkit-box-pack: justify;\n      -ms-flex-pack: justify;\n          justify-content: space-between;\n}\n\n.component-title span {\n  float: left;\n  max-width: 110px;\n  overflow: hidden;\n  text-overflow: ellipsis;\n  text-transform: uppercase;\n  white-space: nowrap;\n}\n\n.collapsible .static {\n  background-color: #323232;\n  border-bottom: 1px solid #262626;\n  border-top: 1px solid #262626;\n  color: #fff;\n  height: 16px;\n  padding: 10px;\n  vertical-align: middle;\n}\n\n.collapsible .menu {\n  text-align: right;\n}\n\n.collapsible .menu::after {\n  color: #bbb;\n  content: '\\2807';\n  font-size: 12px;\n  padding: 5px;\n  text-align: right;\n}\n\n.collapsible .static .collapse-button {\n  border-left: 5px solid transparent;\n  border-right: 5px solid transparent;\n  float: left;\n  height: 0;\n  margin-right: 10px;\n  margin-top: 2px;\n  width: 0;\n}\n\n.collapsible.collapsed .static .collapse-button {\n  border-left-color: #bbb;\n}\n\n.collapsible:not(.collapsed) .static .collapse-button {\n  border-top-color: #bbb;\n}\n\n.collapsible .content {\n  background-color: #2b2b2b;\n  padding: 10px;\n}\n\n.components .row {\n  margin-bottom: 10px;\n  min-height: 20px;\n}\n\n.components * {\n  vertical-align: middle;\n}\n\n.components .row .text {\n  cursor: default;\n  display: inline-block;\n  overflow: hidden;\n  text-overflow: ellipsis;\n  vertical-align: middle;\n  width: 120px;\n}\n\n.components .row .map_value {\n  margin: 0 0 0 5px;\n  width: 68px;\n}\n\n.hidden {\n  visibility: hidden;\n}\n\n.uploader-normal-button .hidden {\n  display: none;\n}\n\n.texture canvas + input {\n  margin-left: 5px;\n}\n\n.texture .fa {\n  padding-right: 5px;\n}\n\n.texture .fa-external-link {\n  font-size: 14px;\n  padding-top: 2px;\n}\n\n.scenegraph-bottom {\n  background-color: #323232;\n  border-top: 1px solid #111;\n  bottom: 10;\n  height: 40px;\n  left: 0;\n  z-index: 100;\n}\n\na.button {\n  color: #bcbcbc;\n  font-size: 16px;\n  margin-left: 10px;\n  text-decoration: none;\n}\n\na.button:hover {\n  color: #30D7A9;\n}\n\n.scenegraph-bottom a {\n  float: right;\n  margin: 10px;\n}\n\n.modal {\n  -webkit-animation: animateopacity 0.2s ease-out;\n          animation: animateopacity 0.2s ease-out;\n  background-color: rgb(0, 0, 0);\n  background-color: rgba(0, 0, 0, 0.6);\n  display: -webkit-box;\n  display: -ms-flexbox;\n  display: flex;\n  height: 100%;\n  left: 0;\n  overflow: auto;\n  position: fixed;\n  top: 0;\n  width: 100%;\n  z-index: 9999;\n}\n\n.modal h3 {\n  font-size: 18px;\n  font-weight: 100;\n  margin: 0.6em 0;\n}\n\n#texture-modal .modal-content {\n  height: calc(100% - 50px);\n  width: calc(100% - 50px);\n}\n\n.modal-content {\n  -webkit-animation: animatetop 0.2s ease-out;\n          animation: animatetop 0.2s ease-out;\n  -webkit-animation-duration: 0.2s;\n          animation-duration: 0.2s;\n  -webkit-animation-name: animatetop;\n          animation-name: animatetop;\n  background-color: #232323;\n  box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.5), 0 6px 20px 0 rgba(0, 0, 0, 0.5);\n  margin: auto;\n  overflow: hidden;\n  padding: 0;\n}\n\n@-webkit-keyframes animateopacity {\n  from { opacity: 0; }\n  to { opacity: 1; }\n}\n\n@keyframes animateopacity {\n  from { opacity: 0; }\n  to { opacity: 1; }\n}\n\n.close {\n  color: white;\n  float: right;\n  font-size: 28px;\n  font-weight: bold;\n}\n\n.close:hover,\n.close:focus {\n  color: #08f;\n  cursor: pointer;\n  text-decoration: none;\n}\n\n.modal-header {\n  color: white;\n  padding: 2px 16px;\n}\n\n.modal-body {\n  overflow: auto;\n  padding: 16px;\n}\n\n.modal-footer {\n  color: white;\n  padding: 2px 16px;\n}\n\n/* Gallery */\n\n.gallery {\n  background: #232323;\n  display: -webkit-box;\n  display: -ms-flexbox;\n  display: flex;\n  -ms-flex-wrap: wrap;\n      flex-wrap: wrap;\n  margin: 15px auto 0;\n  max-height: 50vh;\n  overflow: auto;\n  padding: 15px 3px 3px;\n}\n\n.newimage .gallery {\n  padding: 16px;\n}\n\n.gallery li {\n  border-radius: 2px;\n  box-shadow: 0 0 6px rgba(0, 0, 0, 0.6);\n  cursor: pointer;\n  margin: 8px;\n  overflow: hidden;\n  width: 155px;\n}\n\n.gallery li.selected,\n.gallery li:hover {\n  box-shadow: 0 0 0 2px #1eaaf1;\n}\n\n.gallery li .detail {\n  background-color: #323232;\n  margin: 0;\n  min-height: 60px;\n  padding: 3px 10px;\n}\n\n.gallery li .button.fa-external-link {\n  margin-left: 136px;\n  margin-top: 5px;\n  position: fixed;\n}\n\n.preview {\n  padding: 10px;\n  width: 150px;\n}\n\n.preview input {\n  display: block;\n  margin: 8px 0;\n  width: 144px;\n}\n\n.preview button {\n  width: 155px;\n}\n\n.preview .detail .title {\n  color: #fff;\n  display: inline-block;\n  max-width: 155px;\n  overflow: hidden;\n  text-overflow: ellipsis;\n  white-space: nowrap;\n}\n\n.gallery li.selected .detail,\n.gallery li:hover .detail {\n  background-color: #444;\n}\n\n.gallery li .detail span {\n  color: #777;\n  display: block;\n  margin-top: 4px;\n  overflow: hidden;\n  text-overflow: ellipsis;\n  white-space: nowrap;\n  width: 140px;\n}\n\n.gallery li.selected .detail span,\n.gallery li:hover .detail span {\n  color: #888;\n}\n\n.gallery li .detail span.title {\n  color: #fff !important;\n}\n\n.modal button {\n  -webkit-appearance: none;\n     -moz-appearance: none;\n          appearance: none;\n  border-radius: 0;\n  box-shadow: none;\n  cursor: pointer;\n  display: inline-block;\n  font-size: 12px;\n  line-height: 1.8;\n  margin: 0 10px 0 0;\n  padding: 5px 10px;\n}\n\n.modal button:focus {\n  outline: none;\n}\n\n.modal button {\n  background-color: #1eaaf1;\n  border: none;\n  color: #fff;\n}\n\n.modal button:hover,\n.modal button.hover {\n  background-color: #346392;\n  text-shadow: -1px 1px #27496d;\n}\n\n.modal button:active,\n.modal button.active {\n  background-color: #27496d;\n  text-shadow: -1px 1px #193047;\n}\n\n.modal button:disabled {\n  background-color: #888;\n  cursor: none;\n}\n\n.newimage {\n  background-color: #323232;\n  color: #bcbcbc;\n  display: -webkit-box;\n  display: -ms-flexbox;\n  display: flex;\n  font-size: 13px;\n  -webkit-box-pack: justify;\n      -ms-flex-pack: justify;\n          justify-content: space-between;\n  margin-top: 10px;\n  overflow: auto;\n  padding: 10px;\n}\n\n.newimage input {\n  color: #1eaaf1;\n  padding: 3px 5px;\n}\n\n.hide {\n  display: none;\n}\n\nspan.value {\n  color: #fff;\n  display: inline-block;\n}\n\nspan.mixinlist {\n  color: #888 !important;\n  display: inline-block;\n}\n\nspan.mixinlist ul {\n  background-color: #222;\n  list-style-type: none;\n  margin: 5px 0 0;\n  padding: 5px;\n}\n\nspan.mixinlist ul li {\n  font-size: 11px;\n  margin-bottom: 3px;\n}\n\nspan.mixinlist ul li:last-child {\n  margin-bottom: 0;\n}\n\nspan.mixin {\n  display: inline-block;\n  width: 100px;\n}\n\n.mixinlist {\n  margin-left: 120px;\n}\n\nspan.subcomponent {\n  color: #999;\n  float: none !important;\n  margin-left: 10px;\n  vertical-align: top !important;\n}\n\n.collapsible .static {\n  cursor: pointer;\n}\n\n.a-canvas.state-dragging {\n  cursor: -webkit-grabbing;\n  cursor: grabbing;\n}\n\n.tagName {\n  font-weight: 500;\n}\n\n.sidebar-title {\n  background-color: #444;\n  color: #aaa;\n  display: -webkit-box;\n  display: -ms-flexbox;\n  display: flex;\n  font-size: 12px;\n  -webkit-box-pack: justify;\n      -ms-flex-pack: justify;\n          justify-content: space-between;\n  padding: 6px 10px;\n  position: relative;\n  text-align: center;\n}\n\n.toolbar {\n  background-color: #262626;\n  color: #333;\n  height: 32px;\n  position: relative;\n}\n\n.toolbar * {\n  margin-left: 0;\n  padding: 8px;\n  vertical-align: middle;\n}\n\n.toolbar a.button {\n  margin: 0 6px 0 0;\n}\n\n.toolbar .active {\n  background-color: #30D7A9;\n  color: #fff;\n}\n\n.toolbar .active:hover {\n  color: #fff !important;\n}\n\n.local-transform {\n  padding-left: 10px;\n}\n\n.local-transform label {\n  color: #aaa;\n  padding-left: 5px;\n}\n\n.local-transform a.button {\n  padding-top: 0;\n}\n\n.outliner {\n  background: #2b2b2b;\n  color: #868686;\n  cursor: default;\n  font-size: 12px;\n  height: calc(100% - 350px);\n  outline: none;\n  overflow-y: auto;\n  padding: 0;\n  width: 230px;\n}\n\n.outliner .option {\n  display: -webkit-box;\n  display: -ms-flexbox;\n  display: flex;\n  -webkit-box-pack: justify;\n      -ms-flex-pack: justify;\n          justify-content: space-between;\n  padding: 4px;\n  white-space: nowrap;\n}\n\n.outliner .option.active {\n  background-color: #30D7A9;\n  color: #fff;\n}\n\n.outliner .option .component:hover {\n  color: #30D7A9;\n}\n\n.outliner .option.active .component:hover {\n  color: #1888c1;\n}\n\n.outliner .option .icons {\n  display: none;\n  margin: 0 3px 0 10px;\n}\n\n.outliner .option .icons .button {\n  color: #fff;\n  font-size: 12px;\n}\n\n.outliner .option.active .icons {\n  display: inline;\n}\n\n.outliner .fa {\n  color: #aaa;\n}\n\n.outliner .active .fa {\n  color: #fff;\n}\n\na.flat-button {\n  background-color: #262626;\n  color: #bcbcbc;\n  font-size: 11px;\n  margin-left: 10px;\n  padding: 5px;\n  text-decoration: none;\n}\n\na.flat-button:hover {\n  color: #30D7A9;\n}\n\n.component-title {\n  -webkit-box-align: center;\n      -ms-flex-align: center;\n          align-items: center;\n  display: -webkit-box;\n  display: -ms-flexbox;\n  display: flex;\n}\n\na.help-link {\n  opacity: 0.4;\n}\n\na.help-link:hover {\n  opacity: 1;\n}\n\n#right-panels {\n  -webkit-box-align: stretch;\n      -ms-flex-align: stretch;\n          align-items: stretch;\n  display: -webkit-box;\n  display: -ms-flexbox;\n  display: flex;\n  -webkit-box-pack: end;\n      -ms-flex-pack: end;\n          justify-content: flex-end;\n  position: fixed;\n  right: 0;\n  top: 0;\n}\n\n#aframe-inspector-panels {\n  display: -webkit-box;\n  display: -ms-flexbox;\n  display: flex;\n  -webkit-box-pack: justify;\n      -ms-flex-pack: justify;\n          justify-content: space-between;\n}\n\n/* This is a temporaly hack, we should style the editor instead of overwriting\n   the a-scene to fix the \"display: block\" issue. */\n\n.aframe-inspector-opened a-scene {\n  display: inline !important;\n}\n\n.aframe-inspector-opened a-scene .a-canvas {\n  background-color: #191919;\n  z-index: 9998;\n}\n\n.uploadcare-widget-button-open {\n  background-color: #1eaaf1;\n  border-radius: 0;\n  cursor: pointer;\n  margin-left: 10px;\n  padding: 10px 15px;\n}\n\n.uploadcare-widget-button-open:hover {\n  background-color: #346392;\n}\n\n.new_asset_options {\n  margin: 10px;\n}\n\n.new_asset_options > ul {\n  margin-left: 10px;\n  padding: 5px;\n}\n\n.new_asset_options > ul > li {\n  padding: 10px 0;\n}\n\n.new_asset_options .imageUrl {\n  margin-left: 5px;\n  width: 350px;\n}\n\nspan.entity-name {\n  color: #fff;\n  font-family: Consolas, Andale Mono, Monaco, Courier New, monospace;\n  font-size: 16px;\n}\n\n.add-component {\n  width: 200px;\n}\n\n.Select-control {\n  background-color: #222 !important;\n  border: none;\n  border-radius: 0;\n  color: #30D7A9;\n}\n\n.Select-menu-outer {\n  border: none;\n}\n\n.Select-menu-outer .is-focused {\n  background-color: #30D7A9 !important;\n  color: #fff;\n}\n\n.Select-option {\n  background-color: #222 !important;\n}\n\n.select-widget {\n  display: inline-block;\n  width: 157px;\n}\n\n.Select-placeholder,\n.Select--single > .Select-control .Select-value {\n  color: #30D7A9 !important;\n}\n\n.Select-value-label {\n  color: #30D7A9 !important;\n}\n\n.row .Select-control {\n  font-size: 11px;\n  height: 24px;\n}\n\n.row .Select-placeholder,\n.row .Select--single > .Select-control .Select-value {\n  line-height: 19px;\n}\n\n.row .Select-input {\n  height: 22px;\n}\n\n.row input[type=text],\n.row input[type=number],\n.row input.string,\n.row input.number {\n  background: #222;\n  border: 1px solid transparent;\n  color: #30D7A9;\n  min-height: 20px;\n  padding-left: 5px;\n  padding-right: 5px;\n}\n\n.row input.string {\n  box-sizing: border-box;\n  width: 165px;\n}\n\n.help-lists {\n  display: -webkit-box;\n  display: -ms-flexbox;\n  display: flex;\n  -ms-flex-pack: distribute;\n      justify-content: space-around;\n}\n\n.help-list {\n  list-style: none;\n  margin: 0;\n  padding: 0 0 10px;\n  width: 350px;\n}\n\n.help-list li {\n  margin-right: 40px;\n}\n\n.help-key-unit {\n  line-height: 1.8;\n  margin-right: 2em;\n  padding: 5px 0;\n}\n\n.help-key {\n  bottom: 2px;\n  margin-right: 4px;\n  min-width: 60px;\n  position: relative;\n}\n\n.help-key span {\n  background-color: #2e2e2e;\n  background-repeat: repeat-x;\n  border: 1px solid #666;\n  border-radius: 3px;\n  box-shadow: 0 0 5px #000;\n  color: #999;\n  display: inline-block;\n  font-size: 12px;\n  padding: 0 8px;\n  text-align: center;\n}\n\n.help-key-def {\n  color: #bbb;\n  display: inline-block;\n  margin-left: 1em;\n}\n\n.add-component {\n  text-align: left;\n}\n\n.add-component .option {\n  display: -webkit-box;\n  display: -ms-flexbox;\n  display: flex;\n  -webkit-box-pack: justify;\n      -ms-flex-pack: justify;\n          justify-content: space-between;\n}\n\n.add-component .option span {\n  color: #30D7A9;\n}\n\n.Select-menu-outer .is-focused span {\n  color: #fff;\n}\n\n.add-component-container {\n  -webkit-box-align: center;\n      -ms-flex-align: center;\n          align-items: center;\n  background-color: #2b2b2b;\n  display: -webkit-box;\n  display: -ms-flexbox;\n  display: flex;\n  -webkit-box-pack: center;\n      -ms-flex-pack: center;\n          justify-content: center;\n  padding: 10px;\n}\n\n.aregistry-button {\n  font-size: 12px;\n  margin-left: 10px;\n  padding: 8px;\n}\n\n.aregistry-button:hover {\n  background-color: #30D7A9;\n}\n\n.aregistry-button img {\n  height: 20px;\n  width: 20px;\n}\n\n.components .row .color_value {\n  margin: 0 0 0 5px;\n  width: 68px;\n}\n\n.assets.search {\n  margin-top: 10px;\n  width: 200px;\n}\n\n.assets.search .fa-search {\n  top: 7px;\n}\n\n.gallery a.fa.texture-link {\n  box-shadow: 0 0 14px -1px rgba(0, 0, 0, 0.75);\n  position: fixed;\n}\n\n.outliner .id {\n  color: #ccc;\n}\n\n.outliner .option.active .id {\n  color: #fff;\n}\n\n.outliner .collasespace {\n  color: #eee;\n  display: inline-block;\n  text-align: center;\n  width: 14px;\n}\n\n.outliner .fa-eye {\n  color: #bbb;\n}\n\n.outliner .option {\n  white-space: pre;\n}\n\n.option span:first-child {\n  overflow: hidden;\n  text-overflow: ellipsis;\n}\n\n.outliner .option.novisible span,\n.outliner .option.novisible .fa,\n.outliner .option.novisible .collasespace,\n.outliner .option.novisible .id {\n  color: #575757;\n}\n\n.outliner .option .icons a.button {\n  color: #fff;\n}\n\n.toggle-sidebar {\n  -webkit-box-align: center;\n      -ms-flex-align: center;\n          align-items: center;\n  display: -webkit-box;\n  display: -ms-flexbox;\n  display: flex;\n  height: 100%;\n  position: absolute;\n  z-index: 9998;\n}\n\n.toggle-sidebar.left {\n  left: 0;\n}\n\n.toggle-sidebar.right {\n  right: 0;\n}\n\n.toggle-sidebar a {\n  background-color: #262626;\n  color: #bcbcbc;\n  padding: 5px;\n  z-index: 9998;\n}\n\n.toggle-sidebar a:hover {\n  background-color: #30D7A9;\n  color: #fff;\n}\n\n/* Dropdown menu */\n\n.dropbtn {\n  border: none;\n  color: white;\n  cursor: pointer;\n}\n\n.dropdown {\n  display: inline-block;\n  position: relative;\n}\n\n.dropdown-content {\n  background-color: #f9f9f9;\n  box-shadow: 0 8px 16px 0 rgba(0, 0, 0, 0.2);\n  display: none;\n  left: 8px;\n  min-width: 38px;\n  position: absolute;\n  z-index: 999;\n}\n\n.dropdown-content a {\n  background-color: #232323;\n  color: #7d7d7d;\n  display: block;\n  padding: 10px 14px;\n  text-decoration: none;\n}\n\n.dropdown-content a:hover {\n  background-color: #4ecbff;\n  color: #fff;\n}\n\n.dropdown:hover .dropdown-content {\n  display: block;\n}\n\n.dropdown:hover .dropbtn {\n  color: #30D7A9;\n}\n\n.savedRecordings {\n  display: inline-block;\n  margin-top: 10px;\n  vertical-align: middle;\n  width: 80%;\n}\n\n/* Chat */\n\ndiv.chat{\n  position: absolute;\n  bottom: 10px;\n  left: 0;\n  width: 220px;\n  height: 200px;\n  padding: 10px;\n  background: #2b2b2b;\n  display: -webkit-box;\n  display: -ms-flexbox;\n  display: flex;\n  -webkit-box-orient: vertical;\n  -webkit-box-direction: normal;\n      -ms-flex-direction: column;\n          flex-direction: column;\n\n  h3 {\n    background: rgba(0,0,0,0.5);\n    color: white;\n    font: inherit;\n    font-weight: bold;\n    margin: 0 0 1px 0;\n    line-height: 24px;\n    height: 24px;\n    padding: 0 4px;\n    text-transform: uppercase;\n    border-top-left-radius: 2px;\n    border-top-right-radius: 2px;\n  }\n\n  .chat__emoji{\n    -webkit-box-orient: horizontal;\n    -webkit-box-direction: normal;\n        -ms-flex-direction: row;\n            flex-direction: row;\n    background: rgba(0,0,0,0.66);\n    color: white;\n    margin: 0 0 1px 0;\n    height: 34px;\n    pading: 0 4px;\n\n    button{\n      border: none;\n      background: none;\n      font-size: 24px;\n      height: 32px;\n      padding-left: -4px;\n      text-align: center;\n      border: 1px solid transparent;\n      -webkit-box-flex: 1;\n          -ms-flex: 1;\n              flex: 1;\n      width: 100 / 7%;\n    }\n\n    button:hover {\n      background-color: rgba(0,0,0,0.5);\n      border-radius: 4px;\n      border: 1px solid white;\n      cursor: pointer;\n    }\n\n    button:focus {\n      outline: 0;\n    }\n\n  }\n\n  .chat__messages{\n    background: rgba(0,0,0,0.5);\n    color: white;\n    -webkit-box-flex: 1;\n        -ms-flex: 1;\n            flex: 1;\n    margin: 0 0 1px 0;\n    overflow: auto !important;\n  }\n\n  .chat__messages > div{\n    padding: 0 4px;\n    background: rgba(0,0,0,0.2);\n  }\n\n  .chat__input{\n    color: white;\n    width: 100%;\n    height: 32px;\n    background: rgba(0,0,0,0.8);\n    border: none;\n    padding: 4px;\n    border-bottom-left-radius: 2px;\n    border-bottom-right-radius: 2px;\n  }\n}\n\ndiv.chat-collapsed{\n  height: 24px + 34px + 34px;\n}\n", ""]);
 
 	// exports
 
 
 /***/ }),
-/* 263 */
+/* 264 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -36010,7 +36267,7 @@
 	*/
 
 	// var pa = require('./private-attributes')
-	var uuid = __webpack_require__(264);
+	var uuid = __webpack_require__(265);
 	var debounce = __webpack_require__(213);
 
 	var UUID_KEY = 'data-uuid';
@@ -36080,11 +36337,11 @@
 	module.exports = Patch;
 
 /***/ }),
-/* 264 */
+/* 265 */
 /***/ (function(module, exports, __webpack_require__) {
 
-	var v1 = __webpack_require__(265);
-	var v4 = __webpack_require__(268);
+	var v1 = __webpack_require__(266);
+	var v4 = __webpack_require__(269);
 
 	var uuid = v4;
 	uuid.v1 = v1;
@@ -36094,11 +36351,11 @@
 
 
 /***/ }),
-/* 265 */
+/* 266 */
 /***/ (function(module, exports, __webpack_require__) {
 
-	var rng = __webpack_require__(266);
-	var bytesToUuid = __webpack_require__(267);
+	var rng = __webpack_require__(267);
+	var bytesToUuid = __webpack_require__(268);
 
 	// **`v1()` - Generate time-based UUID**
 	//
@@ -36200,7 +36457,7 @@
 
 
 /***/ }),
-/* 266 */
+/* 267 */
 /***/ (function(module, exports) {
 
 	/* WEBPACK VAR INJECTION */(function(global) {// Unique ID creation requires a high quality random # generator.  In the
@@ -36240,7 +36497,7 @@
 	/* WEBPACK VAR INJECTION */}.call(exports, (function() { return this; }())))
 
 /***/ }),
-/* 267 */
+/* 268 */
 /***/ (function(module, exports) {
 
 	/**
@@ -36269,11 +36526,11 @@
 
 
 /***/ }),
-/* 268 */
+/* 269 */
 /***/ (function(module, exports, __webpack_require__) {
 
-	var rng = __webpack_require__(266);
-	var bytesToUuid = __webpack_require__(267);
+	var rng = __webpack_require__(267);
+	var bytesToUuid = __webpack_require__(268);
 
 	function v4(options, buf, offset) {
 	  var i = buf && offset || 0;
@@ -36304,7 +36561,7 @@
 
 
 /***/ }),
-/* 269 */
+/* 270 */
 /***/ (function(module, exports) {
 
 	'use strict';
@@ -36426,7 +36683,7 @@
 	module.exports = Apply;
 
 /***/ }),
-/* 270 */
+/* 271 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -36437,11 +36694,11 @@
 
 	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-	var _v = __webpack_require__(268);
+	var _v = __webpack_require__(269);
 
 	var _v2 = _interopRequireDefault(_v);
 
-	var _simplePeer = __webpack_require__(271);
+	var _simplePeer = __webpack_require__(272);
 
 	var _simplePeer2 = _interopRequireDefault(_simplePeer);
 
@@ -36631,6 +36888,7 @@
 	    value: function connectToPeer(uuid) {
 	      var _this5 = this;
 
+	      console.log(uuid);
 	      if (this.peers[uuid]) {
 	        console.log('Already connected...');
 	        return;
@@ -36679,7 +36937,9 @@
 	            peer.send(JSON.stringify(packet));
 	          }
 	        }
-	      };
+
+	        // So we can get the user uuid from the peer
+	      };peer.user = user;
 
 	      var audio = document.createElement('audio');
 
@@ -36752,6 +37012,14 @@
 	      });
 	    }
 	  }, {
+	    key: 'sendEmote',
+	    value: function sendEmote(emoji) {
+	      this.send({
+	        type: 'emote',
+	        emoji: emoji
+	      });
+	    }
+	  }, {
 	    key: 'connected',
 	    get: function get() {
 	      return this.source.readyState === EventSource.OPEN;
@@ -36772,16 +37040,16 @@
 	exports.default = WebrtcClient;
 
 /***/ }),
-/* 271 */
+/* 272 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(Buffer) {module.exports = Peer
 
-	var debug = __webpack_require__(276)('simple-peer')
-	var getBrowserRTC = __webpack_require__(279)
-	var inherits = __webpack_require__(280)
-	var randombytes = __webpack_require__(281)
-	var stream = __webpack_require__(283)
+	var debug = __webpack_require__(277)('simple-peer')
+	var getBrowserRTC = __webpack_require__(280)
+	var inherits = __webpack_require__(281)
+	var randombytes = __webpack_require__(282)
+	var stream = __webpack_require__(284)
 
 	var MAX_BUFFERED_AMOUNT = 64 * 1024
 
@@ -37578,10 +37846,10 @@
 
 	function noop () {}
 
-	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(272).Buffer))
+	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(273).Buffer))
 
 /***/ }),
-/* 272 */
+/* 273 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(global) {/*!
@@ -37594,9 +37862,9 @@
 
 	'use strict'
 
-	var base64 = __webpack_require__(273)
-	var ieee754 = __webpack_require__(274)
-	var isArray = __webpack_require__(275)
+	var base64 = __webpack_require__(274)
+	var ieee754 = __webpack_require__(275)
+	var isArray = __webpack_require__(276)
 
 	exports.Buffer = Buffer
 	exports.SlowBuffer = SlowBuffer
@@ -39377,7 +39645,7 @@
 	/* WEBPACK VAR INJECTION */}.call(exports, (function() { return this; }())))
 
 /***/ }),
-/* 273 */
+/* 274 */
 /***/ (function(module, exports) {
 
 	'use strict'
@@ -39497,7 +39765,7 @@
 
 
 /***/ }),
-/* 274 */
+/* 275 */
 /***/ (function(module, exports) {
 
 	exports.read = function (buffer, offset, isLE, mLen, nBytes) {
@@ -39587,7 +39855,7 @@
 
 
 /***/ }),
-/* 275 */
+/* 276 */
 /***/ (function(module, exports) {
 
 	var toString = {}.toString;
@@ -39598,7 +39866,7 @@
 
 
 /***/ }),
-/* 276 */
+/* 277 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(process) {/**
@@ -39607,7 +39875,7 @@
 	 * Expose `debug()` as the module.
 	 */
 
-	exports = module.exports = __webpack_require__(277);
+	exports = module.exports = __webpack_require__(278);
 	exports.log = log;
 	exports.formatArgs = formatArgs;
 	exports.save = save;
@@ -39790,7 +40058,7 @@
 	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(26)))
 
 /***/ }),
-/* 277 */
+/* 278 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	
@@ -39806,7 +40074,7 @@
 	exports.disable = disable;
 	exports.enable = enable;
 	exports.enabled = enabled;
-	exports.humanize = __webpack_require__(278);
+	exports.humanize = __webpack_require__(279);
 
 	/**
 	 * The currently active debug mode names, and names to skip.
@@ -39998,7 +40266,7 @@
 
 
 /***/ }),
-/* 278 */
+/* 279 */
 /***/ (function(module, exports) {
 
 	/**
@@ -40156,7 +40424,7 @@
 
 
 /***/ }),
-/* 279 */
+/* 280 */
 /***/ (function(module, exports) {
 
 	// originally pulled out of simple-peer
@@ -40177,7 +40445,7 @@
 
 
 /***/ }),
-/* 280 */
+/* 281 */
 /***/ (function(module, exports) {
 
 	if (typeof Object.create === 'function') {
@@ -40206,7 +40474,7 @@
 
 
 /***/ }),
-/* 281 */
+/* 282 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(global, process) {'use strict'
@@ -40215,7 +40483,7 @@
 	  throw new Error('secure random number generation not supported by this browser\nuse chrome, FireFox or Internet Explorer 11')
 	}
 
-	var Buffer = __webpack_require__(282).Buffer
+	var Buffer = __webpack_require__(283).Buffer
 	var crypto = global.crypto || global.msCrypto
 
 	if (crypto && crypto.getRandomValues) {
@@ -40251,11 +40519,11 @@
 	/* WEBPACK VAR INJECTION */}.call(exports, (function() { return this; }()), __webpack_require__(26)))
 
 /***/ }),
-/* 282 */
+/* 283 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	/* eslint-disable node/no-deprecated-api */
-	var buffer = __webpack_require__(272)
+	var buffer = __webpack_require__(273)
 	var Buffer = buffer.Buffer
 
 	// alternative to using Object.keys for old browsers
@@ -40319,20 +40587,20 @@
 
 
 /***/ }),
-/* 283 */
+/* 284 */
 /***/ (function(module, exports, __webpack_require__) {
 
-	exports = module.exports = __webpack_require__(284);
+	exports = module.exports = __webpack_require__(285);
 	exports.Stream = exports;
 	exports.Readable = exports;
-	exports.Writable = __webpack_require__(292);
-	exports.Duplex = __webpack_require__(291);
-	exports.Transform = __webpack_require__(297);
-	exports.PassThrough = __webpack_require__(298);
+	exports.Writable = __webpack_require__(293);
+	exports.Duplex = __webpack_require__(292);
+	exports.Transform = __webpack_require__(298);
+	exports.PassThrough = __webpack_require__(299);
 
 
 /***/ }),
-/* 284 */
+/* 285 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(global, process) {// Copyright Joyent, Inc. and other Node contributors.
@@ -40360,13 +40628,13 @@
 
 	/*<replacement>*/
 
-	var processNextTick = __webpack_require__(285);
+	var processNextTick = __webpack_require__(286);
 	/*</replacement>*/
 
 	module.exports = Readable;
 
 	/*<replacement>*/
-	var isArray = __webpack_require__(275);
+	var isArray = __webpack_require__(276);
 	/*</replacement>*/
 
 	/*<replacement>*/
@@ -40384,13 +40652,13 @@
 	/*</replacement>*/
 
 	/*<replacement>*/
-	var Stream = __webpack_require__(286);
+	var Stream = __webpack_require__(287);
 	/*</replacement>*/
 
 	// TODO(bmeurer): Change this back to const once hole checks are
 	// properly optimized away early in Ignition+TurboFan.
 	/*<replacement>*/
-	var Buffer = __webpack_require__(282).Buffer;
+	var Buffer = __webpack_require__(283).Buffer;
 	var OurUint8Array = global.Uint8Array || function () {};
 	function _uint8ArrayToBuffer(chunk) {
 	  return Buffer.from(chunk);
@@ -40401,12 +40669,12 @@
 	/*</replacement>*/
 
 	/*<replacement>*/
-	var util = __webpack_require__(287);
-	util.inherits = __webpack_require__(280);
+	var util = __webpack_require__(288);
+	util.inherits = __webpack_require__(281);
 	/*</replacement>*/
 
 	/*<replacement>*/
-	var debugUtil = __webpack_require__(288);
+	var debugUtil = __webpack_require__(289);
 	var debug = void 0;
 	if (debugUtil && debugUtil.debuglog) {
 	  debug = debugUtil.debuglog('stream');
@@ -40415,8 +40683,8 @@
 	}
 	/*</replacement>*/
 
-	var BufferList = __webpack_require__(289);
-	var destroyImpl = __webpack_require__(290);
+	var BufferList = __webpack_require__(290);
+	var destroyImpl = __webpack_require__(291);
 	var StringDecoder;
 
 	util.inherits(Readable, Stream);
@@ -40438,7 +40706,7 @@
 	}
 
 	function ReadableState(options, stream) {
-	  Duplex = Duplex || __webpack_require__(291);
+	  Duplex = Duplex || __webpack_require__(292);
 
 	  options = options || {};
 
@@ -40499,14 +40767,14 @@
 	  this.decoder = null;
 	  this.encoding = null;
 	  if (options.encoding) {
-	    if (!StringDecoder) StringDecoder = __webpack_require__(296).StringDecoder;
+	    if (!StringDecoder) StringDecoder = __webpack_require__(297).StringDecoder;
 	    this.decoder = new StringDecoder(options.encoding);
 	    this.encoding = options.encoding;
 	  }
 	}
 
 	function Readable(options) {
-	  Duplex = Duplex || __webpack_require__(291);
+	  Duplex = Duplex || __webpack_require__(292);
 
 	  if (!(this instanceof Readable)) return new Readable(options);
 
@@ -40655,7 +40923,7 @@
 
 	// backwards compatibility.
 	Readable.prototype.setEncoding = function (enc) {
-	  if (!StringDecoder) StringDecoder = __webpack_require__(296).StringDecoder;
+	  if (!StringDecoder) StringDecoder = __webpack_require__(297).StringDecoder;
 	  this._readableState.decoder = new StringDecoder(enc);
 	  this._readableState.encoding = enc;
 	  return this;
@@ -41345,7 +41613,7 @@
 	/* WEBPACK VAR INJECTION */}.call(exports, (function() { return this; }()), __webpack_require__(26)))
 
 /***/ }),
-/* 285 */
+/* 286 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(process) {'use strict';
@@ -41395,14 +41663,14 @@
 	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(26)))
 
 /***/ }),
-/* 286 */
+/* 287 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	module.exports = __webpack_require__(189).EventEmitter;
 
 
 /***/ }),
-/* 287 */
+/* 288 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(Buffer) {// Copyright Joyent, Inc. and other Node contributors.
@@ -41513,16 +41781,16 @@
 	  return Object.prototype.toString.call(o);
 	}
 
-	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(272).Buffer))
+	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(273).Buffer))
 
 /***/ }),
-/* 288 */
+/* 289 */
 /***/ (function(module, exports) {
 
 	/* (ignored) */
 
 /***/ }),
-/* 289 */
+/* 290 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -41531,7 +41799,7 @@
 
 	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
-	var Buffer = __webpack_require__(282).Buffer;
+	var Buffer = __webpack_require__(283).Buffer;
 	/*</replacement>*/
 
 	function copyBuffer(src, target, offset) {
@@ -41601,14 +41869,14 @@
 	}();
 
 /***/ }),
-/* 290 */
+/* 291 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	'use strict';
 
 	/*<replacement>*/
 
-	var processNextTick = __webpack_require__(285);
+	var processNextTick = __webpack_require__(286);
 	/*</replacement>*/
 
 	// undocumented cb() API, needed for core, not for public API
@@ -41678,7 +41946,7 @@
 	};
 
 /***/ }),
-/* 291 */
+/* 292 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	// Copyright Joyent, Inc. and other Node contributors.
@@ -41711,7 +41979,7 @@
 
 	/*<replacement>*/
 
-	var processNextTick = __webpack_require__(285);
+	var processNextTick = __webpack_require__(286);
 	/*</replacement>*/
 
 	/*<replacement>*/
@@ -41726,12 +41994,12 @@
 	module.exports = Duplex;
 
 	/*<replacement>*/
-	var util = __webpack_require__(287);
-	util.inherits = __webpack_require__(280);
+	var util = __webpack_require__(288);
+	util.inherits = __webpack_require__(281);
 	/*</replacement>*/
 
-	var Readable = __webpack_require__(284);
-	var Writable = __webpack_require__(292);
+	var Readable = __webpack_require__(285);
+	var Writable = __webpack_require__(293);
 
 	util.inherits(Duplex, Readable);
 
@@ -41807,7 +42075,7 @@
 	}
 
 /***/ }),
-/* 292 */
+/* 293 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(process, setImmediate, global) {// Copyright Joyent, Inc. and other Node contributors.
@@ -41839,7 +42107,7 @@
 
 	/*<replacement>*/
 
-	var processNextTick = __webpack_require__(285);
+	var processNextTick = __webpack_require__(286);
 	/*</replacement>*/
 
 	module.exports = Writable;
@@ -41876,22 +42144,22 @@
 	Writable.WritableState = WritableState;
 
 	/*<replacement>*/
-	var util = __webpack_require__(287);
-	util.inherits = __webpack_require__(280);
+	var util = __webpack_require__(288);
+	util.inherits = __webpack_require__(281);
 	/*</replacement>*/
 
 	/*<replacement>*/
 	var internalUtil = {
-	  deprecate: __webpack_require__(295)
+	  deprecate: __webpack_require__(296)
 	};
 	/*</replacement>*/
 
 	/*<replacement>*/
-	var Stream = __webpack_require__(286);
+	var Stream = __webpack_require__(287);
 	/*</replacement>*/
 
 	/*<replacement>*/
-	var Buffer = __webpack_require__(282).Buffer;
+	var Buffer = __webpack_require__(283).Buffer;
 	var OurUint8Array = global.Uint8Array || function () {};
 	function _uint8ArrayToBuffer(chunk) {
 	  return Buffer.from(chunk);
@@ -41901,14 +42169,14 @@
 	}
 	/*</replacement>*/
 
-	var destroyImpl = __webpack_require__(290);
+	var destroyImpl = __webpack_require__(291);
 
 	util.inherits(Writable, Stream);
 
 	function nop() {}
 
 	function WritableState(options, stream) {
-	  Duplex = Duplex || __webpack_require__(291);
+	  Duplex = Duplex || __webpack_require__(292);
 
 	  options = options || {};
 
@@ -42048,7 +42316,7 @@
 	}
 
 	function Writable(options) {
-	  Duplex = Duplex || __webpack_require__(291);
+	  Duplex = Duplex || __webpack_require__(292);
 
 	  // Writable ctor is applied to Duplexes, too.
 	  // `realHasInstance` is necessary because using plain `instanceof`
@@ -42474,10 +42742,10 @@
 	  this.end();
 	  cb(err);
 	};
-	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(26), __webpack_require__(293).setImmediate, (function() { return this; }())))
+	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(26), __webpack_require__(294).setImmediate, (function() { return this; }())))
 
 /***/ }),
-/* 293 */
+/* 294 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	var apply = Function.prototype.apply;
@@ -42530,13 +42798,13 @@
 	};
 
 	// setimmediate attaches itself to the global object
-	__webpack_require__(294);
+	__webpack_require__(295);
 	exports.setImmediate = setImmediate;
 	exports.clearImmediate = clearImmediate;
 
 
 /***/ }),
-/* 294 */
+/* 295 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(global, process) {(function (global, undefined) {
@@ -42729,7 +42997,7 @@
 	/* WEBPACK VAR INJECTION */}.call(exports, (function() { return this; }()), __webpack_require__(26)))
 
 /***/ }),
-/* 295 */
+/* 296 */
 /***/ (function(module, exports) {
 
 	/* WEBPACK VAR INJECTION */(function(global) {
@@ -42803,12 +43071,12 @@
 	/* WEBPACK VAR INJECTION */}.call(exports, (function() { return this; }())))
 
 /***/ }),
-/* 296 */
+/* 297 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	'use strict';
 
-	var Buffer = __webpack_require__(282).Buffer;
+	var Buffer = __webpack_require__(283).Buffer;
 
 	var isEncoding = Buffer.isEncoding || function (encoding) {
 	  encoding = '' + encoding;
@@ -43080,7 +43348,7 @@
 	}
 
 /***/ }),
-/* 297 */
+/* 298 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	// Copyright Joyent, Inc. and other Node contributors.
@@ -43150,11 +43418,11 @@
 
 	module.exports = Transform;
 
-	var Duplex = __webpack_require__(291);
+	var Duplex = __webpack_require__(292);
 
 	/*<replacement>*/
-	var util = __webpack_require__(287);
-	util.inherits = __webpack_require__(280);
+	var util = __webpack_require__(288);
+	util.inherits = __webpack_require__(281);
 	/*</replacement>*/
 
 	util.inherits(Transform, Duplex);
@@ -43299,7 +43567,7 @@
 	}
 
 /***/ }),
-/* 298 */
+/* 299 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	// Copyright Joyent, Inc. and other Node contributors.
@@ -43331,11 +43599,11 @@
 
 	module.exports = PassThrough;
 
-	var Transform = __webpack_require__(297);
+	var Transform = __webpack_require__(298);
 
 	/*<replacement>*/
-	var util = __webpack_require__(287);
-	util.inherits = __webpack_require__(280);
+	var util = __webpack_require__(288);
+	util.inherits = __webpack_require__(281);
 	/*</replacement>*/
 
 	util.inherits(PassThrough, Transform);
@@ -43351,7 +43619,7 @@
 	};
 
 /***/ }),
-/* 299 */
+/* 300 */
 /***/ (function(module, exports) {
 
 	"use strict";

@@ -3,6 +3,7 @@ import classnames from 'classnames';
 import debounce from 'lodash.debounce';
 import {removeEntity, cloneEntity} from '../../actions/entity';
 import Toolbar from './Toolbar';
+import Chat from './Chat';
 const Events = require('../../lib/Events.js');
 
 const ICONS = {
@@ -21,7 +22,8 @@ export default class SceneGraph extends React.Component {
     onChange: React.PropTypes.func,
     scene: React.PropTypes.object,
     value: React.PropTypes.string,
-    visible: React.PropTypes.bool
+    visible: React.PropTypes.bool,
+    webrtcClient: React.PropTypes.object
   };
 
   static defaultProps = {
@@ -289,6 +291,7 @@ export default class SceneGraph extends React.Component {
           onKeyUp={this.onKeyUp}>
           {this.renderOptions()}
         </div>
+        <Chat webrtcClient={this.props.webrtcClient} />
       </div>
     );
   }

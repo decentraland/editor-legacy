@@ -162,6 +162,7 @@ export default class WebrtcClient extends EventEmitter {
   }
 
   connectToPeer (uuid) {
+    console.log(uuid)
     if (this.peers[uuid]) {
       console.log('Already connected...')
       return
@@ -271,6 +272,13 @@ export default class WebrtcClient extends EventEmitter {
     this.send({
       type: 'patch',
       patch
+    })
+  }
+
+  sendEmote (emoji) {
+    this.send({
+      type: 'emote',
+      emoji: emoji
     })
   }
 }

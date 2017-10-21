@@ -21,6 +21,7 @@ import Apply from '../../vendor/apply'
 import WebrtcClient from '../lib/webrtc-client'
 import {setEntityInnerHTML} from '../actions/entity';
 
+var webrtcClient = new WebrtcClient()
 
 // Megahack to include font-awesome.
 injectCSS('https://maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css');
@@ -73,8 +74,6 @@ export default class Main extends React.Component {
     });
     var config = {attributes: true, childList: true, characterData: true};
     observer.observe(this.state.sceneEl, config);
-
-    var webrtcClient = new WebrtcClient()
 
     // Watch for changes and stream over webrtc
     var patcher = new Patch(window, getRoot(), (events) => {
@@ -188,7 +187,13 @@ export default class Main extends React.Component {
       <div>
         <div id='aframe-inspector-panels' className={this.state.inspectorEnabled ? '' : 'hidden'}>
           <ModalTextures ref='modaltextures' isOpen={this.state.isModalTexturesOpen} selectedTexture={this.state.selectedTexture} onClose={this.onModalTextureOnClose}/>
-          <SceneGraph id='left-sidebar' scene={scene} selectedEntity={this.state.entity} visible={this.state.visible.scenegraph}/>
+          <SceneGraph
+            id='left-sidebar'
+            scene={scene}
+            selectedEntity={this.state.entity}
+            visible={this.state.visible.scenegraph}
+            webrtcClient={webrtcClient}
+          />
           {showScenegraph}
           {showAttributes}
           <div id='right-panels'>
