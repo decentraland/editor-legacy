@@ -19,9 +19,9 @@ function loadScene(name) {
           scene: defaultScene
         }
       }
-      ipnsName = objectHash.ipns
-      ipfsName = objectHash.ipfs
-      return fetchJSON('http://localhost:3000/api/data/' + objectHash.ipfs)
+      ipnsName = objectHash.url.ipns
+      ipfsName = objectHash.url.ipfs
+      return fetchJSON('http://localhost:3000/api/data/' + ipfsName)
     }).then(objectData => {
       if (objectData.default) {
         return objectData
