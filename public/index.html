@@ -3,7 +3,7 @@
   <head>
     <meta charset="utf-8">
     <title>Example Scene</title>
-    <script src="aframe-master.min.js"></script>
+    <script src="/aframe-master.min.js"></script>
   </head>
   <body>
     <a-scene debug="true" light="shadowMapType: basic">
@@ -28,7 +28,7 @@
         id="sky"
         scale="-256 256 256"
         shadow="castShadow: false; recieveShadow: false"
-        material="src: textures/sky.png; shader: flat"></a-sphere>
+        material="src: /textures/sky.png; shader: flat"></a-sphere>
 
       <!-- Floor. -->
       <a-plane
@@ -38,7 +38,7 @@
         position="0 0.01 0"
         rotation="-90 0 0"
         shadow
-        material="side: double; src: ./textures/grid.png; color: #eee; repeat: 128 128; metalness: 0; roughness: 1"></a-plane>
+        material="side: double; src: /textures/grid.png; color: #eee; repeat: 128 128; metalness: 0; roughness: 1"></a-plane>
 
       <a-entity fixed="true" light="color: #888; type: ambient"></a-entity>
 
@@ -52,6 +52,5 @@
     </a-scene>
 
     <script src="/dist/aframe-inspector.js"></script>
-    <!--script src="http://0.0.0.0:3333/dist/aframe-inspector.js"></script-->
   </body>
 </html>

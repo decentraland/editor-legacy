@@ -29,6 +29,7 @@ app.use(bodyParser.json())
 app.use(express.static(path.join(__dirname, 'public')))
 app.use('/dist', express.static(path.join(__dirname, 'dist')))
 app.get('/', function (_, res) { res.sendFile(indexPath) })
+app.get('/scene/:name', function (_, res) { res.sendFile(indexPath) })
 app.listen(port)
 
 // Announce that I am using the inspector and am available to connect to

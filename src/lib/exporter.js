@@ -41,7 +41,7 @@ export function generateHtml () {
   var elementsToRemove = xmlDoc.querySelectorAll([
     // Injected by the inspector
     '[data-aframe-inspector]',
-    'script[src$="aframe-inspector.js"]',
+    'script[src$="/dist/aframe-inspector.js"]',
     'style[type="text/css"]',
     'link[href="http://fonts.googleapis.com/css?family=Roboto%7CRoboto+Mono"]',
     // Injected by aframe
@@ -50,7 +50,9 @@ export function generateHtml () {
     // Injected by stats
     '.rs-base',
     '.a-canvas',
-    'style[data-href$="rStats.css"]'
+    'style[data-href$="rStats.css"]',
+    // Injected by webrtc
+    'audio'
   ].join(','));
   for (var i = 0; i < elementsToRemove.length; i++) {
     var el = elementsToRemove[i];
