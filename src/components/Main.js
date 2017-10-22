@@ -16,6 +16,7 @@ import ToolBar from './ToolBar';
 import {injectCSS, injectJS} from '../lib/utils';
 import '../css/main.css';
 
+import IPFSLoader from '../lib/ipfsLoader'
 import Patch from '../../vendor/patch'
 import Apply from '../../vendor/apply'
 import WebrtcClient from '../lib/webrtc-client'
@@ -185,6 +186,7 @@ export default class Main extends React.Component {
 
     return (
       <div>
+        <IPFSLoader />
         <div id='aframe-inspector-panels' className={this.state.inspectorEnabled ? '' : 'hidden'}>
           <ModalTextures ref='modaltextures' isOpen={this.state.isModalTexturesOpen} selectedTexture={this.state.selectedTexture} onClose={this.onModalTextureOnClose}/>
           <SceneGraph
