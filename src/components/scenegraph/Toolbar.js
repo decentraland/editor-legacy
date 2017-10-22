@@ -40,10 +40,7 @@ export default class Toolbar extends React.Component {
   }
 
   saveScene () {
-    var sceneName = getSceneName(AFRAME.scenes[0])
-    var html = generateHtml()
-
-    console.log(html) // , sceneName, 'text/html');
+    Events.emit('savescene')
   }
 
   addEntity (nodeType) {

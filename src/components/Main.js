@@ -45,6 +45,12 @@ export default class Main extends React.Component {
       }
     };
 
+    this.getRoot = () => document.querySelector('a-entity#parcel')
+
+    this.loadParcel = data => {
+      setEntityInnerHTML(this.getRoot(), data)
+    }
+
     Events.on('togglesidebar', event => {
       if (event.which == 'all') {
         if (this.state.visible.scenegraph || this.state.visible.attributes) {
@@ -65,10 +71,6 @@ export default class Main extends React.Component {
   componentDidMount () {
     console.log('mounted!')
 
-    const getRoot = () => {
-      return document.querySelector('a-entity#parcel')
-    }
-
     // Create an observer to notify the changes in the scene
     var observer = new MutationObserver(function (mutations) {
       Events.emit('dommodified', mutations);
@@ -77,11 +79,11 @@ export default class Main extends React.Component {
     observer.observe(this.state.sceneEl, config);
 
     // Watch for changes and stream over webrtc
-    var patcher = new Patch(window, getRoot(), (events) => {
+    var patcher = new Patch(window, this.getRoot(), (events) => {
       webrtcClient.sendPatch(events)
     })
 
-    var apply = new Apply(getRoot(), patcher);
+    var apply = new Apply(this.getRoot(), patcher);
 
     webrtcClient.on('connect', (user) => {
       console.log(user)
@@ -98,14 +100,14 @@ export default class Main extends React.Component {
       if (webrtcClient.startedAt < packet.startedAt) {
         packet.user.send({
           type: 'snapshot',
-          html: getRoot().innerHTML
+          html: this.getRoot().innerHTML
         })
       }
     })
 
     webrtcClient.on('snapshot', (packet) => {
       console.log('Got snapshot...')
-      setEntityInnerHTML(getRoot(), packet.html)
+      this.loadParcel(packet.html)
     })
 
     const parser = new DOMParser()
@@ -144,6 +146,10 @@ export default class Main extends React.Component {
 
     Events.on('motioncapturecountdown', val => {
       this.setState({motionCaptureCountdown: val});
+    });
+
+    Events.on('savescene', val => {
+      this.setState({ saveScene: true });
     });
   }
 
@@ -186,7 +192,8 @@ export default class Main extends React.Component {
 
     return (
       <div>
-        <IPFSLoader />
+        <IPFSLoader reportParcel={this.loadParcel}/>
+        { this.state.saveScene && <IPFSSaveScene ref='save' /> }
         <div id='aframe-inspector-panels' className={this.state.inspectorEnabled ? '' : 'hidden'}>
           <ModalTextures ref='modaltextures' isOpen={this.state.isModalTexturesOpen} selectedTexture={this.state.selectedTexture} onClose={this.onModalTextureOnClose}/>
           <SceneGraph

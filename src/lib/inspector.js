@@ -62,6 +62,7 @@ Inspector.prototype = {
 
     this.currentCameraEl = AFRAME.scenes[0].camera.el;
     this.currentCameraEl.setAttribute('data-aframe-inspector-original-camera', '');
+    this.parcelEl = document.querySelector('a-entity#parcel')
 
     // If the current camera is the default, we should prevent AFRAME from
     // remove it once when we inject the editor's camera
@@ -253,6 +254,7 @@ Inspector.prototype = {
     });
 
     Events.on('dommodified', mutations => {
+      this.parcelEl = document.querySelector('a-entity#parcel')
       if (!mutations) { return; }
       mutations.forEach(mutation => {
         if (mutation.type !== 'childList') { return; }
@@ -310,12 +312,13 @@ Inspector.prototype = {
       this.addEntity(entity);
     });
 
-    this.sceneEl.appendChild(entity);
+    this.parcelEl.appendChild(entity);
 
     return entity;
   },
   addEntity: function (entity) {
     this.addObject(entity.object3D);
+    Events.emit('dommodified');
     this.selectEntity(entity);
   },
   /**

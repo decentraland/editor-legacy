@@ -11,19 +11,31 @@ function fetchJSON(url) {
 }
 
 function loadScene(name) {
+  let ipnsName, ipfsName
   return fetchJSON('http://localhost:3000/api/name/' + name)
     .then(objectHash => {
       if (!objectHash.ok) {
         console.log(objectHash.error)
-        return defaultScene
+        return {
+          default: true,
+          scene: defaultScene
+        }
       }
-      return fetchJSON('http://localhost:3000/api/data/' + objectHash.address)
+      ipnsName = objectHash.ipns
+      ipfsName = objectHash.ipfs
+      return fetchJSON('http://localhost:3000/api/data/' + objectHash.ipfs)
     }).then(objectData => {
+      if (objectData.default) {
+        return objectData
+      }
       if (!objectData.ok) {
         console.log(objectData.error)
-        return defaultScene
+        return {
+          default: true,
+          scene: defaultScene
+        }
       }
-      return objectData.data
+      return { scene: objectData.data, ipfs: ipfsName, ipns: ipnsName}
     })
 }
 
@@ -40,7 +52,14 @@ export default class IPFSLoader extends React.Component {
   }
   componentDidMount() {
     loadScene(sceneName)
-      .then(scene => this.setState({ loading: false, data: scene, waitDismissal: true }))
+      .then(scene => {
+        if (scene.default) {
+          // TODO: Nice banner with welcome
+        }
+        else {
+          this.setState({ loading: false, data: scene, waitDismissal: true })
+        }
+      })
       .catch(error => this.setState({ loading: false, error }))
   }
   render() {
@@ -51,12 +70,16 @@ export default class IPFSLoader extends React.Component {
       return <div className='errored uploadPrompt'>Error loading scene! { this.state.error }</div>
     }
     if (this.state.waitDismissal) {
-      return (<div className='dismissal uploadPrompt'>
-        <h1>Scene loaded from IPFS</h1>
-        <p>The IPNS locator is: /ipns/{ this.state.ipns }</p>
-        <p>The IPFS hash pointed to is: /ipfs/{ this.state.ipfs }</p>
-        <button onClick={this.dismiss}>Start editing</button>
-      </div>)
+      if (this.state.data.default) {
+        return <div/>
+      } else {
+        return (<div className='dismissal uploadPrompt'>
+          <h1>Scene loaded from IPFS</h1>
+          <p>The IPNS locator is: /ipns/{ this.state.ipns }</p>
+          <p>The IPFS hash pointed to is: /ipfs/{ this.state.ipfs }</p>
+          <button onClick={this.dismiss}>Start editing</button>
+        </div>)
+      }
     }
     return <div className='errored uploadPrompt'>Unexpected internal state!</div>
   }
