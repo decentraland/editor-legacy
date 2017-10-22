@@ -1,7 +1,5 @@
 import React from 'react'
-import ReactDOM from 'react-dom'
 
-import inspector from './inspector'
 import defaultScene from './defaultScene'
 
 const urlParts = window.location.href.split('/')

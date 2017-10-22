@@ -17,6 +17,7 @@ import {injectCSS, injectJS} from '../lib/utils';
 import '../css/main.css';
 
 import IPFSLoader from '../lib/ipfsLoader'
+import IPFSSaveScene from '../lib/ipfsSaveScene'
 import Patch from '../../vendor/patch'
 import Apply from '../../vendor/apply'
 import WebrtcClient from '../lib/webrtc-client'
@@ -149,7 +150,11 @@ export default class Main extends React.Component {
     });
 
     Events.on('savescene', val => {
+      this.storedContent = this.getRoot().innerHTML
       this.setState({ saveScene: true });
+    });
+    Events.on('savedismiss', val => {
+      this.setState({ saveScene: false });
     });
   }
 
@@ -193,7 +198,7 @@ export default class Main extends React.Component {
     return (
       <div>
         <IPFSLoader reportParcel={this.loadParcel}/>
-        { this.state.saveScene && <IPFSSaveScene ref='save' /> }
+        { this.state.saveScene && <IPFSSaveScene ref='save' content={this.storedContent} /> }
         <div id='aframe-inspector-panels' className={this.state.inspectorEnabled ? '' : 'hidden'}>
           <ModalTextures ref='modaltextures' isOpen={this.state.isModalTexturesOpen} selectedTexture={this.state.selectedTexture} onClose={this.onModalTextureOnClose}/>
           <SceneGraph
