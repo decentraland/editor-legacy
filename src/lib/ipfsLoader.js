@@ -10,18 +10,21 @@ function fetchJSON(url) {
   return fetch(url).then(res => res.json())
 }
 
-async function loadScene(name) {
-  const objectHash = await fetchJSON('http://localhost:3000/api/name/' + name)
-  if (!objectHash.ok) {
-    console.log(objectHash.error)
-    return defaultScene
-  }
-  const objectData = await fetchJSON('http://localhost:3000/api/data/' + objectHash.address)
-  if (!objectData.ok) {
-    console.log(objectData.error)
-    return defaultScene
-  }
-  return objectData.data
+function loadScene(name) {
+  return fetchJSON('http://localhost:3000/api/name/' + name)
+    .then(objectHash => {
+      if (!objectHash.ok) {
+        console.log(objectHash.error)
+        return defaultScene
+      }
+      return fetchJSON('http://localhost:3000/api/data/' + objectHash.address)
+    }).then(objectData => {
+      if (!objectData.ok) {
+        console.log(objectData.error)
+        return defaultScene
+      }
+      return objectData.data
+    })
 }
 
 export default class IPFSLoader extends React.Component {
@@ -36,11 +39,9 @@ export default class IPFSLoader extends React.Component {
     }
   }
   componentDidMount() {
-    loadScene(sceneName).then(scene => {
-      this.setState({ loading: false, data: scene, waitDismissal: true })
-    }).catch(error => {
-      this.setState({ loading: false, error })
-    })
+    loadScene(sceneName)
+      .then(scene => this.setState({ loading: false, data: scene, waitDismissal: true }))
+      .catch(error => this.setState({ loading: false, error }))
   }
   render() {
     if (this.state.loading) {
