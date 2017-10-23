@@ -2,23 +2,9 @@ const path = require('path')
 const express = require('express')
 const bodyParser = require('body-parser')
 
-const Webpack = require('webpack')
-const WebpackMiddleware = require('webpack-dev-middleware')
-const WebpackHotMiddleware = require('webpack-hot-middleware')
-
-const webpackConfig = require('./webpack.config.js')
-const webpackMiddlewareConfig = {
-  noInfo: true,
-  progress: true,
-  publicPath: '/dist',
-  hot: true,
-  stats: {
-    color: true
-  }
-}
-
 const app = express()
 const indexPath = path.join(__dirname, 'public', 'index.html')
+const landingPath = path.join(__dirname, 'public', 'landing.html')
 
 const port = (process.env.PORT || 4040)
 var connections = []
@@ -41,14 +27,10 @@ const sse = function (req, res, next) {
 
 app.use(sse)
 app.use(bodyParser.json())
+app.get('/', function (_, res) { res.sendFile(landingPath) })
 app.use(express.static(path.join(__dirname, 'public')))
 app.use('/dist', express.static(path.join(__dirname, 'dist')))
-app.get('/', function (_, res) { res.sendFile(indexPath) })
 app.get('/scene/:name', function (_, res) { res.sendFile(indexPath) })
-
-const webpack = new Webpack(webpackConfig)
-app.use(WebpackMiddleware(webpack, webpackMiddlewareConfig))
-app.use(WebpackHotMiddleware(webpack))
 
 app.listen(port)
 
