@@ -34,6 +34,7 @@ export default class Main extends React.Component {
     super(props);
 
     this.state = {
+      loading: true,
       entity: null,
       inspectorEnabled: true,
       isMotionCaptureRecording: false,
@@ -48,7 +49,12 @@ export default class Main extends React.Component {
 
     this.getRoot = () => document.querySelector('a-entity#parcel')
 
-    this.loadParcel = data => {
+    this.loadParcel = (data, uuid) => {
+      console.log(data, uuid)
+      this.setState({ loading: false })
+      if (uuid) {
+        this.getRoot().setAttribute('data-uuid', uuid)
+      }
       setEntityInnerHTML(this.getRoot(), data)
     }
 
@@ -78,6 +84,7 @@ export default class Main extends React.Component {
     });
     var config = {attributes: true, childList: true, characterData: true};
     observer.observe(this.state.sceneEl, config);
+    observer.observe(this.getRoot(), config);
 
     // Watch for changes and stream over webrtc
     var patcher = new Patch(window, this.getRoot(), (events) => {
@@ -101,14 +108,15 @@ export default class Main extends React.Component {
       if (webrtcClient.startedAt < packet.startedAt) {
         packet.user.send({
           type: 'snapshot',
-          html: this.getRoot().innerHTML
+          html: this.getRoot().innerHTML,
+          rootUUID: this.getRoot().getAttribute('data-uuid')
         })
       }
     })
 
     webrtcClient.on('snapshot', (packet) => {
-      console.log('Got snapshot...')
-      this.loadParcel(packet.html)
+      console.log('Got snapshot...', packet.rootUUID)
+      this.loadParcel(packet.html, packet.rootUUID)
     })
 
     const parser = new DOMParser()
@@ -197,7 +205,7 @@ export default class Main extends React.Component {
 
     return (
       <div>
-        <IPFSLoader reportParcel={this.loadParcel}/>
+        { this.state.loading && <IPFSLoader reportParcel={this.loadParcel}/> }
         { this.state.saveScene && <IPFSSaveScene ref='save' content={this.storedContent} /> }
         <div id='aframe-inspector-panels' className={this.state.inspectorEnabled ? '' : 'hidden'}>
           <ModalTextures ref='modaltextures' isOpen={this.state.isModalTexturesOpen} selectedTexture={this.state.selectedTexture} onClose={this.onModalTextureOnClose}/>

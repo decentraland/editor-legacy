@@ -1,5 +1,4 @@
 export default `
-      <a-entity id="parcel">
         <!-- Meshes. -->
         <a-box shadow id="blueBox" position="0 0.5 0"></a-box>
         <a-box shadow id="shortOrangeBox" position="-5 0.5 0"></a-box>
@@ -12,5 +11,4 @@ export default `
         <!-- Models. -->
         <a-box shadow class="boxClass" geometry="primitive: box" position="3 0.5 0"></a-box>
         <a-box shadow class="boxClass" geometry="primitive: box" material="color: #0f0" position="4 0.5 4"></a-box>
-      </a-entity>
 `

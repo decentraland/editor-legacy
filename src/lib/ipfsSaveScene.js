@@ -1,4 +1,7 @@
 import React from 'react'
+import ReactModal from 'react-modal'
+
+import Events from './Events'
 
 const urlParts = window.location.href.split('/')
 const sceneName = urlParts[urlParts.length - 1]
@@ -47,7 +50,7 @@ export default class IPFSSaveScene extends React.Component {
       })
       .catch(error => this.setState({ loading: false, error }))
   }
-  render() {
+  renderContent() {
     if (this.state.loading) {
       return <div className='loading uploadPrompt'>Uploading to IPFS...</div>
     }
@@ -66,5 +69,10 @@ export default class IPFSSaveScene extends React.Component {
       </div>)
     }
     return <div className='errored uploadPrompt'>Unexpected internal state!</div>
+  }
+  render() {
+    return <ReactModal isOpen={true} style={ { overlay: { zIndex: 10000 } } }>
+      { this.renderContent() }
+    </ReactModal>
   }
 }
