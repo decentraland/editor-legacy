@@ -2,6 +2,9 @@ import React from 'react'
 import ReactModal from 'react-modal'
 
 import Events from './Events'
+import Header from '../components/components/Header'
+import Footer from '../components/components/Footer'
+import Loading from '../components/components/Loading'
 
 const urlParts = window.location.href.split('/')
 const sceneName = urlParts[urlParts.length - 1]
@@ -52,27 +55,47 @@ export default class IPFSSaveScene extends React.Component {
   }
   renderContent() {
     if (this.state.loading) {
-      return <div className='loading uploadPrompt'>Uploading to IPFS...</div>
+      return <div className='loading uploadPrompt'>
+        <Loading/>
+        <h3>Uploading to IPFS...</h3>
+      </div>
     }
     if (this.state.bindName) {
-      return <div className='loading uploadPrompt'>Binding scene name to hash...</div>
+      return <div className='loading uploadPrompt'>
+        <Loading/>
+        <h3>Binding scene name to hash...</h3>
+      </div>
     }
     if (this.state.error) {
       return <div className='errored uploadPrompt'>Error saving scene! { JSON.stringify(this.state.error) }</div>
     }
     if (this.state.waitDismissal) {
       return (<div className='dismissal uploadPrompt'>
-        <h1>Scene saved to IPFS</h1>
+        <h1>Scene "{sceneName}" saved to IPFS</h1>
         <p>The IPNS locator is: /ipns/{ this.state.ipnsName }</p>
-        <p>The IPFS hash pointed to is: /ipfs/{ this.state.ipfsName }</p>
+        <p>The IPFS hash pointed to is: <a href={"https://gateway.ipfs.io/ipfs/" + this.state.ipfsName} target="_blank">{ this.state.ipfsName }</a></p>
         <button onClick={this.dismiss}>Continue editing</button>
       </div>)
     }
     return <div className='errored uploadPrompt'>Unexpected internal state!</div>
   }
   render() {
-    return <ReactModal isOpen={true} style={ { overlay: { zIndex: 10000 } } }>
-      { this.renderContent() }
+    return <ReactModal isOpen={true} style={
+      {
+        overlay: {
+          zIndex: 10000
+        },
+        content: {
+          background: '#2b2b2b',
+          color: '#ccc'
+        }
+      }
+    }>
+      <div style={{ display: 'flex', flexDirection: 'column', height: '100%', justifyContent: 'space-between' }}>
+        <Header />
+        { this.renderContent() }
+        <Footer />
+      </div>
     </ReactModal>
   }
 }

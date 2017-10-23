@@ -1,0 +1,37 @@
+.Icon {
+  background-position: 0 0;
+  background-size: cover;
+  background-repeat: no-repeat;
+  display: inline-block;
+}
+
+.Icon-decentraland {
+  width: 152px;
+  height: 152px;
+  background-image: url("https://decentraland.org/images/icons.svg");
+}
+
+.Icon-address {
+  width: 17px;
+  height: 16px;
+  background-image: url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAIAAAACACAYAAADDPmHLAAADwElEQVR4Xu3dvXEUQRRF4V6LODA2AVkrDwOPKBSIUiAFhaAU8CRLKSgCSjYWFCnMN1WvGo78Oz173+3zuudPl4/r4++18d/Tehk9+4d1Pzq+Dn4pAGZhATD/WB0BzMIIYP6tCIAGqjwCmIMRwPyLAOgfyyOAWRgBzL8IgP6xPAKYhRHA/IsA6B/LI4BZGAHMvwiA/rE8ApiFEcD8iwDoH8sjgFkYAcy/CPDj9Q0tNPmX250dANW7/34mwO4GYP3X7r+/AGACCkAtACNkcm2BEcD8rwXsjkCsfwEoAHvvgmoBiIDdJ0ABKAD2YsjuMwDr3xqgALQG0ElEet0H0+BrRYAIEAF0EpE+AtjNsHYBFL9awPY9EOu//e+/PP/8Rt8HUARPryE0AKqf9q8AaAVRXwCGbydj/VheAAoAhUhbaC2A7HdxBIgAlKIIQPbNiyNABKAURgCyb14cASIApTACkH3z4ggQASiFEYDsmxdHgAhAKYwAZN+8OAJEAEohE2D3z8WrAeT+WktnsI6ven4kTE9A9QXAHCwA5l8EQP9YHgHMwghg/kUA9I/lEcAsjADmXwRA/1geAczCCGD+RQD0j+URwCyMAOZfBED/WB4BzMIIYP5FAPSP5RHALIwA5l8EQP9YHgHMwnECTBfQ7HP19PMEBcBrSEcoAD0SRgFScQRQB1EfASIARsjkEcD8Y3UEiAAcIjlABBD3TtBGgAhwQoyOHyICHPfuFGUEiACnBOnoQSLAUedO0kWACHBSlI4dJgIc8+00VQSIAKeF6ciBIsAR107UjBPg+/Ur/b+Ah3VPdjytF9Lr+DT4Wmv6/HX8SwGwCGgBNMA6fgGw+keA6QTr+Fj/AqAFUITp+AWgRSBlYDrAOn5rACp/u4ClCNYE6/hY/9YAWoACMHsdpRaACJgOsI5fAApAl4IlAzoDp1toBJDqdy9gtQsYvpmlBIoAEaA1gGRAZ+B/vwbQ7wNMP1Axff4awPEWMG2gzP6/2unzLwC3O60h6QsAPhI2bSBVPwL4NrAAGMFqAbUAgliLQLKvRSBfCawF1AJoDnYdwN6rqAVQ/GoBtQB8t1EJ1i6gXQAxrBZA9tUCagG1AHuqtW1g20CCsC6iaPB/4V7Ax/WRvg+gM/j99otq8Pn1E+lVPH3+OgH4CyEFYDbABSACEMQiANm3Vi0At0HTBmL9C0BrgNYANIkigO1iWgS2CKQJ2CKQ7GsRyM/F1wJqATQHuxJo9xJqARS/WkAtYPheRruAdgHEsFoA2VcLqAVs3gL+AKwS6s5cZJLHAAAAAElFTkSuQmCC");
+}
+
+.Icon-slack,
+.Icon-slack-white {
+  background-image: url("https://decentraland.org/images/social-icons.svg");
+}
+
+.Icon-slack {
+  width: 15px;
+  height: 15px;
+  background-position: -25px 1px;
+  background-size: 180px;
+}
+
+.Icon-slack-white {
+  width: 19px;
+  height: 19px;
+  background-position: -27px -48px;
+  background-size: 200px;
+}

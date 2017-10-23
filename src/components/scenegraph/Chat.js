@@ -127,29 +127,25 @@ export default class Chat extends React.Component {
   }
 
   render () {
-    const messages = this.state.messages.map((m) => {
-      return <div><b>{m.user.uuid.slice(0, 4)}:</b> {m.content}</div>
+    const messages = this.state.messages.map((m, index) => {
+      return <div key={index}><b>{m.user.uuid.slice(0, 4)}:</b> {m.content}</div>
     })
 
-    const collapsed = this.state.messages.length === 0 && 'chat-collapsed'
-
-    const emojis = this.state.emojis.slice(0, 7).map((e) => {
-      return <button onClick={() => this.sendEmote(e)}>{e}</button>
+    const emojis = this.state.emojis.slice(0, 7).map((e, index) => {
+      return <button onClick={() => this.sendEmote(e)} key={index}>{e}</button>
     })
 
     return (
       <div className={`chat`}>
         <h3>Chat</h3>
 
-        {this.state.messages.length > 0 &&
-          <div
-            ref={(e) => { this.chatMessages = e }}
-            className='chat__messages'
-            style={{ overflow: 'auto' }} // somehow the CSS gets rewritten so using force
-          >
-            {messages}
-          </div>
-        }
+        <div
+          ref={(e) => { this.chatMessages = e }}
+          className='chat__messages'
+          style={{ overflow: 'auto' }} // somehow the CSS gets rewritten so using force
+        >
+          {messages}
+        </div>
 
         <div className='chat__emoji'>{emojis}</div>
 
