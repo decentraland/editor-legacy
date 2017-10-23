@@ -27,6 +27,7 @@
     "react": "^15.3.0",
     "react-dom": "^15.3.0",
     "react-file-reader-input": "^1.1.4",
+    "react-modal": "^3.0.4",
     "react-select": "^1.0.0-rc.1",
     "simple-peer": "^8.1.1"
   },

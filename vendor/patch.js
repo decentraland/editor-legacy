@@ -50,22 +50,40 @@ function Patch (global, root, broadcast, filter) {
 
   treeUUID(root, true)
 
+  let debounced
+  let patch = document.createElement(PATCH_NODE_NAME)
+  let debouncedBroadcast = data => {
+    if (debounced) {
+      clearTimeout(debounced)
+    }
+    debounced = setTimeout(() => {
+      debounced = null
+      patch = document.createElement(PATCH_NODE_NAME)
+      broadcast(data)
+    }, 25)
+  }
+
   // todo - merge all the mutations and send at the debounced rate, or maybe
   //    just remove the debounce altogether and spam each other? Dunno.
   const obs = (mutations) => {
-    var patch = document.createElement(PATCH_NODE_NAME)
-
     mutations.forEach((mutation) => {
       var uuid = treeUUID(mutation.target, true)
 
       if (this.suppressed.has(uuid)) {
         // nope
       } else {
-        patch.appendChild(mutation.target.cloneNode(true))
+        const clone = mutation.target.cloneNode(true)
+        if (mutation.removedNodes.length) {
+          mutation.removedNodes.forEach(removed => {
+            removed.setAttribute('data-dead', 'true')
+            clone.appendChild(removed)
+          })
+        }
+        patch.appendChild(clone)
       }
     })
 
-    broadcast(patch.outerHTML)
+    debouncedBroadcast(patch.outerHTML)
   }
 
   var observer = new global.MutationObserver(obs)

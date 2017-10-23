@@ -79,11 +79,14 @@ function Apply (root, patcher) {
       applyAttributes(target, n)
 
       Array.from(n.childNodes).forEach((n) => {
+        if (n.nodeName === '#text' || n.nodeName === '#comment') {
+          return
+        }
         var uuid = n.getAttribute(UUID_KEY)
         var child = root.querySelector(`[${UUID_KEY}='${uuid}']`)
         suppress(uuid)
 
-        if (child && n.nodeName.toLowerCase() === DEAD_NODE_NAME) {
+        if (child && n.getAttribute('data-dead')) {
           target.removeChild(child)
         } else if (!child) {
           child = document.createElement(n.nodeName)

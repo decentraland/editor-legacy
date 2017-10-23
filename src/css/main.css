@@ -1284,3 +1284,8 @@ div.chat{
 div.chat-collapsed{
   height: 24px + 34px + 34px;
 }
+
+div.uploadPrompt {
+  background: #2b2b2b;
+  color: #7f7f7f;
+}
