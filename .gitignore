@@ -1,5 +1,6 @@
 .DS_Store
 .cache
+dist
 gh-pages/
 node_modules
 npm-debug.log*
