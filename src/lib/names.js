@@ -566,9 +566,8 @@ function hashCode(string) {
  */
 function generateName(identifier, left, right) {
   const len = Math.floor(identifier.length / 2)
-  console.log(identifier)
-  const a = hashCode(identifier.slice(0, len))
-  const b = hashCode(identifier.slice(len))
+  let a = hashCode(identifier.slice(0, len))
+  let b = hashCode(identifier.slice(len))
   if (a < 0) a = -a;
   if (b < 0) b = -b;
   var first = left[a % left.length];
