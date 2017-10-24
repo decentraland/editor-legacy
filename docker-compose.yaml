@@ -4,13 +4,12 @@ services:
   nginx:
     image: nginx
     volumes:
-      - /etc/letsencrypt:/etc/letsencrypt
+      - ./nginx/letsencrypt:/etc/letsencrypt
       - ./nginx/keys:/etc/nginx/keys
       - ./nginx/nginx.conf:/etc/nginx/nginx.conf
       - ./logs:/var/log/nginx
     ports:
-      - "80:80"
-      - "443:443"
+      - "4444:443"
     networks:
       - outside
       - internal
@@ -19,6 +18,13 @@ services:
       context: ./
     ports:
       - "4040:4040"
+    volumes:
+      - ./assets:/opt/inspector/assets
+      - ./dist:/opt/inspector/dist
+      - ./public:/opt/inspector/public
+      - ./scripts:/opt/inspector/scripts
+      - ./src:/opt/inspector/src
+      - ./vendor:/opt/inspector/vendor
     networks:
       - internal
   ipfs:
