@@ -1,0 +1,3 @@
+[submodule "ipfs-node"]
+	path = ipfs-node
+	url = git@decentraland.digital:decentraland/ipfs-node.git
