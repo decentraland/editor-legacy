@@ -18,7 +18,7 @@ function loadScene(name) {
     default: true,
     scene: defaultScene
   }
-  return fetchJSON('http://localhost:3000/api/name/' + name)
+  return fetchJSON('/api/name/' + name)
     .then(objectHash => {
       if (!objectHash.ok) {
         console.log(objectHash.error)
@@ -26,7 +26,7 @@ function loadScene(name) {
       }
       ipnsName = objectHash.url.ipns
       ipfsName = objectHash.url.ipfs
-      return fetchJSON('http://localhost:3000/api/data/' + ipfsName)
+      return fetchJSON('/api/data/' + ipfsName)
     }).then(objectData => {
       if (objectData.default) {
         return objectData
@@ -59,7 +59,7 @@ export default class IPFSLoader extends React.Component {
   intro() {
     return [
       <h1 key='1'>Welcome to the Decentraland Scene Editor!</h1>,
-      <p key='2'>This editor allows real-time collaboration when working on A-Frame scenes. You can collaborate in real time with other users through voice and text chat. All changes to the parcel you are editing are shared in real time with other users looking at the same scene. </p>,
+      <p key='2'>This editor allows real-time collaboration when working on A-Frame scenes. You can edit in real time a scene with other users while communicating through voice and text chat. All changes to the parcel you are editing are shared in real time with other users looking at the same scene. </p>,
       <p key='3'>Support for sharing materials, textures, and models is in experimental stage.</p>,
       <p key='4'>The contents can be stored to the IPFS network using the <span className="fa fa-download" title="Save HTML"></span> button on the top left corner.</p>
     ]

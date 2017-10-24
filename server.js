@@ -1,10 +1,12 @@
 const path = require('path')
 const express = require('express')
 const bodyParser = require('body-parser')
+const proxy = require('express-http-proxy')
 
 const app = express()
 const indexPath = path.join(__dirname, 'public', 'index.html')
 const landingPath = path.join(__dirname, 'public', 'landing.html')
+app.use('/api', proxy('localhost:3000'));
 
 const port = (process.env.PORT || 4040)
 var connections = []

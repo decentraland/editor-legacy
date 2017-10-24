@@ -1,14 +1,4 @@
 export default `
-        <!-- Meshes. -->
-        <a-box shadow id="blueBox" position="0 0.5 0"></a-box>
-        <a-box shadow id="shortOrangeBox" position="-5 0.5 0"></a-box>
-        <a-box shadow id="shortYellowBox" position="5 0.5 0"></a-box>
-        <a-box shadow id="redBox" material="color:#f00" position="-4 0.5 4"></a-box>
-        <a-sphere shadow id="yellowSphere" material="color:#ff0; metalness:0.0; roughness:1.0" position="-2 0.5 -2"></a-sphere>
-        <a-box shadow position="-5 0.5 -2" ></a-box>
-        <a-box shadow id="box" position="0 0.5 0" color="#FFC65D"></a-box>
 
-        <!-- Models. -->
-        <a-box shadow class="boxClass" geometry="primitive: box" position="3 0.5 0"></a-box>
-        <a-box shadow class="boxClass" geometry="primitive: box" material="color: #0f0" position="4 0.5 4"></a-box>
+<a-box shadow="" id="parcel-2" position="0 2.019 -2.631" data-uuid="cef2f244-a89b-4320-a628-add3ea9b86ee" rotation="0 0 0" scale="4.74 1 1" visible="true" material="color:#2d249a" geometry="primitive:box"></a-box><a-box shadow="" id="parcel-8" position="0 3.882 -2.711" data-uuid="cef2f244-a89b-4320-a628-add3ea9b86ee" rotation="0 0 0" scale="4.74 1 1" visible="true" material="color:#2d249a" geometry="primitive:box"></a-box><a-box shadow="" id="parcel-9" position="0 5.787 -2.72" data-uuid="cef2f244-a89b-4320-a628-add3ea9b86ee" rotation="0 0 0" scale="4.74 1 1" visible="true" material="color:#2d249a" geometry="primitive:box"></a-box><a-box shadow="" id="parcel-3" material="color:#f00" position="-4.01 1.4 -0.247" data-uuid="0b6ae18e-8d2e-4e87-bc6e-68a3dd05fbfa" rotation="0 0 0" scale="1 3.08 1" visible="true" geometry="primitive:box"></a-box><a-box shadow="" id="parcel-5" position="0 -0.18 0" color="#FFC65D" data-uuid="d30983f9-eea1-4853-b7d3-dff352020725" rotation="" scale="10 0.5 10" visible="" material="color:#00d13b" geometry=""></a-box><a-box shadow="" class="boxClass" geometry="primitive: box" material="color: #0f0" position="-0.531 0.5 4" id="parcel-6" data-uuid="5795da9b-5913-4686-b1fa-d63b2c5dc26e" rotation="" scale="" visible=""></a-box><a-obj-model data-uuid="19cfbfd7-efbf-4966-a344-58d4477d3c4e" position="-2.806 5.491 0.6" rotation="90 -40 90" scale="0.05 0.05 0.05" visible="true" material="" obj-model="mtl:/obj/Decentral_2.mtl;obj:/obj/Decentral_2.obj" id="parcel-7"></a-obj-model>
 `

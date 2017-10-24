@@ -1,0 +1,38 @@
+# File produced by Open Asset Import Library (http://www.assimp.sf.net)
+# (assimp v3.1.187496374)
+
+newmtl naranja_dec
+Kd 0.6208 0.24504 0.08808
+Ka 0 0 0
+Ke 0 0 0
+d 0.980652
+illum 1
+
+newmtl negro_dec
+Kd 0.0274715 0.0245705 0.0218571
+Ka 0 0 0
+Ke 0 0 0
+d 1
+illum 1
+
+newmtl medio_decen
+Kd 0.412 0.382965 0.36462
+Ka 0 0 0
+Ke 0 0 0
+d 1
+illum 1
+
+newmtl marron_dec
+Kd 0.544 0.361218 0.249696
+Ka 0 0 0
+Ke 0 0 0
+d 0.787091
+illum 1
+
+newmtl JoinedMaterial_#5
+Kd 0.543645 0.510086 0.462063
+Ka 0 0 0
+Ke 0 0 0
+d 1
+illum 1
+

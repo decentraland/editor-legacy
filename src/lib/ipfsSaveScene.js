@@ -10,14 +10,14 @@ const urlParts = window.location.href.split('/')
 const sceneName = urlParts[urlParts.length - 1]
 
 function bindName(name, hash) {
-  return fetch(`http://localhost:3000/api/name/${name}/${hash}`, { method: 'POST' })
+  return fetch(`/api/name/${name}/${hash}`, { method: 'POST' })
     .then(res => res.json())
     .then(res => res.address)
 }
 
 function saveScene(content) {
   // return: string, ipfs hash
-  return fetch('http://localhost:3000/api/ipfs', {
+  return fetch('/api/ipfs', {
     method: 'POST',
     headers: { 'Content-type': 'application/json' },
     body: JSON.stringify({ files: [{ data: new Buffer(content).toString('base64'), path: 'parcel.aframe' }] })
