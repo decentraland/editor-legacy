@@ -1,4 +1,5 @@
 import React from 'react';
+import names from '../../lib/names';
 
 export default class Chat extends React.Component {
   constructor (props) {
@@ -128,16 +129,18 @@ export default class Chat extends React.Component {
 
   render () {
     const messages = this.state.messages.map((m, index) => {
-      return <div key={index}><b>{m.user.uuid.slice(0, 4)}:</b> {m.content}</div>
+      return <div key={index}><b>{names(m.user.uuid)}:</b> {m.content}</div>
     })
 
     const emojis = this.state.emojis.slice(0, 7).map((e, index) => {
       return <button onClick={() => this.sendEmote(e)} key={index}>{e}</button>
     })
 
+    const users = Object.keys(this.props.webrtcClient.peers).length
+
     return (
       <div className={`chat`}>
-        <h3>Chat</h3>
+      <h3>Chat { users > 0 && `(${users} connected)`}</h3>
 
         <div
           ref={(e) => { this.chatMessages = e }}
