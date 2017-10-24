@@ -21,6 +21,10 @@
       display: none;
     }
 
+    .ui.masthead.segment {
+      background: #2b2b2b url("/img/bg2.png") no-repeat left fixed;
+      background-size: cover;
+    }
     .masthead.segment {
       min-height: 700px;
       padding: 1em 0em;
@@ -70,6 +74,16 @@
       padding-bottom: 5em;
     }
 
+    .masthead .ui.huge.input {
+      border: 0px solid transparent;
+      transition: border 1s;
+    }
+
+    .masthead .ui.huge.input.error {
+      border: 1px solid red;
+      transition: border 1s;
+    }
+
     .footer.segment {
       padding: 5em 0em;
     }
@@ -106,7 +120,6 @@
       height: 2.3em;
       text-align: -webkit-center;
       border-radius: 5px;
-      border: 0;
       margin: 30px;
     }
 
@@ -129,10 +142,22 @@
           }
         })
       ;
-      $('#go')
-        .click(function(ev) {
-          window.location.href = '/scene/' + $('#name').val()
-        })
+      $('#name').on('keydown', function(ev) {
+        $('#name').api('remove error')
+        if (ev.keyCode === 13) {
+          submit()
+        }
+      })
+
+      function submit() {
+        if (!$('#name').val()) {
+          $('#name').api('set error')
+          return
+        }
+        window.location.href = '/scene/' + $('#name').val()
+      }
+
+      $('#go').click(submit)
 
     })
   ;
@@ -189,24 +214,15 @@
 
   <div class="ui vertical stripe segment">
     <div class="ui middle aligned stackable grid container">
-      <div class="row center aligned">
-        <div class="one wide column">
-        </div>
-        <div class="four wide column">
+      <div class="row">
+        <div class="five wide column"></div>
+        <div class="six wide column center aligned">
           <h3 class="ui header">Open Standards</h3>
-          <p>Based on open technologies we believe in: A-Frame, WebGL, WebRTC and IFPS</p>
-          <p><a class="ui button" href="https://github.com/decentraland/inspector">Go to GitHub</a></p>
-        </div>
-        <div class="one wide column">
-        </div>
-        <div class="four wide column">
+          <p>Based on open technologies: <br/>A-Frame, WebGL, WebRTC and IFPS</p>
+          <p><a class="ui button" href="https://github.com/decentraland/inspector">Code</a></p>
           <h3 class="ui header">Real Time Editing</h3>
           <p>Decentralized communications through WebRTC are used to apply changes in real time, and chat through voice and text while creating the scene.</p>
           <p><a class="ui button" href="https://chat.decentraland.org/">Find a team</a></p>
-        </div>
-        <div class="one wide column">
-        </div>
-        <div class="four wide column">
           <h3 class="ui header">Upload and Resume on IPFS</h3>
           <p>Store your work on the permanent web, and resume working on it later.</p>
           <p><a class="ui button" href="/scene/decentraland">Load Sample Scene</a></p>
