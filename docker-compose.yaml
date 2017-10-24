@@ -1,0 +1,45 @@
+version: "2"
+
+services:
+  nginx:
+    image: nginx
+    volumes:
+      - ./nginx/letsencrypt:/etc/letsencrypt
+      - ./nginx/keys:/etc/nginx/keys
+      - ./nginx/nginx.conf:/etc/nginx/nginx.conf
+      - ./logs:/var/log/nginx
+    ports:
+      - "4444:443"
+    networks:
+      - outside
+      - internal
+  editor:
+    build:
+      context: ./
+    ports:
+      - "4040:4040"
+    volumes:
+      - ./assets:/opt/inspector/assets
+      - ./dist:/opt/inspector/dist
+      - ./public:/opt/inspector/public
+      - ./scripts:/opt/inspector/scripts
+      - ./src:/opt/inspector/src
+      - ./vendor:/opt/inspector/vendor
+      - ./package.json:/opt/inspector/package.json
+      - ./server.js:/opt/inspector/server.js
+      - ./webpack.config.js:/opt/inspector/webpack.config.js
+    networks:
+      - internal
+  ipfs:
+    build:
+      context: ./ipfs-node
+    ports:
+      - "3000:3000"
+    networks:
+      - internal
+
+networks:
+  internal:
+    internal: true
+  outside:
+    driver: bridge

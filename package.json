@@ -1,7 +1,7 @@
 {
-  "name": "aframe-inspector",
-  "version": "0.7.1",
-  "description": "A visual inspector tool for A-Frame.",
+  "name": "decentraland-editor",
+  "version": "0.1.0",
+  "description": "Collaborative, real time edition of parcels, with IPFS uploading",
   "main": "dist/aframe-inspector.min.js",
   "scripts": {
     "build": "webpack --progress --colors",
@@ -16,7 +16,7 @@
     "test": "jest --watch",
     "test:ci": "jest"
   },
-  "repository": "aframevr/aframe-inspector",
+  "repository": "decentraland/editor",
   "license": "MIT",
   "dependencies": {
     "classnames": "^2.2.5",
@@ -70,6 +70,9 @@
   "keywords": [
     "3d",
     "aframe",
+    "decentraland",
+    "ipfs",
+    "ethereum",
     "editor",
     "inspector",
     "three.js",

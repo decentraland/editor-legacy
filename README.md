@@ -1,41 +1,28 @@
-# A-Frame Inspector
+# Decentraland Parcel Editor
 
-[![build status][travis-image]][travis-url]
+Edit a scene in real time with other users.
 
-A visual inspector tool for [A-Frame](https://aframe.io) scenes. Just hit
-`<ctrl> + <alt> + i` on any A-Frame scene to open up the Inspector. Check out
-[the guide](https://aframe.io/docs/master/introduction/visual-inspector-and-dev-tools.html).
+* WebRTC Connections are created between users to sync any changes on the same scene
+* Audio and text chat is available for all concurrent users
+* The save button in the top-left corner uploads the scene to IPFS to continue working on it later
 
-[VIEW DEMO](https://aframe.io/aframe-inspector/example/)
+Next steps:
 
-![Inspector Preview](https://cloud.githubusercontent.com/assets/674727/17754902/b9f6f09a-648b-11e6-8319-a4344744fed7.png)
+* Uploading a parcel definition to the testnet [LAND](https://github.com/decentraland/land) contract
 
-## Using the Inspector
+This is based on A-Frame's visual inspector tool for scenes. To preview the scene in first person, press
+`<ctrl> + <alt> + i`. Make sure to check out A-Frame's [inspector repository](https://github.com/a-frame/inspector)
 
-A-Frame comes with a **keyboard shortcut** to inject the inspector. Just open
-up any A-Frame scene (running at least A-Frame v0.3.0) and press **`<ctrl> +
-<alt> + i`** to inject the inspector, just like you would use a DOM inspector:
-
-This is done with the `inspector` component. By default, this is set on the
-scene already. If we want, we can specify a specific build of the Inspector to
-inject by passing a URL.
-
-```html
-<a-scene inspector="url: https://aframe.io/releases/0.3.0/aframe-inspector.min.js">
-  <!-- Scene... -->
-</a-scene>
-```
+[VIEW DEMO](https://editor.decentraland.org)
 
 ## Local Development
 
 ```bash
-git clone git@github.com:aframevr/aframe-inspector.git
-cd aframe-inspector
+git clone git@github.com:decentraland/editor.git
+cd editor
+git submodule init
+git submodule update
+docker-compose up
 npm install
-npm start
+npm run build
 ```
-
-Then navigate to __[http://localhost:3333/example/](http://localhost:3333/example/)__
-
-[travis-image]: https://img.shields.io/travis/aframevr/aframe-inspector.svg?style=flat-square
-[travis-url]: https://travis-ci.org/aframevr/aframe-inspector
