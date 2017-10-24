@@ -31,8 +31,13 @@ inject by passing a URL.
 ```bash
 git clone git@github.com:aframevr/aframe-inspector.git
 cd aframe-inspector
+git submodule init
+git submodule update
+docker-compose build
+docker-compose up -d
 npm install
-npm start
+npm start &
+npm run dev &
 ```
 
 Then navigate to __[http://localhost:3333/example/](http://localhost:3333/example/)__
