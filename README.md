@@ -26,3 +26,5 @@ docker-compose up
 npm install
 npm run build
 ```
+
+Then load the server on `https://localhost:4444/`.
