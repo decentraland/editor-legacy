@@ -25,6 +25,9 @@ services:
       - ./scripts:/opt/inspector/scripts
       - ./src:/opt/inspector/src
       - ./vendor:/opt/inspector/vendor
+      - ./package.json:/opt/inspector/package.json
+      - ./server.js:/opt/inspector/server.js
+      - ./webpack.config.js:/opt/inspector/webpack.config.js
     networks:
       - internal
   ipfs:
