@@ -1,5 +1,7 @@
 # Decentraland Parcel Editor
 
+[https://editor.decentraland.org](https://editor.decentraland.org)
+
 Edit a scene in real time with other users.
 
 * WebRTC Connections are created between users to sync any changes on the same scene
@@ -13,8 +15,6 @@ Next steps:
 This is based on A-Frame's visual inspector tool for scenes. To preview the scene in first person, press
 `<ctrl> + <alt> + i`. Make sure to check out A-Frame's [inspector repository](https://github.com/a-frame/inspector)
 
-[VIEW DEMO](https://editor.decentraland.org)
-
 ## Local Development
 
 ```bash
@@ -26,3 +26,5 @@ docker-compose up
 npm install
 npm run build
 ```
+
+Then, go to `https://localhost:4444/`
