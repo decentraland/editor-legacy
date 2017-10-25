@@ -195,15 +195,28 @@ h1, h2, h3, h4 {
 .hero .choose-scene input[type="text"] {
   border: none;
   border-bottom: 1px solid #E3E3E3;
-  text-align: center;
   margin-right: 20px;
+  text-align: center;
   outline-color: #E3E3E3;
+  color: #000;
 }
+
 .hero .choose-scene input[type="submit"] {
   border: none;
   background-color: transparent;
   font-size: 14px;
   color: #000;
+}
+
+@media (max-width: 768px) {
+  .hero .choose-scene input[type="text"] {
+    margin-right: 0;
+  }
+
+  .hero .choose-scene input[type="submit"] {
+    margin: 15px auto 0;
+    display: block;
+  }
 }
 
 /* ----------------------------------------
@@ -262,4 +275,10 @@ footer .social-icons .icon:last-child {
 footer .copyright {
   margin-top: 80px;
   font-size: 14px;
+}
+
+@media (max-width: 992px) {
+  footer .col-xs-12 {
+    margin-bottom: 15px;
+  }
 }
