@@ -1,4 +1,5 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 import classnames from 'classnames';
 import debounce from 'lodash.debounce';
 import {removeEntity, cloneEntity} from '../../actions/entity';
@@ -19,11 +20,11 @@ const gaTrackSearchEntity = debounce(() => {
 
 export default class SceneGraph extends React.Component {
   static propTypes = {
-    onChange: React.PropTypes.func,
-    scene: React.PropTypes.object,
-    value: React.PropTypes.string,
-    visible: React.PropTypes.bool,
-    webrtcClient: React.PropTypes.object
+    onChange: PropTypes.func,
+    scene: PropTypes.object,
+    value: PropTypes.string,
+    visible: PropTypes.bool,
+    webrtcClient: PropTypes.object
   };
 
   static defaultProps = {
