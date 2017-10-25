@@ -1,0 +1,13 @@
+@font-face {
+    font-family: "SF UI Text Regular";
+    src: url('../fonts/SF-UI-Text-Regular.otf') format('opentype');
+    font-weight: normal;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: "SF UI Text SemiBold";
+    src: url('../fonts/SF-UI-Text-Semibold.otf') format('opentype');
+    font-weight: normal;
+    font-style: normal;
+}
