@@ -1,0 +1,265 @@
+html, body {
+  height: 100%;
+}
+
+body {
+  min-height: 100%;
+  font-size: 20px;
+  font-family: "SF UI Text Regular", Helvetica, sans-serif;
+  background-color: #FFFFFF;
+  color: #929292;
+}
+
+h1, h2, h3, h4 {
+  color: #000000;
+}
+
+.white-bkg {
+  background-color: #FFF;
+}
+
+.gray-bkg {
+  background-color: #FCFCFC;
+}
+
+/* ----------------------------------------
+  NAVBAR */
+
+.navbar {
+  max-width: 1170px;
+  padding: 0 20px;
+  margin-right: auto;
+  margin-left: auto;
+  border-radius: 0;
+  margin-bottom: 0;
+  background-color: transparent;
+  color: #232323;
+}
+
+.navbar-header {
+  float: left;
+}
+
+.navbar-logo {
+  padding: 20px 0;
+  float: left;
+  display: block;
+}
+
+.navbar-logo > h1 {
+  margin: 0 10px;
+  font-size: 18px;
+  line-height: 50px;
+  color: #000000;
+  font-family: "SF UI Text SemiBold", Helvetica, sans-serif;
+}
+
+.navbar-logo .icon-decentraland {
+  width: 52px;
+  height: 52px;
+}
+
+.navbar-container {
+  margin-top: 18px;
+  float: right;
+}
+
+.nav.navbar-nav {
+  padding-right: 18px;
+}
+
+.nav.navbar-nav li {
+  float: left;
+}
+
+.nav.navbar-nav li a {
+  font-size: 14px;
+  color: #232323;
+}
+
+.nav > li > a {
+  padding: 10px 5px;
+}
+
+.nav > li > a.rocketchat {
+  color: #CB0628;
+}
+
+.nav > li > a:hover, .nav > li > a:focus {
+  background-color: initial;
+  color: #999;
+}
+
+@media (min-width: 400px) {
+  .navbar-logo {
+    padding: 20px 10px;
+  }
+
+  .nav > li > a {
+    padding: 10px;
+  }
+}
+
+@media (min-width: 768px) {
+  .navbar-logo {
+    margin-left: -15px;
+  }
+
+  .navbar-container {
+    margin-top: 25px;
+  }
+
+  .nav.navbar-nav {
+    padding-right: 0;
+  }
+
+  .nav > li > a {
+    padding: 10px 15px;
+  }
+}
+
+/* ----------------------------------------
+  ICONS */
+
+.icon {
+  background-position: 0 0;
+  background-size: cover;
+  background-repeat: no-repeat;
+  display: inline-block;
+}
+
+.icon-decentraland {
+  width: 152px;
+  height: 152px;
+  background-image: url("https://decentraland.org/images/icons.svg");
+}
+
+.social-icons .icon {
+  width: 17px;
+  height: 16px;
+  background-image: url("../img/social-icons.svg");
+  display: inline-block;
+}
+
+.social-icon-twitter  {}
+.social-icon-chat     { background-position: -42px 0; }
+.social-icon-github   { background-position: -81px 0; }
+.social-icon-forum    { background-position: -122px 0; }
+.social-icon-reddit   { background-position: -163px 0; }
+.social-icon-facebook { background-position: -202px 0; }
+
+/* ----------------------------------------
+  BUTTONS */
+
+.btn {
+  border-radius: 50px;
+}
+
+.btn-primary {
+  padding: 12px 24px;
+  font-size: 14px;
+  border-radius: 6px;
+  border: none;
+  background-color: #000000;
+  color: #FFF;
+}
+
+.btn-primary:hover {
+  background-color: #3B3B3B;
+}
+
+/* ----------------------------------------
+  HERO */
+
+.hero {
+  padding-bottom: 136px;
+}
+
+.hero img {
+  margin: 100px auto 0;
+}
+
+.hero h1.title {
+  font-size: 44px;
+}
+
+.hero .main-text {
+  margin-top: -60px;
+}
+
+.hero p.subtitle {
+  margin: 19px 0 80px;
+  font-size: 19px;
+}
+
+.hero .choose-scene input[type="text"] {
+  border: none;
+  border-bottom: 1px solid #E3E3E3;
+  text-align: center;
+  margin-right: 20px;
+  outline-color: #E3E3E3;
+}
+.hero .choose-scene input[type="submit"] {
+  border: none;
+  background-color: transparent;
+  font-size: 14px;
+  color: #000;
+}
+
+/* ----------------------------------------
+  KEY POINTS */
+
+.key-points {
+  padding: 136px 0;
+}
+
+.key-points .key-point {
+  max-width: 498px;
+  margin-left: auto;
+  margin-right: auto;
+  margin-bottom: 136px;
+}
+.key-points .key-point:last-child {
+  margin-bottom: 0;
+}
+
+.key-points h3 {
+  font-size: 24px;
+  color: #000;
+}
+
+.key-points p {
+  margin: 9px 0 40px;
+}
+
+/* ----------------------------------------
+  FOOTER */
+
+footer {
+  padding: 136px;
+}
+
+footer b {
+  font-size: 19px;
+  font-family: "SF UI Text SemiBold", Helvetica, sans-serif;
+  color: #000;
+}
+
+footer .useful-links a {
+  font-size: 14px;
+  padding: 0 24px;
+  color: #000;
+  display: inline-block;
+}
+
+footer .social-icons .icon {
+  margin-right: 24px;
+}
+footer .social-icons .icon:last-child {
+  margin-right: 0;
+}
+
+footer .copyright {
+  margin-top: 80px;
+  font-size: 14px;
+}
