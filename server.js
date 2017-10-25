@@ -2,14 +2,16 @@ const path = require('path')
 const express = require('express')
 const bodyParser = require('body-parser')
 const proxy = require('express-http-proxy')
+const assert = require('assert')
+const Scene = require('./server/scene')
 
 const app = express()
 const indexPath = path.join(__dirname, 'public', 'index.html')
 const landingPath = path.join(__dirname, 'public', 'landing.html')
-app.use('/api', proxy('localhost:3000'));
+
+app.use('/api', proxy('localhost:3000'))
 
 const port = (process.env.PORT || 4040)
-var connections = []
 
 const sse = function (req, res, next) {
   res.sseSetup = () => {
@@ -36,8 +38,25 @@ app.get('/scene/:name', function (_, res) { res.sendFile(indexPath) })
 
 app.listen(port)
 
+// All the scenes we are acting as a signalhub for
+var scenes = {}
+
+// Get scene from object or create it, indexed by name
+function getOrCreateScene (name) {
+  assert(typeof name === 'string')
+
+  if (scenes[name]) {
+    return scenes[name]
+  } else {
+    const scene = new Scene(name)
+    scenes[name] = scene
+    return scene
+  }
+}
+
 // Announce that I am using the inspector and am available to connect to
-app.post('/announce', (req, res) => {
+app.post('/scene/:name/announce', (req, res) => {
+  const scene = getOrCreateScene(req.params.name)
   const uuid = req.body.uuid
 
   const packet = {
@@ -46,7 +65,7 @@ app.post('/announce', (req, res) => {
     uuid: uuid
   }
 
-  connections.forEach((c) => {
+  scene.connections.forEach((c) => {
     // Don't announce to self
     if (c.uuid !== uuid) {
       c.res.sseSend(packet)
@@ -57,7 +76,8 @@ app.post('/announce', (req, res) => {
 })
 
 // Send signalling data to another user
-app.post('/:uuid/signal', (req, res) => {
+app.post('/scene/:name/:uuid/signal', (req, res) => {
+  const scene = getOrCreateScene(req.params.name)
   const uuid = req.params.uuid
 
   const packet = {
@@ -71,7 +91,7 @@ app.post('/:uuid/signal', (req, res) => {
   // if the other client doesn't exist
   var result = false
 
-  connections.forEach((c) => {
+  scene.connections.forEach((c) => {
     if (c.uuid === uuid) {
       c.res.sseSend(packet)
       result = true
@@ -82,22 +102,36 @@ app.post('/:uuid/signal', (req, res) => {
 })
 
 // SSE connection listening for signalling and announce data
-app.get('/:uuid/listen', (req, res) => {
+app.get('/scene/:name/:uuid/listen', (req, res) => {
+  const scene = getOrCreateScene(req.params.name)
+
   res.sseSetup()
 
+  // Send an accept message
   res.sseSend({
     type: 'accept'
   })
 
-  setInterval(() => {
+  // Send a ping to keep the connection alive
+  const keepAlive = setInterval(() => {
     res.sseSend({
       type: 'ping'
     })
   }, 5000)
 
-  connections.push({
+  // Create a connection object that we can add and remove from the scene
+  const connection = {
     uuid: req.params.uuid,
     res: res
+  }
+
+  // Add conncetion
+  scene.add(connection)
+
+  // On the stream being closed we remove from the client
+  res.on('close', () => {
+    scene.remove(connection)
+    clearInterval(keepAlive)
   })
 })
 

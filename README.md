@@ -22,6 +22,7 @@ git clone git@github.com:decentraland/editor.git
 cd editor
 git submodule init
 git submodule update
+docker-compose build
 docker-compose up
 npm install
 npm run build

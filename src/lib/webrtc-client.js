@@ -2,16 +2,22 @@
 import uuid from 'uuid/v4'
 import Peer from 'simple-peer'
 import EventEmitter from 'events'
-
-const SERVER_URL = ''
+import assert from 'assert'
 
 export default class WebrtcClient extends EventEmitter {
-  constructor () {
+  constructor (sceneName) {
     super()
+
+    assert(typeof sceneName === 'string', 'sceneName not supplied')
+    this.sceneName = sceneName
 
     this.uuid = uuid()
     this.peers = {}
     this.startedAt = this.getEpoch()
+  }
+
+  get endpoint () {
+    return `/scene/${this.sceneName}`
   }
 
   getEpoch () {
@@ -36,7 +42,7 @@ export default class WebrtcClient extends EventEmitter {
   }
 
   connectToEventSource () {
-    this.source = new EventSource(`${SERVER_URL}/${this.uuid}/listen`)
+    this.source = new EventSource(`${this.endpoint}/${this.uuid}/listen`)
 
     this.source.addEventListener('message', this.onMessage.bind(this), false)
 
@@ -68,7 +74,7 @@ export default class WebrtcClient extends EventEmitter {
 
   sendAnnounce () {
     if (this.connected) {
-      fetch(`${SERVER_URL}/announce`, {
+      fetch(`${this.endpoint}/announce`, {
         method: 'POST',
         headers: this.headers,
         body: JSON.stringify({
@@ -137,7 +143,7 @@ export default class WebrtcClient extends EventEmitter {
       })
 
       p.on('signal', (data) => {
-        fetch(`${SERVER_URL}/${uuid}/signal`, {
+        fetch(`${this.endpoint}/${uuid}/signal`, {
           method: 'POST',
           headers: this.headers,
           body: JSON.stringify({
@@ -179,7 +185,7 @@ export default class WebrtcClient extends EventEmitter {
     })
 
     p.on('signal', (data) => {
-      fetch(`${SERVER_URL}/${uuid}/signal`, {
+      fetch(`${this.endpoint}/${uuid}/signal`, {
         method: 'POST',
         headers: this.headers,
         body: JSON.stringify({

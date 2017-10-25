@@ -1,3 +1,5 @@
+/* globals fetch */
+
 import React from 'react'
 import ReactModal from 'react-modal'
 
@@ -5,14 +7,15 @@ import Header from '../components/components/Header'
 import Footer from '../components/components/Footer'
 import Loading from '../components/components/Loading'
 import defaultScene from './defaultScene'
+import getSceneName from './utils'
 
-const urlParts = window.location.href.split('/')
-const sceneName = urlParts[urlParts.length - 1]
-function fetchJSON(url) {
+const sceneName = getSceneName()
+
+function fetchJSON (url) {
   return fetch(url).then(res => res.json())
 }
 
-function loadScene(name) {
+function loadScene (name) {
   let ipnsName, ipfsName
   const defaultData = {
     default: true,

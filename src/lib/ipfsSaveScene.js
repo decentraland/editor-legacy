@@ -1,3 +1,5 @@
+/* globals fetch */
+
 import React from 'react'
 import ReactModal from 'react-modal'
 
@@ -5,17 +7,17 @@ import Events from './Events'
 import Header from '../components/components/Header'
 import Footer from '../components/components/Footer'
 import Loading from '../components/components/Loading'
+import getSceneName from './utils'
 
-const urlParts = window.location.href.split('/')
-const sceneName = urlParts[urlParts.length - 1]
+const sceneName = getSceneName()
 
-function bindName(name, hash) {
+function bindName (name, hash) {
   return fetch(`/api/name/${name}/${hash}`, { method: 'POST' })
     .then(res => res.json())
     .then(res => res.address)
 }
 
-function saveScene(content) {
+function saveScene (content) {
   // return: string, ipfs hash
   return fetch('/api/ipfs', {
     method: 'POST',
