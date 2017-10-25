@@ -56,7 +56,6 @@
     "open": "0.0.5",
     "postcss-import": "^8.1.2",
     "postcss-loader": "^0.9.1",
-    "react": "^15.3.2",
     "react-test-renderer": "^15.3.2",
     "shx": "^0.1.2",
     "style-loader": "^0.13.1",
