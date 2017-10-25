@@ -7,7 +7,7 @@ import Header from '../components/components/Header'
 import Footer from '../components/components/Footer'
 import Loading from '../components/components/Loading'
 import defaultScene from './defaultScene'
-import getSceneName from './utils'
+import {getSceneName} from './utils'
 
 const sceneName = getSceneName()
 

@@ -8,6 +8,9 @@ COPY package.json .
 
 RUN npm install
 
+WORKDIR /opt/inspector
+COPY server server
+
 EXPOSE 4040
 
 CMD npm start

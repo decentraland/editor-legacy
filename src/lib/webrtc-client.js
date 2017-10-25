@@ -42,11 +42,13 @@ export default class WebrtcClient extends EventEmitter {
   }
 
   connectToEventSource () {
+    console.log('#connectToEventSource')
     this.source = new EventSource(`${this.endpoint}/${this.uuid}/listen`)
 
     this.source.addEventListener('message', this.onMessage.bind(this), false)
 
     this.source.addEventListener('open', (e) => {
+      console.log('#connectToEventSource#open')
       this.sendAnnounce()
     }, false)
 
@@ -57,11 +59,17 @@ export default class WebrtcClient extends EventEmitter {
     }, false)
 
     setInterval(() => {
+      console.log('#connectToEventSource#sendAnnounce')
       this.sendAnnounce()
     }, 5000)
+
+    console.log('#connectToEventSource#hmmm')
   }
 
   get connected () {
+    console.log('#connected?')
+    console.log(this.source.readyState)
+
     return this.source.readyState === EventSource.OPEN
   }
 
@@ -235,13 +243,11 @@ export default class WebrtcClient extends EventEmitter {
     peer.on('stream', function (stream) {
       // got remote audio stream, now let's play it in a audio tag
       document.body.appendChild(audio)
-      // audio.src = window.URL.createObjectURL(stream)
-      // audio.play()
+      audio.src = window.URL.createObjectURL(stream)
+      audio.play()
     })
 
     peer.on('data', (data) => {
-      // console.log('data: ' + data)
-
       var packet
 
       try {
