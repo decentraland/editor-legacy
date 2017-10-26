@@ -13,7 +13,7 @@ Next steps:
 * Uploading a parcel definition to the testnet [LAND](https://github.com/decentraland/land) contract
 
 This is based on A-Frame's visual inspector tool for scenes. To preview the scene in first person, press
-`<ctrl> + <alt> + i`. Make sure to check out A-Frame's [inspector repository](https://github.com/a-frame/inspector)
+`<ctrl> + <alt> + i`. Make sure to check out A-Frame's [inspector repository](https://github.com/aframevr/aframe-inspector)
 
 ## Local Development
 
