@@ -1,13 +1,26 @@
 const path = require('path')
 const express = require('express')
+const webpack = require('webpack');
 const bodyParser = require('body-parser')
 const proxy = require('express-http-proxy')
 const assert = require('assert')
 const Scene = require('./server/scene')
+const webpackConfig = require('./webpack.config');
+const compiler = webpack(webpackConfig);
 
 const app = express()
 const indexPath = path.join(__dirname, 'public', 'index.html')
 const landingPath = path.join(__dirname, 'public', 'landing.html')
+
+if (process.env.NODE_ENV !== 'production') {
+  app.use(require('webpack-dev-middleware')(compiler, {
+    noInfo: true, publicPath: webpackConfig.output.publicPath
+  }));
+
+  app.use(require('webpack-hot-middleware')(compiler, {
+    log: console.log, path: '/__webpack_hmr', heartbeat: 10 * 1000
+  }));
+}
 
 app.use('/api', proxy('localhost:3000'))
 
