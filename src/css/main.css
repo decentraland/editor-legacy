@@ -149,6 +149,37 @@ input {
   padding: 9px 0 5px;
 }
 
+
+/* Toolbar icons */
+
+#scenegraphToolbar a.button {
+  border: 1px solid #999;
+  position: relative;
+  display: inline-block;
+  margin: 0 2px 0 0;
+  padding: 0;
+}
+
+#scenegraphToolbar a.button img{
+  width: 40px;
+  display: inline-block;
+}
+
+#scenegraphToolbar a.button:hover{
+  border: 1px solid white;
+}
+#scenegraphToolbar a.button:active{
+  border: 1px solid white;
+  top: 1px;
+  left: 1px;
+}
+#scenegraphToolbar a.button:active img{
+  opacity: 0.5;
+  background: black;
+}
+
+/* Search... */
+
 .search {
   color: #aaa;
   font-size: 16px;
@@ -1333,3 +1364,4 @@ div.modal-footer p{
   font-weight: 100;
   color: #999;
 }
+

@@ -57,9 +57,15 @@ export default class Toolbar extends React.Component {
       <div id="scenegraphToolbar">
         <div className='scenegraph-actions'>
           <a className='button fa fa-download' title='Save HTML' onClick={this.saveScene}></a>
-          <a className='button fa fa-plus' title='Add a box' onClick={() => this.addEntity('a-box')}></a>
-          <a className='button fa fa-plus' title='Add a model' onClick={() => this.addEntity('a-obj-model')}></a>
-          <a className='button fa fa-plus' title='Add a sphere' onClick={() => this.addEntity('a-sphere')}></a>
+          <a className='button' title='Add a box' onClick={() => this.addEntity('a-box')}>
+            <img src='/img/icons/icon-cube.png' />
+          </a>
+          <a className='button' title='Add a sphere' onClick={() => this.addEntity('a-sphere')}>
+            <img src='/img/icons/icon-sphere.png' />
+          </a>
+          <a className='button' title='Add a model' onClick={() => this.addEntity('a-obj-model')}>
+            <img src='/img/icons/icon-obj.png' />
+          </a>
         </div>
 
         {this.state.motionCaptureUIEnabled && <MotionCapture/>}
