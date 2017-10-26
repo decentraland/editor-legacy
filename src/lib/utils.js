@@ -98,11 +98,19 @@ function saveString (text, filename, mimeType) {
 
 }
 
+// Get the current scene name from the URL
+function getSceneName () {
+  const urlParts = window.location.href.split('/')
+  const sceneName = urlParts[urlParts.length - 1]
+  return sceneName
+}
+
 module.exports = {
   equal: equal,
   getNumber: getNumber,
   getMajorVersion: getMajorVersion,
   getOS: getOS,
+  getSceneName: getSceneName,
   os: getOS(),
   injectCSS: injectCSS,
   injectJS: injectJS,

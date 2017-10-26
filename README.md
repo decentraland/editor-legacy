@@ -22,9 +22,10 @@ git clone git@github.com:decentraland/editor.git
 cd editor
 git submodule init
 git submodule update
+docker-compose build
 docker-compose up
 npm install
 npm run build
 ```
 
-Then, go to `https://localhost:4444/`
+Then load the server on `https://localhost:4444/`.

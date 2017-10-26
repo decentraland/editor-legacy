@@ -13,7 +13,7 @@ import ModalTextures from './modals/ModalTextures';
 import ModalHelp from './modals/ModalHelp';
 import SceneGraph from './scenegraph/SceneGraph';
 import ToolBar from './ToolBar';
-import {injectCSS, injectJS} from '../lib/utils';
+import {getSceneName, injectCSS, injectJS} from '../lib/utils';
 import '../css/main.css';
 
 import IPFSLoader from '../lib/ipfsLoader'
@@ -23,11 +23,11 @@ import Apply from '../../vendor/apply'
 import WebrtcClient from '../lib/webrtc-client'
 import {setEntityInnerHTML} from '../actions/entity';
 
-var webrtcClient = new WebrtcClient()
+var webrtcClient = new WebrtcClient(getSceneName())
 
 // Megahack to include font-awesome.
 injectCSS('https://maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css');
-injectCSS('https://fonts.googleapis.com/css?family=Roboto:400,300,500');
+// injectCSS('https://fonts.googleapis.com/css?family=Roboto:400,300,500');
 
 export default class Main extends React.Component {
   constructor (props) {
