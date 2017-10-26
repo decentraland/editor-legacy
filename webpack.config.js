@@ -1,15 +1,14 @@
 var path = require('path');
 var childProcess = require('child_process');
-var autoprefixer = require('autoprefixer');
-var postcssImport = require('postcss-import');
 var webpack = require('webpack');
 
 // Add HMR for development environments only.
 var entry = ['./src/components/Main.js'];
 if (process.env.NODE_ENV === 'dev') {
   entry = [
-    'webpack-dev-server/client?http://localhost:3333'
+    // 'webpack-dev-server/client?http://localhost:3333'
     // 'webpack/hot/only-dev-server'
+    'webpack-hot-middleware/client?path=/__webpack_hmr&timeout=20000&reload=true'
   ].concat(entry);
 }
 
@@ -43,6 +42,11 @@ if (process.env.NODE_ENV === 'production') {
   plugins.push(new webpack.optimize.UglifyJsPlugin({
     compress: {warnings: false}
   }));
+} else {
+  // Development
+  plugins.push(new webpack.NamedModulesPlugin());
+  plugins.push(new webpack.HotModuleReplacementPlugin());
+  plugins.push(new webpack.NoEmitOnErrorsPlugin());
 }
 
 // dist/
@@ -57,8 +61,9 @@ if (process.env.AFRAME_DIST) {
 
 module.exports = {
   devServer: {
+    contentBase: './dist',
     disableHostCheck: true,
-    port: 3333
+    hot: true
   },
   entry: entry,
   output: {
@@ -67,27 +72,27 @@ module.exports = {
     publicPath: '/dist/'
   },
   module: {
-    loaders: [
+    rules: [
       {
-        test: /\.js?$/,
+        test: /\.js$/,
         exclude: /(node_modules|bower_components)/,
-        loader: 'babel',
-        query: {
-          plugins: ['transform-class-properties'],
-          presets: ['es2015', 'react']
+        use: {
+          loader: 'babel-loader',
+          options: {
+            presets: ['env', 'es2015', 'react'],
+            plugins: ['transform-object-rest-spread', 'transform-class-properties']
+          }
         }
       },
       {
         test: /\.css$/,
-        loader:'style!css!postcss'
+        use: [
+          'style-loader',
+          { loader: 'css-loader', options: { importLoaders: 1 } },
+          'postcss-loader'
+        ]
       }
     ]
   },
-  plugins: plugins,
-  postcss: function (webpack) {
-    return [
-      postcssImport({addDependencyTo: webpack}),  // postcss/postcss-loader/issues/8
-      autoprefixer
-    ];
-  }
+  plugins: plugins
 };
