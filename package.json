@@ -23,6 +23,7 @@
     "clipboard": "^1.5.12",
     "express": "^4.16.2",
     "express-http-proxy": "^1.0.7",
+    "immutable": "^3.8.2",
     "invariant": "^2.2.2",
     "lodash.debounce": "^4.0.6",
     "prop-types": "^15.6.0",
@@ -30,7 +31,10 @@
     "react-dom": "^15.3.0",
     "react-file-reader-input": "^1.1.4",
     "react-modal": "^3.0.4",
+    "react-redux": "^5.0.6",
     "react-select": "^1.0.0-rc.1",
+    "redux": "^3.7.2",
+    "redux-saga": "^0.16.0",
     "simple-peer": "^8.1.1"
   },
   "devDependencies": {

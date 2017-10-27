@@ -4,6 +4,11 @@ const INSPECTOR = require('../lib/inspector.js');
 
 import React from 'react';
 import ReactDOM from 'react-dom';
+import { createStore, combineReducers, applyMiddleware, compose } from 'redux';
+import { Provider } from 'react-redux';
+import createSagaMiddleware from 'redux-saga';
+import reducer from './reducers';
+import sagas from './sagas';
 
 THREE.ImageUtils.crossOrigin = '';
 
@@ -24,6 +29,22 @@ import WebrtcClient from '../lib/webrtc-client'
 import {setEntityInnerHTML} from '../actions/entity';
 
 var webrtcClient = new WebrtcClient(getSceneName())
+
+// Setup Redux stuff
+const composeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose;
+const sagaMiddleware = createSagaMiddleware();
+
+const store = createStore(
+  combineReducers({
+    test: reducer
+  }),
+  {test: 'test'},
+  composeEnhancers(
+    //applyMiddleware(sagaMiddleware)
+  )
+);
+
+//sagaMiddleware.run(sagas);
 
 // Megahack to include font-awesome.
 injectCSS('https://maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css');
@@ -229,6 +250,14 @@ export default class Main extends React.Component {
   }
 }
 
+const App = () => process.env.NODE_ENV === 'dev' ? (
+  <Provider store={store}>
+    <Main />
+  </Provider>
+) : (
+  <Main />
+);
+
 (function init () {
   injectJS('https://ajax.googleapis.com/ajax/libs/webfont/1.6.16/webfont.js', function () {
     var webFontLoader = document.createElement('script');
@@ -244,7 +273,7 @@ export default class Main extends React.Component {
   div.setAttribute('data-aframe-inspector', 'app');
   document.body.appendChild(div);
   window.addEventListener('inspector-loaded', function () {
-    ReactDOM.render(<Main/>, div);
+    ReactDOM.render(<App />, div);
   });
   console.log('A-Frame Inspector Version:', VERSION, '(' + BUILD_TIMESTAMP + ' Commit: ' + COMMIT_HASH.substr(0, 7) + ')');
 })();
