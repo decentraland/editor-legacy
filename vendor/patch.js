@@ -75,6 +75,10 @@ function Patch (global, root, broadcast, filter) {
         const clone = mutation.target.cloneNode(true)
         if (mutation.removedNodes.length) {
           mutation.removedNodes.forEach(removed => {
+            if (!removed.nodeType === 1) {
+              return
+            }
+
             removed.setAttribute('data-dead', 'true')
             clone.appendChild(removed)
           })

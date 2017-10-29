@@ -176,9 +176,8 @@ export default class WebrtcClient extends EventEmitter {
   }
 
   connectToPeer (uuid) {
-    console.log(uuid)
     if (this.peers[uuid]) {
-      console.log('Already connected...')
+      // console.log('Already connected...')
       return
     }
 
