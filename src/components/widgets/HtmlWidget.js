@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 
 // Fixme - only strip uuid from inside tags
 function stripUUID (html) {
-  return html.replace(/data-uuid=".+?"/g, "")
+  return html.toString().replace(/data-uuid=".+?"/g, "")
 }
 
 export default class HtmlWidget extends React.Component {
@@ -19,11 +19,16 @@ export default class HtmlWidget extends React.Component {
 
   constructor (props) {
     super(props);
-    this.state = {value: stripUUID(this.target.innerHTML) };
+    this.state = {value: this.unformatHTML(this.target.innerHTML) };
   }
 
   componentWillReceiveProps (newProps) {
-    this.setState({value: stripUUID(this.target.innerHTML) });
+    this.setState({value: this.unformatHTML(this.target.innerHTML) });
+  }
+
+  // Take HTML and make it editable
+  unformatHTML (html) {
+    return stripUUID(html).replace(/\n/g, '').replace(/<br\s*\/*>/g, '\n');
   }
 
   // Format and tidy the html
@@ -32,11 +37,10 @@ export default class HtmlWidget extends React.Component {
     return new DOMParser().parseFromString(markup, "text/html").documentElement.innerHTML;
   }
 
-  onChange = (e) => {
+  onInput = (e) => {
     var value = e.target.value;
     this.setState({value});
-
-    this.target.innerHTML = this.formatHTML(this.state.value)
+    this.target.innerHTML = this.formatHTML(value)
   }
 
   get target () {
@@ -53,7 +57,7 @@ export default class HtmlWidget extends React.Component {
           wrap='soft'
           value={this.state.value}
           style={{width: '95%', height: '320px'}}
-          onChange={this.onChange}></textarea>
+          onInput={this.onInput}></textarea>
       </div>
     );
   }
