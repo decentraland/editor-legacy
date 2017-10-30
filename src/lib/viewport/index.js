@@ -4,6 +4,8 @@ import debounce from 'lodash.debounce';
 /* eslint-disable no-unused-vars */
 import TransformControls from '../vendor/threejs/TransformControls.js';
 import EditorControls from '../vendor/threejs/EditorControls.js';
+import VRControls from '../vendor/threejs/VRControls.js';
+import ViveController from '../vendor/threejs/ViveController.js';
 /* eslint-disable no-unused-vars */
 
 import {getNumber} from '../utils';
