@@ -27,8 +27,11 @@ export default class HtmlWidget extends React.Component {
   }
 
   // Take HTML and make it editable
+  // fixme - these regexps are gross and may strip content from text nodes
   unformatHTML (html) {
-    return stripUUID(html).replace(/\n/g, '').replace(/<br\s*\/*>/g, '\n');
+    return stripUUID(html)
+      .replace(/\n/g, '')
+      .replace(/<br\s*\/*>/g, '\n')
   }
 
   // Format and tidy the html
