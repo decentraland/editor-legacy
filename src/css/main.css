@@ -146,23 +146,40 @@ input {
 }
 
 .scenegraph-actions {
-  padding: 9px 0 5px;
+  padding: 9px 0 5px 4px;
 }
 
 
 /* Toolbar icons */
 
+#scenegraphToolbar h4{
+  margin: 0;
+  padding: 0 8px 4px 8px;
+  border-bottom: 1px solid #444;
+}
+
 #scenegraphToolbar a.button {
-  border: 1px solid #999;
   position: relative;
+  border-radius: 4px;
   display: inline-block;
-  margin: 0 2px 0 0;
+  border: 1px solid transparent;
+  margin: 0 0 0 2px;
   padding: 0;
+}
+
+#scenegraphToolbar a.button-download{
+  background: #111;
+  padding: 8px 16px;
+  border-radius: 4px;
+  font: inherit;
+  display: inline-block;
+  margin: 0 0 8px 0;
 }
 
 #scenegraphToolbar a.button img{
   width: 40px;
   display: inline-block;
+  border-radius: 4px;
 }
 
 #scenegraphToolbar a.button:hover{
