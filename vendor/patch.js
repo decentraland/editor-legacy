@@ -12,13 +12,19 @@ const uuid = require('uuid')
 const debounce = require('lodash.debounce')
 
 const UUID_KEY = 'data-uuid'
-const DEAD_NODE_NAME = 'dead'
+// const DEAD_NODE_NAME = 'dead'
 const PATCH_NODE_NAME = 'patch'
 const SNAPSHOT_NODE_NAME = 'snapshot'
 
-function Patch (global, root, broadcast, filter) {
+function isAframeEntity (node) {
+  return node.nodeName.toLowerCase().slice(0, 2) === 'a-'
+}
+
+function Patch (global, root, broadcast) {
   var document = root.ownerDocument
 
+  // Elements that we just recieved updates for, so when the mutation observer
+  // fires, we don't resend them.
   this.suppressed = new Set()
 
   function generateUUID () {
@@ -32,6 +38,9 @@ function Patch (global, root, broadcast, filter) {
     if (childNodes && el.nodeType === 1) {
       nodes = nodes.concat(Array.from(el.querySelectorAll('*')))
     }
+
+    // We only add tree IDs to aframe <a-.. /> elements
+    nodes = nodes.filter((node) => isAframeEntity(node))
 
     nodes.forEach((e) => {
       if (!e.getAttribute(UUID_KEY)) {
@@ -50,6 +59,7 @@ function Patch (global, root, broadcast, filter) {
 
   treeUUID(root, true)
 
+  // todo - use lodash.debounce
   let debounced
   let patch = document.createElement(PATCH_NODE_NAME)
   let debouncedBroadcast = data => {
@@ -72,10 +82,19 @@ function Patch (global, root, broadcast, filter) {
       if (this.suppressed.has(uuid)) {
         // nope
       } else {
-        const clone = mutation.target.cloneNode(true)
+        var target = mutation.target
+
+        while (!isAframeEntity(target)) {
+          target = target.parentNode
+        }
+
+        const clone = target.cloneNode(true)
+
         if (mutation.removedNodes.length) {
           mutation.removedNodes.forEach(removed => {
-            if (!removed.nodeType === 1) {
+            if (removed.nodeType !== 1) {
+              return
+            } else if (!isAframeEntity(removed)) {
               return
             }
 
@@ -83,6 +102,7 @@ function Patch (global, root, broadcast, filter) {
             clone.appendChild(removed)
           })
         }
+
         patch.appendChild(clone)
       }
     })

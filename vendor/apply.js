@@ -78,6 +78,9 @@ function Apply (root, patcher) {
 
       applyAttributes(target, n)
 
+      console.log('wut')
+      console.log(n)
+
       Array.from(n.childNodes).forEach((n) => {
         if (n.nodeName === '#text' || n.nodeName === '#comment') {
           return
@@ -91,8 +94,10 @@ function Apply (root, patcher) {
         } else if (!child) {
           child = document.createElement(n.nodeName)
           target.appendChild(child)
+          console.log('setting outerHTML')
           child.outerHTML = n.outerHTML
         } else {
+          console.log('wut?')
           // Ignore duplicate element - this is cause when the snapshot
           // and diff are sent at the same time, it's sort of a shitty
           // situation but I'm not sure how to fix it nicely.

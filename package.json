@@ -31,7 +31,8 @@
     "react-file-reader-input": "^1.1.4",
     "react-modal": "^3.0.4",
     "react-select": "^1.0.0-rc.1",
-    "simple-peer": "^8.1.1"
+    "simple-peer": "^8.1.1",
+    "tape": "^4.8.0"
   },
   "devDependencies": {
     "autoprefixer": "^6.3.7",
@@ -54,6 +55,7 @@
     "gh-pages": "^0.11.0",
     "gm": "^1.23.0",
     "jest": "^16.0.1",
+    "micro-dom": "scenevr/micro-dom",
     "object-assign": "^4.1.0",
     "open": "0.0.5",
     "postcss-import": "^8.0.2",
