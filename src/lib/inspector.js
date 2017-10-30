@@ -388,18 +388,69 @@ Inspector.prototype = {
     Events.emit('objectadded', object);
     Events.emit('scenegraphchanged');
   },
+  initVRControllers: function () {
+    this.intersected = [];
 
+    this.leftController = document.createElement('a-entity');
+    this.leftController.setAttribute('id', 'left-hand');
+    this.leftController.setAttribute('laser-controls', 'hand: left');
+    this.leftController.addEventListener('triggerdown', this.handleTriggerDown);
+    this.leftController.addEventListener('triggerup', this.handleTriggerUp);
+    // this.leftController.addEventListener('raycaster_intersected', (e) => console.log(e))
+    this.sceneEl.appendChild(this.leftController);
+
+    this.rightController = document.createElement('a-entity');
+    this.rightController.setAttribute('id', 'right-hand');
+    this.rightController.setAttribute('laser-controls', 'hand: right');
+    this.rightController.addEventListener('triggerdown', this.handleTriggerDown);
+    this.rightController.addEventListener('triggerup', this.handleTriggerUp);
+    // this.rightController.addEventListener('raycaster_intersected', (e) => console.log(e))
+    this.sceneEl.appendChild(this.rightController);
+  },
+  handleTriggerDown: function (event) {
+    var controller = event.target;
+    console.log(controller);
+    /* var intersections = getIntersections(controller);
+    if (intersections.length > 0) {
+      var intersection = intersections[0];
+      tempMatrix.getInverse(controller.matrixWorld);
+      var object = intersection.object;
+      object.matrix.premultiply(tempMatrix);
+      object.matrix.decompose(object.position, object.quaternion, object.scale);
+      object.material.emissive.b = 1;
+      controller.add(object);
+      controller.userData.selected = object;
+    } */
+  },
+  handleTriggerUp: function (event) {
+    var controller = event.target;
+    console.log(controller);
+    /* if (controller.userData.selected !== undefined) {
+      var object = controller.userData.selected;
+      object.matrix.premultiply(controller.matrixWorld);
+      object.matrix.decompose(object.position, object.quaternion, object.scale);
+      object.material.emissive.b = 0;
+      group.add(object);
+      controller.userData.selected = undefined;
+    } */
+  },
+  removeVRControllers: function () {
+    document.getElementById('left-hand').outerHTML = '';
+    document.getElementById('right-hand').outerHTML = '';
+  },
   initVRMode: function () {
     // First, close the editor view
     this.close();
     // Second, enter VR mode
     this.sceneEl.enterVR();
+    this.initVRControllers();
     Events.emit('vrmodechanged', true);
     this.renderExitVRButton(true);
   },
 
   closeVRMode: function () {
     this.sceneEl.exitVR();
+    this.removeVRControllers();
     this.renderExitVRButton(false);
     // Open back editor view
     this.open();
