@@ -61,10 +61,7 @@ export default class Toolbar extends React.Component {
     return (
       <div id="scenegraphToolbar">
         <div className='scenegraph-actions'>
-          <a className='button-download' title='Save HTML' onClick={this.saveScene}>Save</a>
-        </div>
-
-        <div className='scenegraph-actions'>
+          <a className='button-download' title='Save HTML' onClick={this.saveScene}>Save</a>{' '}
           <a className='button-download' title='Edit in VR' onClick={this.enterVR}>Edit in VR</a>
         </div>
 
