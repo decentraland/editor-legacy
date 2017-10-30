@@ -76,8 +76,6 @@ function Patch (global, root, broadcast) {
       debounced = null
       patch = document.createElement(PATCH_NODE_NAME)
       broadcast(data)
-
-      console.log(data)
     }, 25)
   }
 
