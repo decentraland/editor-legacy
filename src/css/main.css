@@ -1382,3 +1382,19 @@ div.modal-footer p{
   color: #999;
 }
 
+#dcl-editor-exit-vr-button {
+  width: 100px;
+  height: 40px;
+  position: absolute;
+  right: 50px;
+  bottom: 20px;
+  margin-top: 20px;
+  margin-bottom: 10px;
+  font-size: 12pt;
+  background-color: #ccc;
+  border-radius: 5px;
+  border: none;
+  box-shadow: none;
+  padding: 10px 15px 10px 15px;
+}
+

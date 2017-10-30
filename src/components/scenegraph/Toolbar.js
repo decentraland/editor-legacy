@@ -32,6 +32,11 @@ export default class Toolbar extends React.Component {
       motionCaptureUIEnabled: JSON.parse(localStorage.getItem(LOCALSTORAGE_MOCAP_UI))
     };
   }
+
+  enterVR () {
+    Events.emit('entervr')
+  }
+
   exportSceneToGLTF () {
     INSPECTOR.exporters.gltf.parse(AFRAME.scenes[0].object3D, function (result) {
       var output = JSON.stringify(result, null, 2);
@@ -57,6 +62,10 @@ export default class Toolbar extends React.Component {
       <div id="scenegraphToolbar">
         <div className='scenegraph-actions'>
           <a className='button-download' title='Save HTML' onClick={this.saveScene}>Save</a>
+        </div>
+
+        <div className='scenegraph-actions'>
+          <a className='button-download' title='Edit in VR' onClick={this.enterVR}>Edit in VR</a>
         </div>
 
         <h4>Add...</h4>

@@ -231,6 +231,14 @@ Inspector.prototype = {
       }
     });
 
+    Events.on('entervr', () => {
+      this.initVRMode();
+    });
+
+    Events.on('vrmodechanged', (isVRMode) => {
+      console.log(isVRMode ? 'is in VR mode!' : 'not in VR mode...');
+    });
+
     Events.on('entityselected', entity => {
       this.selectEntity(entity, false);
     });
@@ -379,6 +387,36 @@ Inspector.prototype = {
 
     Events.emit('objectadded', object);
     Events.emit('scenegraphchanged');
+  },
+
+  initVRMode: function () {
+    // First, close the editor view
+    this.close();
+    // Second, enter VR mode
+    this.sceneEl.enterVR();
+    Events.emit('vrmodechanged', true);
+    this.renderExitVRButton(true);
+  },
+
+  closeVRMode: function () {
+    this.sceneEl.exitVR();
+    this.renderExitVRButton(false);
+    // Open back editor view
+    this.open();
+    Events.emit('vrmodechanged', false);
+  },
+  // Not much "style" here...
+  renderExitVRButton: function (isVRMode) {
+    if (isVRMode) {
+      const exitButton = document.createElement('BUTTON');
+      const buttonText = document.createTextNode('Exit VR'); // Create a text node
+      exitButton.appendChild(buttonText);
+      exitButton.setAttribute('id', 'dcl-editor-exit-vr-button');
+      exitButton.addEventListener('click', this.closeVRMode.bind(this));
+      document.body.appendChild(exitButton);
+    } else {
+      document.getElementById('dcl-editor-exit-vr-button').outerHTML = '';
+    }
   }
 };
 
