@@ -1,3 +1,5 @@
+/* globals XMLSerializer */
+
 /*
 
   Todo:
@@ -62,6 +64,10 @@ function Patch (global, root, broadcast) {
   // todo - use lodash.debounce
   let debounced
   let patch = document.createElement(PATCH_NODE_NAME)
+
+  // const parser = new DOMParser()
+  // const patchDocument = parser.parseFromString(`<${PATCH_NODE_NAME} />`, 'text/xml')
+
   let debouncedBroadcast = data => {
     if (debounced) {
       clearTimeout(debounced)
@@ -70,6 +76,8 @@ function Patch (global, root, broadcast) {
       debounced = null
       patch = document.createElement(PATCH_NODE_NAME)
       broadcast(data)
+
+      console.log(data)
     }, 25)
   }
 
@@ -107,7 +115,12 @@ function Patch (global, root, broadcast) {
       }
     })
 
-    debouncedBroadcast(patch.outerHTML)
+    var xml = new XMLSerializer().serializeToString(patch)
+
+    // Fix me this is a terrible hack, need to work out how to use xmlserializer properly
+    xml = xml.replace(/\s*xmlns=".+?"/g, '')
+
+    debouncedBroadcast(xml)
   }
 
   var observer = new global.MutationObserver(obs)
