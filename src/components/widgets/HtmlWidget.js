@@ -26,12 +26,17 @@ export default class HtmlWidget extends React.Component {
     this.setState({value: stripUUID(this.target.innerHTML) });
   }
 
+  // Format and tidy the html
+  formatHTML (html) {
+    const markup = html.replace(/\n/g, '<br />')
+    return new DOMParser().parseFromString(markup, "text/html").documentElement.innerHTML;
+  }
+
   onChange = (e) => {
     var value = e.target.value;
     this.setState({value});
 
-    // Todo - parse / tidy up the html?
-    this.target.innerHTML = this.state.value
+    this.target.innerHTML = this.formatHTML(this.state.value)
   }
 
   get target () {
