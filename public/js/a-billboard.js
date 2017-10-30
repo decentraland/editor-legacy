@@ -14,8 +14,7 @@ AFRAME.registerPrimitive('a-billboard', extendDeep({}, meshMixin, {
     },
 
     material: {
-      shader: 'html',
-      target: '#html-element'
+      shader: 'html'
     },
 
     billboard: {
@@ -23,8 +22,8 @@ AFRAME.registerPrimitive('a-billboard', extendDeep({}, meshMixin, {
     },
 
     shadow: {
-      castShadow: true,
-      recieveShadow: true
+      cast: true,
+      receive: true
     }
   },
 
@@ -43,7 +42,10 @@ function randomId () {
 
 // Registering component in foo-component.js
 AFRAME.registerComponent('billboard', {
-  schema: {},
+  schema: {
+    active: {type: 'boolean'}
+  },
+
   init: function () {
     if (!this.el) {
       console.log('Init with no el')
@@ -69,7 +71,10 @@ AFRAME.registerComponent('billboard', {
     this.observer = new MutationObserver(() => {
       content.innerHTML = this.el.innerHTML
       content.id = randomId()
-      this.el.setAttribute('material', 'target', '#' + content.id)
+
+      setTimeout(() => {
+        this.el.setAttribute('material', 'target', '#' + content.id)
+      }, 15)
     })
 
     // Watch the element
