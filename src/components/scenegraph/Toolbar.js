@@ -44,7 +44,9 @@ export default class Toolbar extends React.Component {
   }
 
   addEntity (nodeType) {
-    Events.emit('createnewentity', {element: nodeType, components: {}});
+    Events.emit('createnewentity', {element: nodeType, components: {
+      shadow: { cast: true, recieve: true }
+    }});
   }
 
   toggleMotionCaptureUI = () => {
