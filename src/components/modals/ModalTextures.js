@@ -6,7 +6,6 @@ import PropTypes from 'prop-types';
 import Modal from './Modal';
 var insertNewAsset = require('../../lib/assetsUtils').insertNewAsset;
 import INSPECTOR from '../../lib/inspector.js';
-import initUploadCare from '../../lib/uploadcare';
 
 function getFilename (url, converted = false) {
   var filename = url.split('/').pop();
@@ -39,7 +38,6 @@ export default class ModalTextures extends React.Component {
   };
 
   constructor (props) {
-    initUploadCare();
     super(props);
     this.state = {
       filterText: '',
@@ -68,32 +66,31 @@ export default class ModalTextures extends React.Component {
       this.generateFromRegistry();
     });
 
-    this.uploadcareWidget = null;
     this.generateFromAssets();
     this.generateFromTextureCache();
   }
   componentDidUpdate () {
-    if (!this.uploadcareWidget && this.state.isOpen) {
-      this.uploadcareWidget = uploadcare.SingleWidget('[role=uploadcare-uploader]');
-      this.uploadcareWidget.onUploadComplete(info => {
-        if (info.isImage) {
-          this.setState({preview: {
-            width: info.originalImageInfo.height,
-            height: info.originalImageInfo.height,
-            src: info.cdnUrl,
-            id: '',
-            filename: info.name,
-            name: getFilename(info.name, true),
-            type: 'uploaded',
-            loaded: true,
-            value: 'url(' + info.cdnUrl + ')'
-          }
-          });
-          this.uploadcareWidget.value(null);
-          this.refs.imageName.focus();
-        }
-      });
-    }
+    // if (!this.uploadcareWidget && this.state.isOpen) {
+    //   this.uploadcareWidget = uploadcare.SingleWidget('[role=uploadcare-uploader]');
+    //   this.uploadcareWidget.onUploadComplete(info => {
+    //     if (info.isImage) {
+    //       this.setState({preview: {
+    //         width: info.originalImageInfo.height,
+    //         height: info.originalImageInfo.height,
+    //         src: info.cdnUrl,
+    //         id: '',
+    //         filename: info.name,
+    //         name: getFilename(info.name, true),
+    //         type: 'uploaded',
+    //         loaded: true,
+    //         value: 'url(' + info.cdnUrl + ')'
+    //       }
+    //       });
+    //       this.uploadcareWidget.value(null);
+    //       this.refs.imageName.focus();
+    //     }
+    //   });
+    // }
   }
   componentWillReceiveProps (newProps) {
     if (this.state.isOpen !== newProps.isOpen) {
