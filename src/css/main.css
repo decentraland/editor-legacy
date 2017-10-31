@@ -234,6 +234,23 @@ input,
   transition: 0.1s background-color ease-in-out, 0.1s border-color ease-in-out, 0.1s color ease-in-out;
 }
 
+.texture-uploader{
+  position: relative;
+  display: inline-block;
+  width: 32px;
+  height: 16px;
+  overflow: hidden;
+}
+
+.texture-uploader input{
+  left: 0;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  opacity: 0.01;
+  position: absolute;
+}
+
 input[type=text],
 input[type=number],
 input.string,
