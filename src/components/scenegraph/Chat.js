@@ -8,7 +8,7 @@ export default class Chat extends React.Component {
     this.state = {
       messages: [],
       content: [],
-      emojis: ['😂', '😜', '😊', '😮', '😢', '💩']
+      emojis: ['😂', '😜', '😊', '😮', '😢', '💩', '🎉']
     }
   }
 
