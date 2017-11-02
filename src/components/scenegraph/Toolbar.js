@@ -56,7 +56,12 @@ export default class Toolbar extends React.Component {
     return (
       <div id="scenegraphToolbar">
         <div className='scenegraph-actions'>
-          <a className='button fa fa-download' title='Save HTML' onClick={this.saveScene}></a>
+          <a className='button-download' title='Save HTML' onClick={this.saveScene}>Save</a>
+        </div>
+
+        <h4>Add...</h4>
+
+        <div className='scenegraph-actions'>
           <a className='button' title='Add a box' onClick={() => this.addEntity('a-box')}>
             <img src='/img/icons/icon-cube.png' />
           </a>
