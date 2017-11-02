@@ -30,6 +30,8 @@ services:
       - ./webpack.config.js:/opt/inspector/webpack.config.js
     networks:
       - internal
+    environment:
+     - NODE_ENV=production
   ipfs:
     build:
       context: ./ipfs-node
