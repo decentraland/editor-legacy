@@ -71,6 +71,9 @@ export default class Toolbar extends React.Component {
           <a className='button' title='Add a model' onClick={() => this.addEntity('a-obj-model')}>
             <img src='/img/icons/icon-obj.png' />
           </a>
+          <a className='button' title='Add an html billboard' onClick={() => this.addEntity('a-billboard')}>
+            <img src='/img/icons/icon-html.png' />
+          </a>
         </div>
 
         {this.state.motionCaptureUIEnabled && <MotionCapture/>}

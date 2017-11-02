@@ -4,6 +4,7 @@
     <meta charset="utf-8">
     <title>Example Scene</title>
     <script src="/aframe-master.min.js"></script>
+    <script src="https://unpkg.com/aframe-html-shader@0.2.0/dist/aframe-html-shader.min.js"></script>
   </head>
   <body>
     <a-scene debug="true" light="shadowMapType: basic">
@@ -38,6 +39,8 @@
         light="castShadow: true; color: #FAFAFA; intensity: 0.5; shadowCameraNear: 1; type: point; shadowMapWidth: 1024; shadowMapHeight: 1024" position="10 10 10">
       </a-entity>
     </a-scene>
+
+    <script src="/js/a-billboard.js"></script>
 
     <script src="/dist/aframe-inspector.js"></script>
   </body>
