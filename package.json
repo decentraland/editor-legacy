@@ -34,6 +34,7 @@
     "react-redux": "^5.0.6",
     "react-select": "^1.0.0-rc.1",
     "redux": "^3.7.2",
+    "redux-logger": "^3.0.6",
     "redux-saga": "^0.16.0",
     "simple-peer": "^8.1.1"
   },

@@ -4,10 +4,8 @@ var webpack = require('webpack');
 
 // Add HMR for development environments only.
 var entry = ['./src/components/Main.js'];
-if (process.env.NODE_ENV === 'dev') {
+if (process.env.NODE_ENV !== 'production') {
   entry = [
-    // 'webpack-dev-server/client?http://localhost:3333'
-    // 'webpack/hot/only-dev-server'
     'webpack-hot-middleware/client?path=/__webpack_hmr&timeout=20000&reload=true'
   ].concat(entry);
 }

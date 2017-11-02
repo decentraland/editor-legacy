@@ -30,9 +30,22 @@ import {setEntityInnerHTML} from '../actions/entity';
 
 var webrtcClient = new WebrtcClient(getSceneName())
 
+const middlewares = [];
+
 // Setup Redux stuff
 const composeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose;
 const sagaMiddleware = createSagaMiddleware();
+// middlewares.push(sagaMiddleware);
+
+if (process.env.NODE_ENV !== 'production') {
+  const { createLogger } = require('redux-logger');
+
+  const logger = createLogger({
+    collapsed: true
+  });
+
+  middlewares.push(logger);
+}
 
 const store = createStore(
   combineReducers({
@@ -40,7 +53,7 @@ const store = createStore(
   }),
   {test: 'test'},
   composeEnhancers(
-    //applyMiddleware(sagaMiddleware)
+    applyMiddleware(...middlewares)
   )
 );
 
@@ -250,12 +263,12 @@ export default class Main extends React.Component {
   }
 }
 
-const App = () => process.env.NODE_ENV === 'dev' ? (
+const App = () => process.env.NODE_ENV === 'production' ? (
+  <Main />
+) : (
   <Provider store={store}>
     <Main />
   </Provider>
-) : (
-  <Main />
 );
 
 (function init () {
