@@ -37,6 +37,8 @@ services:
       context: ./ipfs-node
     ports:
       - "3000:3000"
+    volumes:
+      - ./data:/root/.ipfs
     networks:
       - internal
 
