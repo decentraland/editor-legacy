@@ -1,14 +1,11 @@
 /* global VERSION BUILD_TIMESTAMP COMMIT_HASH */
+import 'babel-polyfill';
 require('../lib/vendor/ga');
 const INSPECTOR = require('../lib/inspector.js');
 
 import React from 'react';
 import ReactDOM from 'react-dom';
-import { createStore, combineReducers, applyMiddleware, compose } from 'redux';
-import { Provider } from 'react-redux';
-import createSagaMiddleware from 'redux-saga';
-import reducer from './reducers';
-import sagas from './sagas';
+import { Provider } from 'react-redux'
 
 THREE.ImageUtils.crossOrigin = '';
 
@@ -22,42 +19,14 @@ import {getSceneName, injectCSS, injectJS} from '../lib/utils';
 import '../css/main.css';
 
 import IPFSLoader from '../lib/ipfsLoader'
-import IPFSSaveScene from '../lib/ipfsSaveScene'
+import IPFSSaveScene from './containers/IpfsSaveScene'
 import Patch from '../../vendor/patch'
 import Apply from '../../vendor/apply'
 import WebrtcClient from '../lib/webrtc-client'
 import {setEntityInnerHTML} from '../actions/entity';
+import { store } from './store'
 
 var webrtcClient = new WebrtcClient(getSceneName())
-
-const middlewares = [];
-
-// Setup Redux stuff
-const composeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose;
-const sagaMiddleware = createSagaMiddleware();
-// middlewares.push(sagaMiddleware);
-
-if (process.env.NODE_ENV !== 'production') {
-  const { createLogger } = require('redux-logger');
-
-  const logger = createLogger({
-    collapsed: true
-  });
-
-  middlewares.push(logger);
-}
-
-const store = createStore(
-  combineReducers({
-    test: reducer
-  }),
-  {test: 'test'},
-  composeEnhancers(
-    applyMiddleware(...middlewares)
-  )
-);
-
-//sagaMiddleware.run(sagas);
 
 // Megahack to include font-awesome.
 injectCSS('https://maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css');
