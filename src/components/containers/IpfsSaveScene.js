@@ -60,7 +60,7 @@ class IPFSSaveScene extends React.Component {
     if (!isLoading(ipfs) && !isLoading(ipns)) {
       return (<div className='dismissal uploadPrompt'>
         <h1>Scene "{sceneName}" saved to IPFS</h1>
-        <p>The IPNS locator is: /ipns/{ ipfs.get('sceneName') }</p>
+        <p>The IPNS locator is: /ipns/{ ipns.get('ipnsAddress') }</p>
         <p>The IPFS hash pointed to is: <a href={"https://gateway.ipfs.io/ipfs/" + ipfs.get('hash')} target="_blank">{ ipfs.get('hash') }</a></p>
         <button onClick={this.dismiss}>Continue editing</button>
       </div>)
