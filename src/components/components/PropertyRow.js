@@ -6,6 +6,8 @@ import BooleanWidget from '../widgets/BooleanWidget';
 import ColorWidget from '../widgets/ColorWidget';
 import InputWidget from '../widgets/InputWidget';
 import NumberWidget from '../widgets/NumberWidget';
+import MtlWidget from '../widgets/MtlWidget';
+import ObjWidget from '../widgets/ObjWidget';
 import SelectWidget from '../widgets/SelectWidget';
 import TextureWidget from '../widgets/TextureWidget';
 import Vec4Widget from '../widgets/Vec4Widget';
@@ -61,9 +63,18 @@ export default class PropertyRow extends React.Component {
       max: props.schema.hasOwnProperty('max') ? props.schema.max : Infinity
     };
 
+    if (type === 'model') {
+      if (props.name === 'mtl') {
+        return <MtlWidget {...widgetProps}/>;
+      } else {
+        return <ObjWidget {...widgetProps}/>;
+      }
+    }
+
     if (props.schema.oneOf && props.schema.oneOf.length > 0) {
       return <SelectWidget {...widgetProps} options={props.schema.oneOf}/>;
     }
+
     if (type === 'map' || isMap) {
       return <TextureWidget {...widgetProps}/>;
     }

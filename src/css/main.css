@@ -240,6 +240,11 @@ input,
   width: 32px;
   height: 16px;
   overflow: hidden;
+  border: 1px solid #666;
+  background: black;
+}
+.texture-uploader:hover{
+  border-color: white;
 }
 
 .texture-uploader input{
@@ -320,12 +325,10 @@ input[type=color] {
 }
 
 .texture canvas {
-  border: 1px solid #222;
   cursor: pointer;
 }
 
 .texture canvas:hover {
-  border-color: #30D7A9;
 }
 
 input[type=color] {
