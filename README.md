@@ -48,8 +48,9 @@ Then load the server on `https://localhost:4444/`.
 
 ## Deployment
 
+ * `ssh ubuntu@editor.decentraland.org`
+ * `cd editor`
  * `git pull`
- * `sudo docker compose down`
- * `sudo docker compose up`
+ * `sudo docker-compose down && sudo docker-compose build && sudo docker-compose up -d`
 
 That should be it.
