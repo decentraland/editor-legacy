@@ -45,3 +45,11 @@ npm run build
 ```
 
 Then load the server on `https://localhost:4444/`.
+
+## Deployment
+
+ * `git pull`
+ * `sudo docker compose down`
+ * `sudo docker compose up`
+
+That should be it.
