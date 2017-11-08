@@ -35,7 +35,7 @@ export default class ModelSidebar extends React.Component {
     fetch(`/model/search?q=${encodeURIComponent(this.state.query)}`)
       .then((r) => r.json())
       .then((results) => {
-        this.setState({results, searching: false})
+        this.setState({results})
       })
   }
 
