@@ -51,8 +51,9 @@ Then load the server on `https://localhost:4444/`.
 Trap for young players: Note that you are running the docker-compose in `/home/ubuntu` not `/home/ubuntu/editor` (that docker-compose.yml is for developers local boxes).
 
  * `ssh ubuntu@editor.decentraland.org`
- * `cd ~`
+ * `cd editor`
  * `git pull`
+ * `cd ~`
  * `sudo docker-compose down && sudo docker-compose build && sudo docker-compose up -d`
 
 That should be it.
