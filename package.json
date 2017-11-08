@@ -26,6 +26,7 @@
     "immutable": "^3.8.2",
     "invariant": "^2.2.2",
     "lodash.debounce": "^4.0.6",
+    "node-fetch": "^1.7.3",
     "prop-types": "^15.6.0",
     "react": "^15.3.0",
     "react-dom": "^15.3.0",
@@ -38,7 +39,8 @@
     "redux-saga": "^0.16.0",
     "redux-thunk": "^2.2.0",
     "simple-peer": "^8.1.1",
-    "tape": "^4.8.0"
+    "tape": "^4.8.0",
+    "tempy": "^0.2.1"
   },
   "devDependencies": {
     "autoprefixer": "^6.3.7",
