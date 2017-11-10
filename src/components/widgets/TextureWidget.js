@@ -175,23 +175,33 @@ export default class TextureWidget extends React.Component {
     this.notifyChanged('');
   }
 
-  openDialog = () => {
-    Events.emit('opentexturesmodal', this.state.value, image => {
-      if (!image) {
-        return;
-      }
-      var value = image.value;
-      if (image.type !== 'asset') {
-        var assetId = insertOrGetImageAsset(image.src);
-        value = '#' + assetId;
+  readFile (event) {
+    const file = event.target.files[0]
+    const reader = new FileReader();
+    reader.onload = (event) => {
+      this.uploadFile(event.target.result.replace(/^data:.+?,/, ''), file.name)
+    }
+    reader.readAsDataURL(file)
+  }
+
+  uploadFile (data, path) {
+    return fetch('/api/ipfs', {
+      method: 'POST',
+      headers: { 'Content-type': 'application/json' },
+      body: JSON.stringify({ files: [{ data, path }] })
+    }).then(res => res.json()).then(res => {
+      if (!res.success) {
+        throw new Error(res.error)
       }
 
-      if (this.props.onChange) {
-        this.props.onChange(this.props.name, value);
-      }
+      const value = `https://gateway.ipfs.io/ipfs/${res.url}/${path}`
 
-      this.setValue(value);
-    });
+      this.setValue(value)
+      this.setState({value})
+      this.notifyChanged(value)
+
+      return res.url
+    })
   }
 
   render () {
@@ -211,7 +221,10 @@ export default class TextureWidget extends React.Component {
 
     return (
       <span className='texture'>
-        <canvas ref='canvas' width='32' height='16' title={hint} onClick={this.openDialog}></canvas>
+        <div className='texture-uploader'>
+          <canvas ref='canvas' width='32' height='24' title={hint}></canvas>
+          <input  type='file' onChange={this.readFile.bind(this)} />
+        </div>
         <input className='map_value string' type='text' title={hint} value={this.state.value} onChange={this.onChange}/>
         {openLink}
         <a onClick={this.removeMap} className='button fa fa-times'></a>
