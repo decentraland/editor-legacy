@@ -43,6 +43,10 @@ export default class Toolbar extends React.Component {
     Events.emit('savescene')
   }
 
+  publishParcels () {
+    Events.emit('publishparcels')
+  }
+
   addEntity (nodeType) {
     Events.emit('createnewentity', {element: nodeType, components: {}});
   }
@@ -56,7 +60,8 @@ export default class Toolbar extends React.Component {
     return (
       <div id="scenegraphToolbar">
         <div className='scenegraph-actions'>
-          <a className='button-download' title='Save HTML' onClick={this.saveScene}>Save</a>
+          <a className='button-download' title='Save HTML' onClick={this.saveScene}>Save</a>{' '}
+          <a className='button-download' title='Publish Parcels' onClick={this.publishParcels}>Publish</a>
         </div>
 
         <h4>Add...</h4>
