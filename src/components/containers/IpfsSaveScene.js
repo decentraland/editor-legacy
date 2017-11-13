@@ -37,7 +37,8 @@ class IPFSSaveScene extends React.Component {
     super(...arguments)
     this.state = {
       editMetadata: false,
-      loading: true
+      loading: true,
+      meta: parcelMeta
     }
     this.dismiss = () => {
       Events.emit('savedismiss')
@@ -88,6 +89,7 @@ class IPFSSaveScene extends React.Component {
 
   renderMetaEditForm() {
     const { ipfs, ipns } = this.props
+    const { meta } = this.state
 
     const formFromMeta = (metaObject) => Object.entries(metaObject).map(([key, value]) => {
       console.log(`${key} ${value}`); // "a 5", "b 7", "c 9"
@@ -134,15 +136,20 @@ class IPFSSaveScene extends React.Component {
           <div className="meta-edit-form">
             <div className="meta-edit-column">
               <h3>Contact info</h3>
-              {formFromMeta(parcelMeta.contact)}
+              {formFromMeta(meta.contact)}
             </div>
             <div className="meta-edit-column">
               <h3>Comunications</h3>
-              {formFromMeta(parcelMeta.communications)}
+              {formFromMeta(meta.communications)}
+              <h3>Policy</h3>
+              <div className="row">
+                <label htmlFor="dcl-parcelmeta-contact-contentRating">Content rating</label><br />
+                <input id="dcl-parcelmeta-contact-contentRating" type="text" name="contentRating" defaultValue={meta.policy.contentRating} />
+              </div>
             </div>
             <div className="meta-edit-column">
               <h3>Display info</h3>
-              {formFromMeta(parcelMeta.display)}
+              {formFromMeta(meta.display)}
               <h3>Tags</h3>
               <Creatable
                 name="tags"
@@ -182,6 +189,9 @@ class IPFSSaveScene extends React.Component {
         title: event.target.title.value,
         favicon: event.target.favicon.value
       },
+      policy: {
+        contentRating: event.target.contentRating.value
+      },
       tags
     });
 
@@ -193,6 +203,7 @@ class IPFSSaveScene extends React.Component {
       return;
     }
 
+    this.setState({ meta: metadata })
     console.log(metadata)
     this.props.actions.ipfsSaveSceneRequest(sceneName, this.props.content, metadata)
   }
