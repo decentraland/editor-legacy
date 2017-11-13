@@ -42,13 +42,11 @@ export default class WebrtcClient extends EventEmitter {
   }
 
   connectToEventSource () {
-    console.log('#connectToEventSource')
     this.source = new EventSource(`${this.endpoint}/${this.uuid}/listen`)
 
     this.source.addEventListener('message', this.onMessage.bind(this), false)
 
     this.source.addEventListener('open', (e) => {
-      console.log('#connectToEventSource#open')
       this.sendAnnounce()
     }, false)
 
@@ -59,17 +57,11 @@ export default class WebrtcClient extends EventEmitter {
     }, false)
 
     setInterval(() => {
-      console.log('#connectToEventSource#sendAnnounce')
       this.sendAnnounce()
     }, 5000)
-
-    console.log('#connectToEventSource#hmmm')
   }
 
   get connected () {
-    console.log('#connected?')
-    console.log(this.source.readyState)
-
     return this.source.readyState === EventSource.OPEN
   }
 
@@ -176,9 +168,7 @@ export default class WebrtcClient extends EventEmitter {
   }
 
   connectToPeer (uuid) {
-    console.log(uuid)
     if (this.peers[uuid]) {
-      console.log('Already connected...')
       return
     }
 

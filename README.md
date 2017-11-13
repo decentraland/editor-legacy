@@ -17,11 +17,27 @@ This is based on A-Frame's visual inspector tool for scenes. To preview the scen
 
 ## Local Development
 
+1.
 ```bash
 git clone git@github.com:decentraland/editor.git
 cd editor
 git submodule init
 git submodule update
+```
+
+2.
+Create file named `docker-compose.override.yaml`, copy and paste this gist of code into it and save (we do this to override environment variables):
+```yaml
+version: "2"
+
+services:
+  editor:
+    environment:
+     - NODE_ENV=dev
+```
+
+3.
+```bash
 docker-compose build
 docker-compose up
 npm install
@@ -29,3 +45,15 @@ npm run build
 ```
 
 Then load the server on `https://localhost:4444/`.
+
+## Deployment
+
+Trap for young players: Note that you are running the docker-compose in `/home/ubuntu` not `/home/ubuntu/editor` (that docker-compose.yml is for developers local boxes).
+
+ * `ssh ubuntu@editor.decentraland.org`
+ * `cd editor`
+ * `git pull`
+ * `cd ~`
+ * `sudo docker-compose down && sudo docker-compose build && sudo docker-compose up -d`
+
+That should be it.

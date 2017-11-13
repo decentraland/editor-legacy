@@ -78,10 +78,17 @@ function Apply (root, patcher) {
 
       applyAttributes(target, n)
 
+      // gross hacks to set content of billboard specially
+      if (n.nodeName === 'a-billboard') {
+        target.innerHTML = n.innerHTML
+        return
+      }
+
       Array.from(n.childNodes).forEach((n) => {
         if (n.nodeName === '#text' || n.nodeName === '#comment') {
           return
         }
+
         var uuid = n.getAttribute(UUID_KEY)
         var child = root.querySelector(`[${UUID_KEY}='${uuid}']`)
         suppress(uuid)

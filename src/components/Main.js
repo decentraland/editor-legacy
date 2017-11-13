@@ -1,9 +1,11 @@
 /* global VERSION BUILD_TIMESTAMP COMMIT_HASH */
+import 'babel-polyfill';
 require('../lib/vendor/ga');
 const INSPECTOR = require('../lib/inspector.js');
 
 import React from 'react';
 import ReactDOM from 'react-dom';
+import { Provider } from 'react-redux'
 
 THREE.ImageUtils.crossOrigin = '';
 
@@ -17,11 +19,12 @@ import {getSceneName, injectCSS, injectJS} from '../lib/utils';
 import '../css/main.css';
 
 import IPFSLoader from '../lib/ipfsLoader'
-import IPFSSaveScene from '../lib/ipfsSaveScene'
+import IPFSSaveScene from './containers/IpfsSaveScene'
 import Patch from '../../vendor/patch'
 import Apply from '../../vendor/apply'
 import WebrtcClient from '../lib/webrtc-client'
 import {setEntityInnerHTML} from '../actions/entity';
+import { store } from './store'
 
 var webrtcClient = new WebrtcClient(getSceneName())
 
@@ -229,6 +232,14 @@ export default class Main extends React.Component {
   }
 }
 
+const App = () => process.env.NODE_ENV === 'production' ? (
+  <Main />
+) : (
+  <Provider store={store}>
+    <Main />
+  </Provider>
+);
+
 (function init () {
   injectJS('https://ajax.googleapis.com/ajax/libs/webfont/1.6.16/webfont.js', function () {
     var webFontLoader = document.createElement('script');
@@ -244,7 +255,7 @@ export default class Main extends React.Component {
   div.setAttribute('data-aframe-inspector', 'app');
   document.body.appendChild(div);
   window.addEventListener('inspector-loaded', function () {
-    ReactDOM.render(<Main/>, div);
+    ReactDOM.render(<App />, div);
   });
   console.log('A-Frame Inspector Version:', VERSION, '(' + BUILD_TIMESTAMP + ' Commit: ' + COMMIT_HASH.substr(0, 7) + ')');
 })();

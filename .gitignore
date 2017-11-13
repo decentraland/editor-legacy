@@ -1,4 +1,5 @@
 .DS_Store
+data
 logs
 .cache
 dist
@@ -7,3 +8,4 @@ node_modules
 npm-debug.log*
 build/
 *.sw[pomn]
+docker-compose.override.*

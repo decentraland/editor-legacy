@@ -9,6 +9,7 @@ import {updateEntity, getClipboardRepresentation} from '../../actions/entity';
 import Events from '../../lib/Events';
 import Clipboard from 'clipboard';
 import {saveString} from '../../lib/utils';
+import HtmlWidget from '../widgets/HtmlWidget';
 
 // @todo Take this out and use updateEntity?
 function changeId (componentName, value) {
@@ -65,6 +66,17 @@ export default class CommonComponents extends React.Component {
     });
   }
 
+  renderEntityEditor () {
+    if (this.props.entity.tagName.toLowerCase() === 'a-billboard') {
+      return (
+        <div>
+          HTML Content:<br />
+          <HtmlWidget entity={this.props.entity} />
+        </div>
+      )
+    }
+  }
+
   render () {
     const entity = this.props.entity;
     if (!entity) { return <div></div>; }
@@ -87,7 +99,7 @@ export default class CommonComponents extends React.Component {
             <InputWidget onChange={changeId} entity={entity} name='id' value={entity.id}/>
           </div>
           {this.renderCommonAttributes()}
-          <Mixins entity={entity}/>
+          {this.renderEntityEditor()}
         </div>
       </Collapsible>
     );
