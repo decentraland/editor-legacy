@@ -2,7 +2,6 @@
 
 import React from 'react'
 import ReactModal from 'react-modal'
-import im from 'immutable'
 import { Creatable } from 'react-select'
 import { connect } from '../store'
 
@@ -16,7 +15,6 @@ import parcelMeta from '../utils/parcel-metadata'
 
 import 'react-select/dist/react-select.css';
 
-console.log(parcelMeta)
 const sceneName = getSceneName()
 
 class PublishParcels extends React.Component {
@@ -30,7 +28,6 @@ class PublishParcels extends React.Component {
 
   static getActions(actions) {
     return {
-      ipfsSaveSceneRequest: actions.ipfsSaveSceneRequest,
       publishMetaRequest: actions.publishMetaRequest,
     }
   }
@@ -49,26 +46,7 @@ class PublishParcels extends React.Component {
 
   renderContent() {
     const { ipfs, ipns } = this.props
-    /* if (isLoading(ipfs)) {
-      return <div className='loading uploadPrompt'>
-        <Loading/>
-        <h3>Uploading to IPFS...</h3>
-      </div>
-    } */
-    if (this.state.error) {
-      return <div className='errored uploadPrompt'>Error saving scene! { JSON.stringify(this.state.error) }</div>
-    }
-    /* if (!isLoading(ipfs) && !isLoading(ipns)) {
-      return (<div className='dismissal uploadPrompt'>
-        <h1>Scene "{sceneName}" saved to IPFS</h1>
-        <p>The IPNS locator is: /ipns/{ ipns.get('ipnsAddress') }</p>
-        <p>The IPFS hash pointed to is: <a href={"https://gateway.ipfs.io/ipfs/" + ipfs.get('hash')} target="_blank">{ ipfs.get('hash') }</a></p>
-        <button onClick={this.dismiss}>Continue editing</button>
-      </div>)
-    } */
-    //return <div className='errored uploadPrompt'>Unexpected internal state!</div>
 
-    // This is WIP, only static form right now
     const formFromMeta = (metaObject) => Object.entries(metaObject).map(([key, value]) => {
       console.log(`${key} ${value}`); // "a 5", "b 7", "c 9"
       if (key !== 'preview') {
@@ -100,7 +78,7 @@ class PublishParcels extends React.Component {
     const limitMessage = geometryLimitError ? (<p style={{color: 'red'}}>
       You cannot publish scene with more than 1,000,000 vertices!
     </p>) : ''
-    console.log(this.props.ipfs.get('hash'))
+
     return (
       <div>
         {this.props.ipfs.get('hash')}
@@ -145,7 +123,6 @@ class PublishParcels extends React.Component {
 
   onFormSubmit(event) {
     event.preventDefault();
-    console.log(event.target)
     const metadata = Object.assign({}, parcelMeta, {
       contact: {
         name: event.target.name.value,
@@ -173,10 +150,7 @@ class PublishParcels extends React.Component {
     }
 
     console.log(metadata)
-    //this.props.actions.ipfsSaveSceneRequest(sceneName, this.props.content, metadata)
-    Events.emit('publishdismiss')
-    Events.emit('savescene')
-    Events.emit('metaedited', metadata)
+    this.props.actions.publishMetaRequest(sceneName, metadata)
   }
   render() {
     return <ReactModal isOpen={true} style={

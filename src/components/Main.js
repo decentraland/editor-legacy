@@ -211,7 +211,6 @@ export default class Main extends React.Component {
       <div>
         { this.state.loading && <IPFSLoader reportParcel={this.loadParcel}/> }
         { this.state.saveScene && <IPFSSaveScene ref='save' content={this.storedContent} /> }
-        { this.state.publishModalOpen && <PublishParcels ref={(publish) => { this.publish = publish; }} content={this.storedContent} /> }
         <div id='aframe-inspector-panels' className={this.state.inspectorEnabled ? '' : 'hidden'}>
           <ModalTextures ref='modaltextures' isOpen={this.state.isModalTexturesOpen} selectedTexture={this.state.selectedTexture} onClose={this.onModalTextureOnClose}/>
           <SceneGraph
