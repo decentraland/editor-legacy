@@ -168,14 +168,6 @@ export default class Main extends React.Component {
     Events.on('savedismiss', val => {
       this.setState({ saveScene: false });
     });
-
-    Events.on('publishparcels', val => {
-      this.storedContent = this.getRoot().innerHTML
-      this.setState({ publishModalOpen: true });
-    });
-    Events.on('publishdismiss', val => {
-      this.setState({ publishModalOpen: false });
-    });
   }
 
   onCloseHelpModal = value => {

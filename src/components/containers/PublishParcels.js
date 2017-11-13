@@ -2,6 +2,7 @@
 
 import React from 'react'
 import ReactModal from 'react-modal'
+import im from 'immutable'
 import { Creatable } from 'react-select'
 import { connect } from '../store'
 
@@ -22,13 +23,15 @@ class PublishParcels extends React.Component {
   static getState(state) {
     return {
       ipfs: state.get('ipfs'),
-      ipns: state.get('ipns')
+      ipns: state.get('ipns'),
+      meta: state.get('meta')
     }
   }
 
   static getActions(actions) {
     return {
       ipfsSaveSceneRequest: actions.ipfsSaveSceneRequest,
+      publishMetaRequest: actions.publishMetaRequest,
     }
   }
 
@@ -43,9 +46,7 @@ class PublishParcels extends React.Component {
     }
     this.onFormSubmit = this.onFormSubmit.bind(this)
   }
-  componentDidMount() {
-    //this.props.actions.ipfsSaveSceneRequest(sceneName, this.props.content)
-  }
+
   renderContent() {
     const { ipfs, ipns } = this.props
     /* if (isLoading(ipfs)) {
@@ -80,9 +81,11 @@ class PublishParcels extends React.Component {
       }
     });
 
+    // Just dummy tags for now...
     var options = [
-      { value: 'one', label: 'One' },
-      { value: 'two', label: 'Two' }
+      { value: 'land', label: 'land' },
+      { value: 'decentraland', label: 'decentraland' },
+      { value: 'parcel', label: 'parcel' }
     ];
 
     const getTags = (val) => {
@@ -95,11 +98,12 @@ class PublishParcels extends React.Component {
     const { geometryLimitError } = this.state
 
     const limitMessage = geometryLimitError ? (<p style={{color: 'red'}}>
-      You cannot publish scene with more than 100,000 vertices!
+      You cannot publish scene with more than 1,000,000 vertices!
     </p>) : ''
-
+    console.log(this.props.ipfs.get('hash'))
     return (
       <div>
+        {this.props.ipfs.get('hash')}
         <div>
           <p>Faces: {this.rendererStats.faces}</p>
           <p style={{color: geometryLimitError ? 'red' : 'inherit'}}>
@@ -134,15 +138,15 @@ class PublishParcels extends React.Component {
   }
 
   checkGeometry = (stats) => {
-    if (stats && stats.vertices > 100000) {
-      throw Error('Vertices limit is 100,000!');
+    if (stats && stats.vertices > 1000000) {
+      throw Error('Vertices limit is 1,000,000!');
     }
   }
 
   onFormSubmit(event) {
     event.preventDefault();
     console.log(event.target)
-    const data = Object.assign({}, parcelMeta, {
+    const metadata = Object.assign({}, parcelMeta, {
       contact: {
         name: event.target.name.value,
         email: event.target.email.value,
@@ -164,10 +168,15 @@ class PublishParcels extends React.Component {
       this.checkGeometry(this.rendererStats);
     } catch (err) {
       this.setState({ geometryLimitError: err.message });
-      console.log(err);
+      console.log(err)
+      return;
     }
 
-    console.log(data)
+    console.log(metadata)
+    //this.props.actions.ipfsSaveSceneRequest(sceneName, this.props.content, metadata)
+    Events.emit('publishdismiss')
+    Events.emit('savescene')
+    Events.emit('metaedited', metadata)
   }
   render() {
     return <ReactModal isOpen={true} style={

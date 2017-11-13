@@ -11,7 +11,8 @@ const composeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose
 
 const INITIAL_STATE = im.fromJS({
   ipfs: {},
-  ipns: {}
+  ipns: {},
+  meta: {}
 });
 
 function invokeHandler(state, action) {

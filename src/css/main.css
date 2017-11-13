@@ -1402,3 +1402,12 @@ div.modal-footer p{
   color: #999;
 }
 
+div.meta-edit-form {
+  display: flex;
+  justify-content: space-around;
+}
+
+div.meta-edit-column {
+  max-width: 200px;
+}
+
