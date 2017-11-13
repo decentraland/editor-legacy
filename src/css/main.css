@@ -75,6 +75,55 @@ input {
   z-index: 9998;
 }
 
+.model-search{
+  height: 100%;
+  padding: 12px;
+  overflow: auto;
+  position: fixed;
+  background: #323233;
+  width: 331px;
+}
+
+.model-search .search {
+  margin-top: 10px;
+}
+
+.model-search .search input{
+  width: 280px;
+}
+
+.model-search .searching{
+  margin-top: 32px;
+  font-size: 32px;
+}
+
+.model-search .model-result{
+  position: relative;
+  min-height: 64px;
+  padding-left: 100px;
+}
+
+.model-search .model-result a{
+  color: white;
+  text-decoration: none;
+}
+
+.model-search .model-result a{
+  color: white;
+  text-decoration: underline;
+}
+
+.model-search .model-result p{
+  color: #aaa;
+}
+
+.model-search .model-result img{
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 92px; 
+}
+
 #sidebar,
 #left-sidebar,
 .panel {

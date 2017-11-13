@@ -6,6 +6,10 @@ import ComponentsContainer from './ComponentsContainer';
 import Events from '../../lib/Events';
 import path from 'path'
 
+function truncate (string, length = 50) {
+  return string.length < length ? string : string.slice(0, length).replace(/\s$/, '') + '...'
+}
+
 export default class ModelSidebar extends React.Component {
   static propTypes = {
     entity: PropTypes.object,
@@ -17,16 +21,21 @@ export default class ModelSidebar extends React.Component {
     this.state = {
       open: false,
       entity: props.entity,
-      query: 'rocket',
+      query: 'forklift',
+      searching: false,
       results: []
     };
   }
 
   search () {
+    this.setState({
+      searching: true
+    })
+
     fetch(`/model/search?q=${encodeURIComponent(this.state.query)}`)
       .then((r) => r.json())
       .then((results) => {
-        this.setState({results})
+        this.setState({results, searching: false})
       })
   }
 
@@ -95,20 +104,50 @@ export default class ModelSidebar extends React.Component {
       })
   }
 
+  onKeyDown (e) {
+    if (e.keyCode === 13) {
+      e.preventDefault()
+      this.search()
+    }
+  }
+
   render () {
     const entity = this.state.entity;
     const visible = this.props.visible;
 
-    const results = this.state.results.map((r) => {
-      return (<div onClick={() => this.insertModel(r.id)}><h3>{r.name}</h3><img src={r.image} style={{width: '92px'}} /></div>)
-    })
+    var results
+
+    if (this.state.searching) {
+      results = <div className='searching'><i className='fa fa-spinner' aria-hidden='true'></i></div>
+    } else {
+      results = this.state.results.map((r) => {
+        return (
+          <div className='model-result' onClick={() => this.insertModel(r.id)}>
+            <h3><a onClick={(e) => {e.preventDefault(); this.insertModel(r.id)}} href={`https://poly.google.com/view/${r.id}`}>{r.name}</a></h3>
+            <p>{truncate(r.description)}</p>
+            <img src={r.image} />
+          </div>
+        )
+      })
+    }
 
     if (visible) {
       return (
         <div id='sidebar'>
-          MODEL SEARCH YO
+          <div className='model-search'>
+            <img src='/img/poly.png' /> Google Poly search
 
-          { results }
+            <div className="search">
+              <input 
+                id="filter" 
+                onInput={(e) => this.setState({query: e.target.value})}
+                onKeyDown={this.onKeyDown.bind(this)}
+                placeholder="Search..." 
+                value={this.state.query} /><span className="fa fa-search"></span>
+            </div>
+
+            { results }
+          </div>
         </div>
       );
     } else {

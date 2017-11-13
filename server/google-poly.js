@@ -16,7 +16,7 @@ function search (query) {
   const id = 157855946
 
   var body = 'f.req=' + escape(
-    `[[[${id},[{"${id}":[30,null,null,[],null,null,null,[],"${query}"]}],null,null,0]]]`
+    `[[[${id},[{"${id}":[30,null,null,[],null,null,null,[],"${query}", 1]}],null,null,0]]]`
   ) + '&'
 
   const method = 'POST'
