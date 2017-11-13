@@ -4,7 +4,11 @@ var ComponentLoader = require('./componentloader.js');
 var AssetsLoader = require('./assetsLoader.js');
 var ShaderLoader = require('./shaderloader.js');
 var Shortcuts = require('./shortcuts.js');
+require('super-hands');
 import {GLTFExporter} from './vendor/GLTFExporter';
+
+let tempMatrix = new THREE.Matrix4();
+let group = new THREE.Group();
 
 function Inspector () {
 
@@ -391,26 +395,48 @@ Inspector.prototype = {
   initVRControllers: function () {
     this.intersected = [];
 
+    /* this.controllers = document.createElement('a-entity');
+    this.controllers.setAttribute('progressive-controls', 'objects: a-box')
+    this.sceneEl.appendChild(this.controllers);
+
+    this.box = document.createElement('a-box');
+    this.box.setAttribute('position', '0 0 0')
+    this.box.setAttribute('hoverable', '')
+    this.box.setAttribute('grabbable', '')
+    this.box.setAttribute('stretchable', '')
+    this.sceneEl.appendChild(this.box); */
+
     this.leftController = document.createElement('a-entity');
     this.leftController.setAttribute('id', 'left-hand');
     this.leftController.setAttribute('laser-controls', 'hand: left');
     this.leftController.addEventListener('triggerdown', this.handleTriggerDown);
     this.leftController.addEventListener('triggerup', this.handleTriggerUp);
-    // this.leftController.addEventListener('raycaster_intersected', (e) => console.log(e))
+    this.leftController.addEventListener('raycaster_intersected', (e) => console.log(e))
     this.sceneEl.appendChild(this.leftController);
 
     this.rightController = document.createElement('a-entity');
     this.rightController.setAttribute('id', 'right-hand');
     this.rightController.setAttribute('laser-controls', 'hand: right');
-    this.rightController.addEventListener('triggerdown', this.handleTriggerDown);
-    this.rightController.addEventListener('triggerup', this.handleTriggerUp);
-    // this.rightController.addEventListener('raycaster_intersected', (e) => console.log(e))
+    this.rightController.addEventListener('triggerdown', this.handleTriggerDown.bind(this));
+    this.rightController.addEventListener('triggerup', this.handleTriggerUp.bind(this));
+    this.rightController.addEventListener('raycaster_intersected', this.handleRaycaster)
     this.sceneEl.appendChild(this.rightController);
   },
+  handleRaycaster: function (e) {
+    console.log(e)
+  },
+  getIntersections: function (controller) {
+    console.log(tempMatrix)
+    console.log(this.raycaster)
+    tempMatrix.identity().extractRotation(controller.matrixWorld);
+    this.raycaster.ray.origin.setFromMatrixPosition(controller.matrixWorld);
+    this.raycaster.ray.direction.set(0, 0, -1).applyMatrix4(tempMatrix);
+    return this.raycaster.intersectObjects(this.sceneEl.children);
+  },
   handleTriggerDown: function (event) {
+    console.log(event)
     var controller = event.target;
-    console.log(controller);
-    /* var intersections = getIntersections(controller);
+    var intersections = this.getIntersections(controller);
     if (intersections.length > 0) {
       var intersection = intersections[0];
       tempMatrix.getInverse(controller.matrixWorld);
@@ -420,19 +446,40 @@ Inspector.prototype = {
       object.material.emissive.b = 1;
       controller.add(object);
       controller.userData.selected = object;
-    } */
+    }
   },
   handleTriggerUp: function (event) {
     var controller = event.target;
     console.log(controller);
-    /* if (controller.userData.selected !== undefined) {
+    if (controller.userData.selected !== undefined) {
       var object = controller.userData.selected;
       object.matrix.premultiply(controller.matrixWorld);
       object.matrix.decompose(object.position, object.quaternion, object.scale);
       object.material.emissive.b = 0;
-      group.add(object);
+      this.sceneEl.add(object);
       controller.userData.selected = undefined;
-    } */
+    }
+  },
+  intersectObjects: function (controller) {
+    // Do not highlight when already selected
+    if (controller.userData.selected !== undefined) return;
+    var line = controller.getObjectByName('line');
+    var intersections = this.getIntersections(controller);
+    if (intersections.length > 0) {
+      var intersection = intersections[0];
+      var object = intersection.object;
+      object.material.emissive.r = 1;
+      this.intersected.push(object);
+      line.scale.z = intersection.distance;
+    } else {
+      line.scale.z = 5;
+    }
+  },
+  cleanIntersected: function () {
+    while (this.intersected.length) {
+      var object = this.intersected.pop();
+      object.material.emissive.r = 0;
+    }
   },
   removeVRControllers: function () {
     document.getElementById('left-hand').outerHTML = '';

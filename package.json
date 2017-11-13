@@ -38,6 +38,7 @@
     "redux-saga": "^0.16.0",
     "redux-thunk": "^2.2.0",
     "simple-peer": "^8.1.1",
+    "super-hands": "^2.1.0",
     "tape": "^4.8.0"
   },
   "devDependencies": {
