@@ -22,6 +22,7 @@ import '../styles/main.less';
 import IPFSLoader from './containers/IpfsLoader'
 import IPFSSaveScene from './containers/IpfsSaveScene'
 import PublishParcels from './containers/PublishParcels'
+import NewScene from './containers/NewScene'
 import Patch from '../../vendor/patch'
 import Apply from '../../vendor/apply'
 import WebrtcClient from '../lib/webrtc-client'
@@ -214,6 +215,23 @@ export default class Main extends React.Component {
     }
   }
 
+  get isNewScene () {
+    return location.pathname === '/scene/new'
+  }
+
+  get parcels () {
+    const result = []
+
+    location.search.split('&').forEach((pair) => {
+      const components = pair.split(/(,|=)/).map((i) => parseInt(i, 10))
+      result.push([components[2], components[4]])
+    })
+
+    console.log(result)
+
+    return result
+  }
+
   render () {
     var scene = this.state.sceneEl;
     const showScenegraph = this.state.visible.scenegraph ? null : <div className="toggle-sidebar left"><a onClick={() => {this.state.visible.scenegraph = true; this.forceUpdate()}} className='fa fa-plus' title='Show scenegraph'></a></div>;
@@ -227,11 +245,18 @@ export default class Main extends React.Component {
       toggleButtonText = 'Back to Scene';
     }
 
+    var modal
+
+    if (this.isNewScene) {
+      modal = <NewScene parcels={this.parcels} />
+    } else if (this.state.loading) {
+      modal = <IPFSLoader reportParcel={this.loadParcel}/>
+    } else if (this.state.saveScene) {
+      modal = <IPFSSaveScene ref='save' content={this.storedContent} />
+    }
     return (
       <div>
-        { this.state.loading && <IPFSLoader reportParcel={this.loadParcel}/> }
-        { this.state.saveScene && <IPFSSaveScene ref='save' content={this.storedContent} /> }
-        { this.state.publishParcels && <PublishParcels /> }
+        { modal }
         <div id='aframe-inspector-panels' className={this.state.inspectorEnabled ? '' : 'hidden'}>
           <ModalTextures ref='modaltextures' isOpen={this.state.isModalTexturesOpen} selectedTexture={this.state.selectedTexture} onClose={this.onModalTextureOnClose}/>
           <SceneGraph
