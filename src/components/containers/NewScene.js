@@ -1,4 +1,4 @@
-/* globals THREE */
+/* globals history, THREE */
 
 import React from 'react'
 import ReactDOM from 'react-dom'
@@ -70,20 +70,37 @@ class PreviewParcels extends React.Component {
 export default class NewScene extends React.Component {
   constructor () {
     super(...arguments)
+
     this.state = {
-      loading: true
-    }
-    this.dismiss = () => {
-      Events.emit('savedismiss')
-      this.setState({ loading: true })
+      open: true
     }
   }
 
   componentDidMount () {
   }
 
-  render() {
-    return <ReactModal isOpen style={
+  setParcelParameters () {
+    // set a-parcel parameters
+
+    const parcels = this.props.parcels.map((p) => new THREE.Vector2(p[0], p[1]))
+    const bounds = new THREE.Box2().setFromPoints(parcels)
+
+    // Offset so that the north-west most tile is at 0,0
+    parcels.forEach((p) => p.sub(bounds.min))
+
+    const arr = parcels.map((p) => [p.x, p.y])
+    document.querySelector('a-parcel').setAttribute('parcel', `parcels: ${JSON.stringify(arr)}`)
+  }
+
+  createScene () {
+    this.setParcelParameters()
+    history.replaceState({}, 'Parcel Editor', '/scene/my-new-parcel')
+
+    this.setState({open: false})
+  }
+
+  render () {
+    return <ReactModal isOpen={this.state.open} style={
       {
         overlay: {
           zIndex: 10000
@@ -102,7 +119,7 @@ export default class NewScene extends React.Component {
           <PreviewParcels parcels={this.props.parcels} />
 
           <p>
-            <button>Start Creating</button>
+            <button onClick={() => this.createScene()}>Start Creating</button>
           </p>
         </div>
         <Footer />

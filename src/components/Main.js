@@ -44,7 +44,7 @@ export default class Main extends React.Component {
     super(props);
 
     this.state = {
-      loading: true,
+      loading: !this.isNewScene,
       entity: null,
       inspectorEnabled: true,
       isModalTexturesOpen: false,
