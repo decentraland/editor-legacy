@@ -7,8 +7,11 @@
     <script src="https://unpkg.com/aframe-html-shader@0.2.0/dist/aframe-html-shader.min.js"></script>
   </head>
   <body>
-    <a-scene debug="true" light="shadowMapType: basic">
+    <a-scene debug="true" light="shadowMapType: basic" vrui>
       <a-entity id="parcel">
+      </a-entity>
+
+      <a-entity id="vrcontrols" vrcontrols fixed="true">
       </a-entity>
 
       <!-- Sky. -->

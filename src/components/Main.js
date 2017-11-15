@@ -1,6 +1,7 @@
 /* global VERSION BUILD_TIMESTAMP COMMIT_HASH */
 import 'babel-polyfill';
 require('../lib/vendor/ga');
+require('../lib/vrControls.js');
 const INSPECTOR = require('../lib/inspector.js');
 
 import React from 'react';
