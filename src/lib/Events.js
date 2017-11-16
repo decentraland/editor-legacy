@@ -12,7 +12,8 @@ Events.prototype.on = function () {
   return this;
 };
 
-Events.prototype.emit = function () {
+Events.prototype.emit = function (e) {
+  console.log(e + " emitted", arguments)
   emitter.emit.apply(emitter, arguments);
   return this;
 };
