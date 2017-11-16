@@ -7,9 +7,8 @@ import { connect } from '../store'
 import Header from '../components/Header'
 import Footer from '../components/Footer'
 import Loading from '../components/Loading'
-import defaultScene from './defaultScene'
+import defaultScene from '../../lib/defaultScene'
 import {getSceneName} from '../../lib/utils'
-import { isLoading } from '../utils'
 
 const sceneName = getSceneName()
 
@@ -29,6 +28,7 @@ function loadScene (name) {
         console.log(objectHash.error)
         return defaultData
       }
+      console.log(objectHash)
       ipnsName = objectHash.url.ipns
       ipfsName = objectHash.url.ipfs
       return fetchJSON('/api/data/' + ipfsName)
@@ -48,9 +48,8 @@ function loadScene (name) {
 class IPFSLoader extends React.Component {
   static getState(state) {
     return {
-      ipfs: state.get('ipfs'),
-      ipns: state.get('ipns'),
-      meta: state.get('meta')
+      ipfs: state.ipfs,
+      ipns: state.ipns
     }
   }
 
@@ -102,7 +101,6 @@ class IPFSLoader extends React.Component {
         return (<div className='dismissal uploadPrompt'>
           { this.intro() }
           <h2>Scene "{sceneName}" loaded from IPFS</h2>
-          <p>The IPNS locator is: /ipns/{ this.state.data.ipns }</p>
           <p>The IPFS hash pointed to is: /ipfs/{ this.state.data.ipfs }</p>
           <button onClick={this.dismiss}>Start editing</button>
         </div>)

@@ -18,9 +18,8 @@ import ToolBar from './ToolBar';
 import {getSceneName, injectCSS, injectJS} from '../lib/utils';
 import '../css/main.css';
 
-import IPFSLoader from '../lib/ipfsLoader'
+import IPFSLoader from './containers/IpfsLoader'
 import IPFSSaveScene from './containers/IpfsSaveScene'
-import PublishParcels from './containers/PublishParcels'
 import Patch from '../../vendor/patch'
 import Apply from '../../vendor/apply'
 import WebrtcClient from '../lib/webrtc-client'

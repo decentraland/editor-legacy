@@ -1,20 +1,38 @@
 /* globals fetch */
-import { call, takeEvery, takeLatest, select, put, take, all } from 'redux-saga/effects'
+import { delay } from "redux-saga";
+import { call, takeEvery, takeLatest, select, put, take, all, fork } from 'redux-saga/effects'
 import * as actions from '../actions';
-import * as types from '../actions/action-types';
+import * as types from '../actions/types';
+import ethService from "../ethereum";
+
+export function* connectWeb3() {
+  try {
+    let retries = 0;
+    let connected = yield call(async () => await ethService.init());
+
+    while (!connected && retries < 3) {
+      yield delay(1000);
+      connected = yield call(async () => await ethService.init());
+      retries += 1;
+    }
+    if (!connected) throw new Error("Could not connect to web3");
+
+    yield put({ type: types.connectWeb3.success, web3Connected: true });
+  } catch (error) {
+    console.error(error);
+    yield put({ type: types.connectWeb3.failed, error: error.message });
+  }
+}
 
 export function* handleSaveScene (action) {
   const result = yield call(saveScene, action.content, action.metadata)
   if (!result) {
     console.log('Scene couldn\'t be saved', result)
-    yield put({
-      type: types.Ipfs.SAVE_SCENE_FAILED,
-      error: result
-    });
+    yield put({ type: types.saveScene.failed, error: result });
   } else {
     console.log('Scene saved!', result)
     yield put({
-      type: types.Ipfs.SAVE_SCENE_SUCCEEDED,
+      type: types.saveScene.success,
       sceneName: action.sceneName,
       metadata: action.metadata,
       hash: result
@@ -25,9 +43,9 @@ export function* handleSaveScene (action) {
 export function* handleBindName (action) {
   try {
     const result = yield call(bindName, action.sceneName, action.hash)
-    yield put({ type: types.Ipfs.IPNS_BIND_SUCCEEDED, ipfsHash: action.hash, ipnsAddress: result })
+    yield put({ type: types.saveScene.success, ipfsHash: action.hash, ipnsAddress: result })
   } catch (error) {
-    yield put({ type: types.Ipfs.IPNS_BIND_FAILED, message: error.message })
+    yield put({ type: types.saveScene.failed, error: error.message })
   }
 }
 
@@ -36,7 +54,7 @@ export async function saveScene (content, metadata) {
   files.push({ data: new Buffer(content).toString('base64'), path: 'parcel.aframe' })
   // if metadata is available, add it to the files array
   if (metadata) {
-    files.push({ data: new Buffer(JSON.stringify(metadata)).toString('base64'), path: 'metadata.json' })
+    files.push({ data: new Buffer(JSON.stringify(metadata)).toString('base64'), path: 'scene.json' })
   }
   // return: string, ipfs hash
   return await fetch('/api/ipfs', {
@@ -49,7 +67,7 @@ export async function saveScene (content, metadata) {
       if (!res.success) {
         throw new Error(res.error)
       }
-      console.log('Metadata and/or content uploaded to: ', res.url)
+      console.log('Metadata and/or content uploaded to: ', res.url, res)
       return res.url
     })
 }
@@ -60,30 +78,9 @@ export async function bindName (name, hash) {
     .then(res => res.address);
 }
 
-export async function saveMeta (metadata) {
-  // return: string, ipfs hash
-  return await fetch('/api/ipfs', {
-    method: 'POST',
-    headers: { 'Content-type': 'application/json' },
-    body: JSON.stringify({
-      files: [
-        { data: new Buffer(JSON.stringify(metadata)).toString('base64'), path: 'metadata.json' }
-      ]
-    })
-  })
-    .then(res => res.json())
-    .then(res => {
-      if (!res.success) {
-        throw new Error(res.error)
-      }
-      console.log('Metadata uploaded to: ', res.url)
-      return res.url
-    })
-}
-
 // Not finalized, not used on its own
 export async function loadMeta (hash) {
-  return await fetch(`/api/ipfs/${hash}/metadata.json`)
+  return await fetch(`/api/data/${hash}/metadata.json`)
     .then(res => (console.log(res), res.json()))
     .then(res => {
       if (!res.success) {
@@ -97,42 +94,55 @@ export async function loadMeta (hash) {
 export function* handleLoadMeta (action) {
   try {
     const result = yield call(loadMeta, action.hash)
-    yield put({ type: types.Meta.LOAD_META_SUCCEEDED, data: action.meta })
+    yield put({ type: types.loadMeta.success, meta: action.meta })
   } catch (error) {
-    yield put({ type: types.Meta.LOAD_META_FAILED, message: error.message })
+    yield put({ type: types.loadMeta.failed, error: error.message })
   }
 }
 
-export function* handlePublishMeta (action) {
+export function* fetchParcel(action) {
   try {
-    const result = yield call(saveMeta, action.meta)
-    yield put({ type: types.Meta.PUBLISH_META_SUCCEEDED, data: action.meta })
+    const parcel = yield call(
+      async () => await ethService.getParcelData(action.x, action.y)
+    );
+    yield put({ type: types.loadParcel.success, parcel });
   } catch (error) {
-    yield put({ type: types.Meta.PUBLISH_META_FAILED, message: error.message })
+    yield put({ type: types.loadParcel.failed, error });
   }
 }
 
-function* watchIpfsSaveScene() {
-  yield takeLatest(types.Ipfs.SAVE_SCENE_REQUESTED, handleSaveScene)
-}
-
-function* watchIpfsBindName() {
-  yield takeLatest(types.Ipfs.SAVE_SCENE_SUCCEEDED, handleBindName)
-}
-
-function* watchLoadMeta() {
-  yield takeLatest(types.Meta.LOAD_META_REQUESTED, handleLoadMeta)
-}
-
-function* watchPublishMeta() {
-  yield takeLatest(types.Meta.PUBLISH_META_REQUESTED, handlePublishMeta)
+export function* fetchBalance(action) {
+  try {
+    const amount = yield call(async () => await ethService.getBalance());
+    yield put({ type: types.fetchBalance.loadedBalance, amount });
+  } catch (error) {
+    yield put({
+      type: types.fetchBalance.failed,
+      error: error.message,
+      stack: error.stack
+    });
+    return;
+  }
+  try {
+    const parcels = yield call(async () => await ethService.getOwnedParcels());
+    yield put({ type: types.balanceParcel.success, parcels });
+  } catch (error) {
+    yield put({
+      type: types.balanceParcel.failed,
+      error: error.message,
+      stack: error.stack
+    });
+  }
 }
 
 export default function* rootSaga() {
-  yield all([
-    watchIpfsSaveScene(),
-    watchIpfsBindName(),
-    //watchLoadMeta(),
-    //watchPublishMeta()
-  ]);
+  yield takeLatest(types.saveScene.request, handleSaveScene)
+  // yield takeLatest(types.saveScene.success, handleBindName)
+  yield takeLatest(types.loadMeta.request, handleLoadMeta)
+  yield takeEvery(types.loadParcel.request, fetchParcel);
+  yield takeEvery(types.connectWeb3.request, connectWeb3);
+  yield takeEvery(types.connectWeb3.success, fetchBalance);
+  yield takeEvery(types.fetchBalance.request, fetchBalance);
+
+  yield put({ type: types.connectWeb3.request });
 }

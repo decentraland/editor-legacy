@@ -1,18 +1,25 @@
-import * as types from './action-types';
+import * as types from './types';
+
+export const connectWeb3 = (address) => {
+  return {
+    type: types.connectWeb3.request,
+    address
+  };
+};
 
 export const ipfsSaveSceneRequest = (sceneName, content, metadata) => ({
-  type: types.Ipfs.SAVE_SCENE_REQUESTED,
+  type: types.saveScene.request,
   sceneName,
   content,
   metadata
 });
 
 export const ipfsBindNameRequest = (content) => ({
-  type: types.Ipfs.SAVE_SCENE_REQUESTED,
+  type: types.bindName.request,
   content
 });
 
-export const publishMetaRequest = (meta) => ({
-  type: types.Meta.PUBLISH_META_REQUESTED,
+export const loadMetaRequest = (meta) => ({
+  type: types.loadMeta.request,
   meta
 });

@@ -1,28 +1,22 @@
-import { createStore, applyMiddleware, bindActionCreators, compose } from 'redux'
+import { createStore, applyMiddleware, bindActionCreators, compose, combineReducers } from 'redux'
 import * as reactRedux from 'react-redux'
 import reduxThunk from 'redux-thunk'
 import createSagaMiddleware from 'redux-saga'
-import im from 'immutable'
 import * as actions from './actions'
-import * as handlers from './handlers'
+//import * as handlers from './handlers'
+import reducers from "./reducers"
 import rootSaga from './sagas'
 
 const composeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose
 
-const INITIAL_STATE = im.fromJS({
-  ipfs: {},
-  ipns: {},
-  meta: {}
-});
-
-function invokeHandler(state, action) {
+/* function invokeHandler(state, action) {
   let handler = handlers[action.type]
 
   if (! state) return INITIAL_STATE
   if (! handler) throw new Error(`Unknown store action ${action.type}`)
 
   return handler(state, action)
-}
+} */
 
 export function dispatch(action) {
   if (typeof action === 'string') {
@@ -71,7 +65,7 @@ if (process.env.NODE_ENV !== 'production') {
 }
 
 export const store = createStore(
-  invokeHandler,
+  combineReducers(reducers),
   composeEnhancers(
     applyMiddleware(reduxThunk, sagaMiddleware, ...middlewares)
   )

@@ -20,16 +20,15 @@ const sceneName = getSceneName()
 class IPFSSaveScene extends React.Component {
   static getState(state) {
     return {
-      ipfs: state.get('ipfs'),
-      ipns: state.get('ipns'),
-      meta: state.get('meta')
+      ipfs: state.ipfs,
+      ipns: state.ipns
     }
   }
 
   static getActions(actions) {
     return {
       ipfsSaveSceneRequest: actions.ipfsSaveSceneRequest,
-      metadataLoadRequest: actions.metadataLoadRequest
+      loadMetaRequest: actions.loadMetaRequest
     }
   }
 
@@ -49,32 +48,25 @@ class IPFSSaveScene extends React.Component {
     this.saveScene()
   }
   saveScene = () => {
-    console.log(this.props.ipfs.get('metadata'))
-    this.props.actions.ipfsSaveSceneRequest(sceneName, this.props.content, this.props.ipfs.get('metadata'))
+    console.log(this.props.ipfs.metadata)
+    this.props.actions.ipfsSaveSceneRequest(sceneName, this.props.content, this.props.ipfs.metadata)
   }
   renderContent() {
     const { ipfs, ipns } = this.props
-    if (isLoading(ipfs)) {
+    if (ipfs.loading) {
       return <div className='loading uploadPrompt'>
         <Loading/>
         <h3>Uploading to IPFS...</h3>
       </div>
     }
-    if (isLoading(ipns)) {
-      return <div className='loading uploadPrompt'>
-        <Loading/>
-        <h3>Binding scene name to hash...</h3>
-      </div>
-    }
     if (this.state.error) {
       return <div className='errored uploadPrompt'>Error saving scene! { JSON.stringify(this.state.error) }</div>
     }
-    if (!isLoading(ipfs) && !isLoading(ipns)) {
+    if (!ipfs.loading) {
       return (<div className='dismissal uploadPrompt'>
         { this.renderMetaEditForm() }
         <h1>Scene "{sceneName}" saved to IPFS</h1>
-        <p>The IPNS locator is: /ipns/{ ipns.get('ipnsAddress') }</p>
-        <p>The IPFS hash pointed to is: <a href={"https://gateway.ipfs.io/ipfs/" + ipfs.get('hash')} target="_blank">{ ipfs.get('hash') }</a></p>
+        <p>The IPFS hash pointed to is: <a href={"https://gateway.ipfs.io/ipfs/" + ipfs.hash} target="_blank">{ ipfs.hash }</a></p>
         <button onClick={this.dismiss}>Continue editing</button>
       </div>)
     }
@@ -122,7 +114,7 @@ class IPFSSaveScene extends React.Component {
     const limitMessage = geometryLimitError ? (<p style={{color: 'red'}}>
       You cannot publish scene with more than 1,000,000 vertices!
     </p>) : ''
-    console.log(this.props.ipfs.get('hash'))
+    console.log(this.props.ipfs.hash)
     return (
       <div>
         <div>
@@ -210,8 +202,8 @@ class IPFSSaveScene extends React.Component {
 
   renderMetadata(type) {
     const { ipfs } = this.props
-    console.log(ipfs, ipfs.get('metadata'))
-    const metadata = !isLoading(ipfs) && ipfs.get('metadata') || parcelMeta
+    console.log(ipfs, ipfs.metadata)
+    const metadata = !ipfs.loading && ipfs.metadata || parcelMeta
     return Object.entries(metadata[type]).map(([key, value]) => {
       console.log(`${key} ${value}`); // "a 5", "b 7", "c 9"
       if (key !== 'preview') {

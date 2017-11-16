@@ -21,6 +21,7 @@
   "dependencies": {
     "classnames": "^2.2.5",
     "clipboard": "^1.5.12",
+    "decentraland-commons": "git+https://github.com/decentraland/commons.git#release",
     "express": "^4.16.2",
     "express-http-proxy": "^1.0.7",
     "immutable": "^3.8.2",
@@ -38,8 +39,11 @@
     "redux-logger": "^3.0.6",
     "redux-saga": "^0.16.0",
     "redux-thunk": "^2.2.0",
+    "reselect": "^3.0.1",
     "simple-peer": "^8.1.1",
-    "tape": "^4.8.0"
+    "tape": "^4.8.0",
+    "web3": "^1.0.0-beta.26",
+    "web3-provider-engine": "git+https://github.com/decentraland/provider-engine.git#releases"
   },
   "devDependencies": {
     "autoprefixer": "^6.3.7",
@@ -69,8 +73,10 @@
     "open": "0.0.5",
     "postcss-import": "^8.0.2",
     "postcss-loader": "^0.9.1",
+    "prettier-standard": "^7.0.3",
     "react-test-renderer": "^15.3.2",
     "shx": "^0.1.2",
+    "standard": "^10.0.3",
     "style-loader": "^0.13.1",
     "stylelint": "^8.0.0",
     "stylelint-config-standard": "^17.0.0",
