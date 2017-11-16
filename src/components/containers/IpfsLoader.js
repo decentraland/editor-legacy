@@ -49,7 +49,6 @@ class IPFSLoader extends React.Component {
   static getState(state) {
     return {
       ipfs: state.ipfs,
-      ipns: state.ipns
     }
   }
 

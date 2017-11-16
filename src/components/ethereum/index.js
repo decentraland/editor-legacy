@@ -31,7 +31,9 @@ class Ethereum {
         (await call(this.land.methods, "buildTokenId")(x, y)).toString("hex"),
       tokenByIndex: call(this.land.methods, "tokenByIndex"),
       landMetadata: call(this.land.methods, "landMetadata"),
-      ownerOfLand: call(this.land.methods, "ownerOfLand")
+      ownerOfLand: call(this.land.methods, "ownerOfLand"),
+      updateLandMetadata: call(this.land.methods, "updateLandMetadata"),
+      updateManyLandMetadata: call(this.land.methods, "updateManyLandMetadata"),
     };
 
     return true;
@@ -104,6 +106,14 @@ class Ethereum {
       owner: this.address,
       metadata: await this.methods.landMetadata(x, y)
     };
+  }
+
+  updateParcelMetadata(x, y, ipfsHash) {
+    return this.methods.updateLandMetadata(x, y, ipfsHash)
+  }
+
+  updateManyParcelMetadata(parcels, ipfsHash) {
+    return parcels.map(parcel => this.updateParcelMetadata(parcel.x, parcel.y, ipfsHash))
   }
 }
 
