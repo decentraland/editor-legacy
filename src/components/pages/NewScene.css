@@ -1,0 +1,11 @@
+.new-scene{
+  color: #333;
+
+  input{
+    width: 100%;
+    border-radius: 1px;
+    padding: 5px;
+    border-color: #777;
+    color: #333;
+  }
+}

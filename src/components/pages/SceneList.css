@@ -1,0 +1,8 @@
+.scene-list{
+  color: #333;
+
+  small{
+    color: #777;
+    font: inherit;
+  }  
+}

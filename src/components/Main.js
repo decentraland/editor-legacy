@@ -7,6 +7,11 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import { Provider } from 'react-redux'
 import queryString from 'query-string'
+import {
+  BrowserRouter as Router,
+  Route,
+  Link
+} from 'react-router-dom'
 
 THREE.ImageUtils.crossOrigin = '';
 
@@ -32,6 +37,10 @@ import { getParcelArray, createScene, parseParcel } from '../lib/utils'
 
 // Debugging...
 const MULTIUSER_ENABLED = false
+
+import HomePage from './pages/HomePage'
+import SceneList from './pages/SceneList'
+import SceneNew from './pages/NewScene'
 
 var webrtcClient = new WebrtcClient(getSceneName())
 
@@ -279,13 +288,25 @@ export default class Main extends React.Component {
   }
 }
 
-const App = () => process.env.NODE_ENV === 'production' ? (
-  <Main />
-) : (
-  <Provider store={store}>
-    <Main />
-  </Provider>
-);
+const App = () => {
+  return (
+    <Router>
+      <div className='app'>
+        <Route exact path="/" component={HomePage}/>
+        <Route path="/scenes" component={SceneList}/>
+        <Route path="/scene/:name" component={Main}/>
+        <Route path='/scenes/new' component={SceneNew}/>
+      </div>
+    </Router>
+  )
+}
+
+// const App = () => process.env.NODE_ENV === 'production' ? (
+//   <Main />
+// ) : (
+//   <Provider store={store}>
+//   </Provider>
+// );
 
 (function init () {
   injectJS('https://ajax.googleapis.com/ajax/libs/webfont/1.6.16/webfont.js', function () {
