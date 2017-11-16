@@ -6,6 +6,7 @@ const INSPECTOR = require('../lib/inspector.js');
 import React from 'react';
 import ReactDOM from 'react-dom';
 import { Provider } from 'react-redux'
+import queryString from 'query-string'
 
 THREE.ImageUtils.crossOrigin = '';
 
@@ -52,6 +53,17 @@ export default class Main extends React.Component {
 
     this.getRoot = () => document.querySelector('a-entity#parcel')
 
+    this.injectParcelBoundary = () => {
+      const query = queryString.parse(location.search)
+
+      if (!query.parcels) return
+
+      const parcels = query.parcels.split(';')
+      const coordinatesArray = JSON.stringify(parcels.map(p => (p.split(',').map(s => Number(s)))))
+      const aParcel = document.querySelector('a-parcel')
+      aParcel.setAttribute('parcels', coordinatesArray)
+    }
+
     this.loadParcel = (data, uuid) => {
       console.log(data, uuid)
       this.setState({ loading: false })
@@ -59,6 +71,7 @@ export default class Main extends React.Component {
         this.getRoot().setAttribute('data-uuid', uuid)
       }
       setEntityInnerHTML(this.getRoot(), data)
+      this.injectParcelBoundary()
     }
 
     Events.on('togglesidebar', event => {

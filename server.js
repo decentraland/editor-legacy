@@ -48,7 +48,11 @@ app.use(bodyParser.json())
 app.get('/', function (_, res) { res.sendFile(landingPath) })
 app.use(express.static(path.join(__dirname, 'public')))
 app.use('/dist', express.static(path.join(__dirname, 'dist')))
-app.get('/scene/:name', function (_, res) { res.sendFile(indexPath) })
+app.get('/scene/:name', function (req, res) {
+  const parcels = req.query.parcels
+  console.log('Parcels coordinates: ', parcels)
+  res.sendFile(indexPath)
+})
 
 app.listen(port)
 
