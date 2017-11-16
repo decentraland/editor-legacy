@@ -41,6 +41,7 @@ services:
       - ./data:/root/.ipfs
     networks:
       - internal
+      - outside
 
 networks:
   internal:
