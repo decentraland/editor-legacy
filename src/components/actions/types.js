@@ -10,6 +10,18 @@ export const bindName = {
   failed: '[Failed] Bind the hash to IPNS'
 };
 
+export const saveMeta = {
+  request: '[Request] SAVE metadata',
+  success: '[Success] SAVE metadata',
+  failed: '[Failed] SAVE metadata'
+};
+
+export const saveMetaManyParcels = {
+  request: '[Request] SAVE metadata for multiple parcels',
+  success: '[Success] SAVE metadata for multiple parcels',
+  failed: '[Failed] SAVE metadata for multiple parcels'
+};
+
 export const loadMeta = {
   request: '[Request] Load metadata',
   success: '[Success] Load metadata',

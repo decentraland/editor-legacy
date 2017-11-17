@@ -80,14 +80,13 @@ function parcelStates(state = {}, action) {
 
 export const selectors = {
   getIpfsState: state => state.ipfs,
-  getMeta: state => state.meta,
   getParcelStates: state => state.parcelStates,
   ethereumState: state => state.ethereum
 };
 
 export default {
   ipfs,
-  ipns,
+  //ipns,
   ethereum,
   parcelStates
 };

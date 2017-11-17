@@ -19,7 +19,6 @@ export function* connectWeb3() {
 
     yield put({ type: types.connectWeb3.success, web3Connected: true });
   } catch (error) {
-    console.error(error);
     yield put({ type: types.connectWeb3.failed, error: error.message });
   }
 }
@@ -37,6 +36,11 @@ export function* handleSaveScene (action) {
       metadata: action.metadata,
       hash: result
     });
+    // Just testing...
+    yield put({ type: types.saveMeta.request, x: 5, y: -3, ipfsHash: result });
+    // FIXME: doesn't work until there's a new version of LANDToken contract with this method!
+    // https://github.com/decentraland/land/blob/master/contracts/LANDToken.sol
+    // yield put({ type: types.saveMetaManyParcels.request, parcels: '5,-3;6,-3;6,-2', ipfsHash: result });
   }
 }
 
@@ -135,6 +139,28 @@ export function* fetchBalance(action) {
   }
 }
 
+export function* updateParcelMetadata(action) {
+  try {
+    const transaction = yield call(
+      async () => await ethService.updateParcelMetadata(action.x, action.y, action.ipfsHash)
+    );
+    yield put({ type: types.saveMeta.success, transaction });
+  } catch (error) {
+    yield put({ type: types.saveMeta.failed, error });
+  }
+}
+
+export function* updateManyParcelsMetadata(action) {
+  try {
+    const transaction = yield call(
+      async () => await ethService.updateManyParcelsMetadata(action.parcels, action.ipfsHash)
+    );
+    yield put({ type: types.saveMetaManyParcels.success, transaction });
+  } catch (error) {
+    yield put({ type: types.saveMetaManyParcels.failed, error });
+  }
+}
+
 export default function* rootSaga() {
   yield takeLatest(types.saveScene.request, handleSaveScene)
   // yield takeLatest(types.saveScene.success, handleBindName)
@@ -143,6 +169,8 @@ export default function* rootSaga() {
   yield takeEvery(types.connectWeb3.request, connectWeb3);
   yield takeEvery(types.connectWeb3.success, fetchBalance);
   yield takeEvery(types.fetchBalance.request, fetchBalance);
+  yield takeEvery(types.saveMeta.request, updateParcelMetadata);
+  yield takeEvery(types.saveMetaManyParcels.request, updateManyParcelsMetadata);
 
   yield put({ type: types.connectWeb3.request });
 }

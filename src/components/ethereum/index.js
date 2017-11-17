@@ -32,8 +32,10 @@ class Ethereum {
       tokenByIndex: call(this.land.methods, "tokenByIndex"),
       landMetadata: call(this.land.methods, "landMetadata"),
       ownerOfLand: call(this.land.methods, "ownerOfLand"),
-      updateLandMetadata: call(this.land.methods, "updateLandMetadata"),
-      updateManyLandMetadata: call(this.land.methods, "updateManyLandMetadata"),
+      updateLandMetadata: transaction(this.land.methods, "updateLandMetadata"),
+      // FIXME: doesn't work until there's a new version of LANDToken contract with this method!
+      // https://github.com/decentraland/land/blob/master/contracts/LANDToken.sol
+      updateManyLandMetadata: transaction(this.land.methods, "updateManyLandMetadata")
     };
 
     return true;
@@ -90,15 +92,15 @@ class Ethereum {
     for (let i = 0; i < amount; i++) {
       result.push(await this.getOwnedParcel(i));
     }
-    console.log("result is", result);
+    //console.log("result is", result);
     return result;
   }
 
   async getOwnedParcel(index) {
     const hash = await this.methods.tokenByIndex(this.address, index);
-    console.log(hash, "hey", reverseHash[hash]);
+    //console.log(hash, "hey", reverseHash[hash]);
     const { x, y } = reverseHash[hash];
-    console.log(index, hash, x, y);
+    //console.log(index, hash, x, y);
     return {
       x,
       y,
@@ -112,8 +114,11 @@ class Ethereum {
     return this.methods.updateLandMetadata(x, y, ipfsHash)
   }
 
-  updateManyParcelMetadata(parcels, ipfsHash) {
-    return parcels.map(parcel => this.updateParcelMetadata(parcel.x, parcel.y, ipfsHash))
+  updateManyParcelsMetadata(parcels, ipfsHash) {
+    const coordinatesArray = parcels.split(';').map(coords => coords.split(','))
+    const x = coordinatesArray.map(x => Number(x[0])) // [x1, x2, ... , xn] -> type: Array
+    const y = coordinatesArray.map(y => Number(y[1])) // [y1, y2, ... , yn] -> type: Array
+    return this.methods.updateManyLandMetadata(x, y, ipfsHash)
   }
 }
 
