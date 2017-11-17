@@ -7,6 +7,16 @@ export const connectWeb3 = (address) => {
   };
 };
 
+export const loadParcelRequest = (parcel) => ({
+  type: types.loadParcel.request,
+  parcel
+});
+
+export const loadManyParcelRequest = (parcels) => ({
+  type: types.loadParcel.requestMany,
+  parcels
+});
+
 export const ipfsSaveSceneRequest = (sceneName, content, metadata) => ({
   type: types.saveScene.request,
   sceneName,
@@ -19,7 +29,8 @@ export const ipfsBindNameRequest = (content) => ({
   content
 });
 
-export const loadMetaRequest = (meta) => ({
+export const loadMetaRequest = (x, y) => ({
   type: types.loadMeta.request,
-  meta
+  x,
+  y
 });

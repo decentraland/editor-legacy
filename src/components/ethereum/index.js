@@ -80,6 +80,10 @@ class Ethereum {
     };
   }
 
+  async getParcelMetadata(x, y) {
+    return await this.methods.landMetadata(x, y)
+  }
+
   async getMany(parcels) {
     return Promise.all(
       parcels.map(parcel => this.getParcelData(parcel.x, parcel.y))

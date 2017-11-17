@@ -43,7 +43,8 @@ export const fetchBalance = {
 
 export const loadParcel = {
   request: '[Request] Load parcel',
-  many: '[Multiple Success] Load parcel',
+  requestMany: '[Multiple Request] Load parcels',
+  many: '[Multiple Success] Load parcels',
   success: '[Success] Load parcel',
   failed: '[Failed] Load parcel'
 };

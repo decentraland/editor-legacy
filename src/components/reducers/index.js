@@ -3,7 +3,8 @@ import * as types from '../actions/types';
 
 const INITIAL_STATE = {
   ipfs: { loading: true },
-  ipns: { loading: true },
+  parcelStates: { loading: true },
+  ethereum: {}
 };
 
 function ipfs(state = INITIAL_STATE.ipfs, action) {
@@ -25,18 +26,17 @@ function ipfs(state = INITIAL_STATE.ipfs, action) {
   }
 }
 
-function ipns(state = INITIAL_STATE.ipns, action) {
+function meta(state = INITIAL_STATE.meta, action) {
   switch (action.type) {
-    case types.saveScene.request:
+    case types.loadMeta.request:
       return { loading: true };
-    case types.saveScene.success:
+    case types.loadMeta.success:
       return {
         loading: false,
         success: true,
-        ipfsHash: action.ipfsHash,
-        address: action.address
+        metadata: action.metadata
       };
-    case types.saveScene.failed:
+    case types.loadMeta.failed:
       return { loading: false, error: action.error };
     default:
       return state;
@@ -59,7 +59,19 @@ function ethereum(state = {}, action) {
 function parcelStates(state = {}, action) {
   let newState;
   switch (action.type) {
+    case types.loadMeta.request:
+      return { loading: true };
+    case types.loadMeta.success:
+      return {
+        loading: false,
+        success: true,
+        metadata: action.metadata
+      };
+    case types.loadMeta.failed:
+      return { loading: false, error: action.error };
     case types.loadParcel.request:
+      return { ...state, loading: true };
+    case types.loadParcel.requestMany:
       return { ...state, loading: true };
     case types.loadParcel.success:
       newState = { ...state, loading: false };
@@ -81,12 +93,14 @@ function parcelStates(state = {}, action) {
 export const selectors = {
   getIpfsState: state => state.ipfs,
   getParcelStates: state => state.parcelStates,
-  ethereumState: state => state.ethereum
+  ethereumState: state => state.ethereum,
+  metaState: state => state.meta
 };
 
 export default {
   ipfs,
   //ipns,
+  //meta,
   ethereum,
   parcelStates
 };

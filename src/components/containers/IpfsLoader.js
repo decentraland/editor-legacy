@@ -16,23 +16,13 @@ function fetchJSON (url) {
   return fetch(url).then(res => res.json())
 }
 
-function loadScene (name) {
-  let ipnsName, ipfsName
+function loadScene (ipfsHash) {
   const defaultData = {
     default: true,
     scene: defaultScene
   }
-  return fetchJSON('/api/name/' + name)
-    .then(objectHash => {
-      if (!objectHash.ok) {
-        console.log(objectHash.error)
-        return defaultData
-      }
-      console.log(objectHash)
-      ipnsName = objectHash.url.ipns
-      ipfsName = objectHash.url.ipfs
-      return fetchJSON('/api/data/' + ipfsName)
-    }).then(objectData => {
+  return fetchJSON('/api/data/' + ipfsHash)
+    .then(objectData => {
       if (objectData.default) {
         return objectData
       }
@@ -41,14 +31,21 @@ function loadScene (name) {
         return defaultData
       }
       console.log(objectData)
-      return { scene: objectData.data, ipfs: ipfsName, ipns: ipnsName}
+      return { scene: objectData.data, ipfs: ipfsHash}
     })
 }
 
 class IPFSLoader extends React.Component {
   static getState(state) {
     return {
-      ipfs: state.ipfs,
+      ethereum: state.ethereum,
+      parcelStates: state.parcelStates,
+    }
+  }
+
+  static getActions(actions) {
+    return {
+      loadManyParcelRequest: actions.loadManyParcelRequest,
     }
   }
 
@@ -60,13 +57,26 @@ class IPFSLoader extends React.Component {
     this.dismiss = () => {
       this.props.reportParcel(this.state.data.scene)
     }
+    //if (this.props.ethereum.success && this.props.meta.loading) this.props.actions.loadMetaRequest(5, -3)
   }
   componentDidMount() {
-    loadScene(sceneName)
-      .then(scene => {
-        this.setState({ loading: false, data: scene, waitDismissal: true })
-      })
-      .catch(error => this.setState({ loading: false, error }))
+    // Just testing with this parcel coordinates...
+    // and a horrible hack... needs wait until web3 is ready
+    // and then fire JUST ONCE
+    setTimeout(() => {
+      this.props.actions.loadManyParcelRequest([{x: 5, y: -3}, {x: 6, y: -3}, {x: 6, y: -2}])
+    }, 1000)
+  }
+  componentWillReceiveProps(nextProps) {
+    const { parcelStates } = nextProps
+
+    if (!parcelStates.loading && parcelStates['5,-3'] && parcelStates['5,-3'].metadata) {
+      loadScene(parcelStates['5,-3'].metadata)
+        .then(scene => {
+          this.setState({ loading: false, data: scene, waitDismissal: true })
+        })
+        .catch(error => this.setState({ loading: false, error }))
+    }
   }
   intro() {
     return [

@@ -37,10 +37,10 @@ export function* handleSaveScene (action) {
       hash: result
     });
     // Just testing...
-    yield put({ type: types.saveMeta.request, x: 5, y: -3, ipfsHash: result });
+    //yield put({ type: types.saveMeta.request, x: 5, y: -3, ipfsHash: result });
     // FIXME: doesn't work until there's a new version of LANDToken contract with this method!
     // https://github.com/decentraland/land/blob/master/contracts/LANDToken.sol
-    // yield put({ type: types.saveMetaManyParcels.request, parcels: '5,-3;6,-3;6,-2', ipfsHash: result });
+    yield put({ type: types.saveMetaManyParcels.request, parcels: '5,-3;6,-3;6,-2', ipfsHash: result });
   }
 }
 
@@ -82,23 +82,12 @@ export async function bindName (name, hash) {
     .then(res => res.address);
 }
 
-// Not finalized, not used on its own
-export async function loadMeta (hash) {
-  return await fetch(`/api/data/${hash}/metadata.json`)
-    .then(res => (console.log(res), res.json()))
-    .then(res => {
-      if (!res.success) {
-        throw new Error(res.error)
-      }
-      console.log('Metadata uploaded to: ', res.url)
-      return res.url
-    })
-}
-
-export function* handleLoadMeta (action) {
+export function* loadMeta (action) {
   try {
-    const result = yield call(loadMeta, action.hash)
-    yield put({ type: types.loadMeta.success, meta: action.meta })
+    const metadata = yield call(
+      async () => await ethService.getParcelMetadata(action.x, action.y)
+    );
+    yield put({ type: types.loadMeta.success, metadata })
   } catch (error) {
     yield put({ type: types.loadMeta.failed, error: error.message })
   }
@@ -106,10 +95,22 @@ export function* handleLoadMeta (action) {
 
 export function* fetchParcel(action) {
   try {
+    console.log(action)
     const parcel = yield call(
-      async () => await ethService.getParcelData(action.x, action.y)
+      async () => await ethService.getParcelData(action.parcel.x, action.parcel.y)
     );
     yield put({ type: types.loadParcel.success, parcel });
+  } catch (error) {
+    yield put({ type: types.loadParcel.failed, error });
+  }
+}
+
+export function* fetchManyParcels(action) {
+  try {
+    const parcels = yield call(
+      async () => await ethService.getMany(action.parcels)
+    );
+    yield put({ type: types.loadParcel.many, parcels });
   } catch (error) {
     yield put({ type: types.loadParcel.failed, error });
   }
@@ -162,10 +163,11 @@ export function* updateManyParcelsMetadata(action) {
 }
 
 export default function* rootSaga() {
-  yield takeLatest(types.saveScene.request, handleSaveScene)
-  // yield takeLatest(types.saveScene.success, handleBindName)
-  yield takeLatest(types.loadMeta.request, handleLoadMeta)
+  yield takeLatest(types.saveScene.request, handleSaveScene);
+  // yield takeLatest(types.saveScene.success, handleBindName);
+  yield takeEvery(types.loadMeta.request, loadMeta);
   yield takeEvery(types.loadParcel.request, fetchParcel);
+  yield takeEvery(types.loadParcel.requestMany, fetchManyParcels);
   yield takeEvery(types.connectWeb3.request, connectWeb3);
   yield takeEvery(types.connectWeb3.success, fetchBalance);
   yield takeEvery(types.fetchBalance.request, fetchBalance);
