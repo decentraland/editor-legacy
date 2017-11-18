@@ -18,7 +18,8 @@ jobs:
       - run: npm run remotebuild
       - save_cache:
           paths:
-            - build
+            - dist
+            - public
           key: build-{{ .Revision }}
   deploy:
     docker:
@@ -29,9 +30,9 @@ jobs:
           keys:
           - build-{{ .Revision }}
       - run: |
-        sudo apt-get -y -qq install awscli
-        aws s3 sync public s3://editor.decentraland.today/ --delete --acl public-read
-        aws s3 sync dist s3://editor.decentraland.today/dist --delete --acl public-read
+             sudo apt-get -y -qq install awscli
+             aws s3 sync public 's3://editor.decentraland.today/' --delete --acl public-read
+             aws s3 sync dist 's3://editor.decentraland.today/dist' --acl public-read
 
 workflows:
   version: 2
