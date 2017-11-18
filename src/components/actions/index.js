@@ -34,3 +34,9 @@ export const loadMetaRequest = (x, y) => ({
   x,
   y
 });
+
+export const updateManyParcelsRequest = (parcels, ipfsHash) => ({
+  type: types.saveMetaManyParcels.request,
+  parcels,
+  ipfsHash
+});

@@ -1,6 +1,8 @@
 var INSPECTOR = require('../../lib/inspector.js');
 import React from 'react';
+import { connect } from '../store'
 import Clipboard from 'clipboard';
+import queryString from 'query-string'
 import {getSceneName, generateHtml} from '../../lib/exporter';
 import Events from '../../lib/Events.js';
 import {saveString} from '../../lib/utils';
@@ -11,7 +13,19 @@ const LOCALSTORAGE_MOCAP_UI = 'aframeinspectormocapuienabled';
 /**
  * Tools and actions.
  */
-export default class Toolbar extends React.Component {
+class Toolbar extends React.Component {
+  static getState(state) {
+    return {
+      ipfs: state.ipfs,
+    }
+  }
+
+  static getActions(actions) {
+    return {
+      updateManyParcelsRequest: actions.updateManyParcelsRequest
+    }
+  }
+
   constructor(props) {
     super(props)
 
@@ -43,8 +57,11 @@ export default class Toolbar extends React.Component {
     Events.emit('savescene')
   }
 
-  publishParcels () {
-    Events.emit('publishparcels')
+  publishParcels = () => {
+    const { ipfs } = this.props
+    const query = queryString.parse(location.search)
+    const parcels = query.parcels
+    this.props.actions.updateManyParcelsRequest(parcels, ipfs.hash)
   }
 
   addEntity (nodeType) {
@@ -62,7 +79,8 @@ export default class Toolbar extends React.Component {
     return (
       <div id="scenegraphToolbar">
         <div className='scenegraph-actions'>
-          <a className='button-download' title='Save HTML' onClick={this.saveScene}>Save</a>{' '}
+          <a className='button-download' title='Save' onClick={this.saveScene}>Save</a>{' '}
+          <a className='button-download' title='Publish' onClick={this.publishParcels}>Publish</a>{' '}
         </div>
 
         <h4>Add...</h4>
@@ -87,3 +105,5 @@ export default class Toolbar extends React.Component {
     );
   }
 }
+
+export default connect(Toolbar)

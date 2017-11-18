@@ -21,6 +21,7 @@ import '../css/main.css';
 
 import IPFSLoader from './containers/IpfsLoader'
 import IPFSSaveScene from './containers/IpfsSaveScene'
+import PublishParcels from './containers/PublishParcels'
 import Patch from '../../vendor/patch'
 import Apply from '../../vendor/apply'
 import WebrtcClient from '../lib/webrtc-client'
@@ -71,7 +72,7 @@ export default class Main extends React.Component {
         this.getRoot().setAttribute('data-uuid', uuid)
       }
       setEntityInnerHTML(this.getRoot(), data)
-      this.injectParcelBoundary()
+      //this.injectParcelBoundary() // FIXME: center to the bounds somehow...
     }
 
     Events.on('togglesidebar', event => {
@@ -180,6 +181,13 @@ export default class Main extends React.Component {
     Events.on('savedismiss', val => {
       this.setState({ saveScene: false });
     });
+
+    Events.on('publishParcels', val => {
+      this.setState({ publishParcels: true });
+    });
+    Events.on('publishParcelsDismiss', val => {
+      this.setState({ publishParcels: false });
+    });
   }
 
   onCloseHelpModal = value => {
@@ -223,6 +231,7 @@ export default class Main extends React.Component {
       <div>
         { this.state.loading && <IPFSLoader reportParcel={this.loadParcel}/> }
         { this.state.saveScene && <IPFSSaveScene ref='save' content={this.storedContent} /> }
+        { this.state.publishParcels && <PublishParcels /> }
         <div id='aframe-inspector-panels' className={this.state.inspectorEnabled ? '' : 'hidden'}>
           <ModalTextures ref='modaltextures' isOpen={this.state.isModalTexturesOpen} selectedTexture={this.state.selectedTexture} onClose={this.onModalTextureOnClose}/>
           <SceneGraph
