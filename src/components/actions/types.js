@@ -1,3 +1,9 @@
+export const loadScene = {
+  request: '[Request] Load scene from IPFS',
+  success: '[Success] Load scene from IPFS',
+  failed: '[Failed] Load scene from IPFS'
+};
+
 export const saveScene = {
   request: '[Request] Save scene to IPFS',
   success: '[Success] Save scene to IPFS',

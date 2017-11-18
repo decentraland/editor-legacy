@@ -2,44 +2,19 @@
 
 import React from 'react'
 import ReactModal from 'react-modal'
+import queryString from 'query-string'
 import { connect } from '../store'
 
 import Header from '../components/Header'
 import Footer from '../components/Footer'
 import Loading from '../components/Loading'
-import defaultScene from '../../lib/defaultScene'
-import {getSceneName} from '../../lib/utils'
-
-const sceneName = getSceneName()
-
-function fetchJSON (url) {
-  return fetch(url).then(res => res.json())
-}
-
-function loadScene (ipfsHash) {
-  const defaultData = {
-    default: true,
-    scene: defaultScene
-  }
-  return fetchJSON('/api/data/' + ipfsHash)
-    .then(objectData => {
-      if (objectData.default) {
-        return objectData
-      }
-      if (!objectData.ok) {
-        console.log(objectData.error)
-        return defaultData
-      }
-      console.log(objectData)
-      return { scene: objectData.data, ipfs: ipfsHash}
-    })
-}
 
 class IPFSLoader extends React.Component {
   static getState(state) {
     return {
+      ipfs: state.ipfs,
       ethereum: state.ethereum,
-      parcelStates: state.parcelStates,
+      parcelStates: state.parcelStates
     }
   }
 
@@ -52,31 +27,36 @@ class IPFSLoader extends React.Component {
   constructor() {
     super(...arguments)
     this.state = {
-      loading: true
+      loading: true,
+      waitDismissal: true
     }
     this.dismiss = () => {
-      this.props.reportParcel(this.state.data.scene)
+      this.setState({ waitDismissal: false })
+      this.props.reportParcel(this.props.ipfs.scene)
     }
-    //if (this.props.ethereum.success && this.props.meta.loading) this.props.actions.loadMetaRequest(5, -3)
   }
   componentDidMount() {
-    // Just testing with this parcel coordinates...
-    // and a horrible hack... needs wait until web3 is ready
+    const query = queryString.parse(location.search)
+
+    if (!query.parcels) {
+      this.loadParcels([{x: 0, y: 0}])
+      return
+    }
+
+    const parcels = query.parcels.split(';')
+    const coordinatesArray = parcels.map(a => a.split(',')).map(a => ({x: a[0], y: a[1]}))
+
+    this.loadParcels(coordinatesArray)
+  }
+  loadParcels = (coordinates) => {
+    // Hack... needs to wait until web3 is ready
     // and then fire JUST ONCE
     setTimeout(() => {
-      this.props.actions.loadManyParcelRequest([{x: 5, y: -3}, {x: 6, y: -3}, {x: 6, y: -2}])
+      if (this.props.ethereum.success) {
+        console.log('loading many parcels...')
+        this.props.actions.loadManyParcelRequest(coordinates)
+      }
     }, 1000)
-  }
-  componentWillReceiveProps(nextProps) {
-    const { parcelStates } = nextProps
-
-    if (!parcelStates.loading && parcelStates['5,-3'] && parcelStates['5,-3'].metadata) {
-      loadScene(parcelStates['5,-3'].metadata)
-        .then(scene => {
-          this.setState({ loading: false, data: scene, waitDismissal: true })
-        })
-        .catch(error => this.setState({ loading: false, error }))
-    }
   }
   intro() {
     return [
@@ -87,30 +67,32 @@ class IPFSLoader extends React.Component {
     ]
   }
   renderContent() {
-    if (this.state.loading) {
+
+    const { ipfs } = this.props
+    if (ipfs.loading) {
       return <div className='loading uploadPrompt'>
         { this.intro() }
         <Loading />
         <h2>Loading scene...</h2>
       </div>
     }
-    if (this.state.error) {
+    if (ipfs.error) {
       return <div className='errored uploadPrompt'>
         { this.intro() }
-        Error loading scene! { this.state.error }
+        Error loading scene! { ipfs.error }
       </div>
     }
     if (this.state.waitDismissal) {
-      if (this.state.data.default) {
+      if (ipfs.scene.default) {
         return <div className='welcome uploadPrompt'>
           { this.intro() }
-          <button onClick={this.dismiss}>Start editing "{sceneName}"</button>
+          <button onClick={this.dismiss}>Start editing</button>
         </div>
       } else {
         return (<div className='dismissal uploadPrompt'>
           { this.intro() }
-          <h2>Scene "{sceneName}" loaded from IPFS</h2>
-          <p>The IPFS hash pointed to is: /ipfs/{ this.state.data.ipfs }</p>
+          <h2>Scene loaded from IPFS</h2>
+          <p>The IPFS hash pointed to is: /ipfs/{ ipfs.hash }</p>
           <button onClick={this.dismiss}>Start editing</button>
         </div>)
       }

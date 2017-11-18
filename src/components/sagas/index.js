@@ -3,6 +3,9 @@ import { delay } from "redux-saga";
 import { call, takeEvery, takeLatest, select, put, take, all, fork } from 'redux-saga/effects'
 import * as actions from '../actions';
 import * as types from '../actions/types';
+import { selectors } from '../reducers'
+import defaultScene from '../../lib/defaultScene'
+import dummyParcelMeta from '../utils/parcel-metadata'
 import ethService from "../ethereum";
 
 export function* connectWeb3() {
@@ -37,10 +40,10 @@ export function* handleSaveScene (action) {
       hash: result
     });
     // Just testing...
-    //yield put({ type: types.saveMeta.request, x: 5, y: -3, ipfsHash: result });
+    //yield put({ type: types.saveMeta.request, x: 5, y: 0, ipfsHash: result });
     // FIXME: doesn't work until there's a new version of LANDToken contract with this method!
     // https://github.com/decentraland/land/blob/master/contracts/LANDToken.sol
-    yield put({ type: types.saveMetaManyParcels.request, parcels: '5,-3;6,-3;6,-2', ipfsHash: result });
+    //yield put({ type: types.saveMetaManyParcels.request, parcels: '2,0;2,-1;2,-2', ipfsHash: result });
   }
 }
 
@@ -76,6 +79,28 @@ export async function saveScene (content, metadata) {
     })
 }
 
+export async function loadScene (hash) {
+  const defaultData = {
+    default: true,
+    scene: defaultScene,
+    metadata: dummyParcelMeta,
+    ipfs: hash
+  };
+  return await fetch(`/api/data/${hash}`, { method: 'GET' })
+    .then(res => res.json())
+    .then(objectData => {
+      if (objectData.default) {
+        return objectData;
+      }
+      if (!objectData.ok) {
+        console.log(objectData.error)
+        return defaultData;
+      }
+      console.log(objectData)
+      return { scene: objectData.data, metadata: JSON.parse(objectData.metadata), ipfs: hash}
+    })
+}
+
 export async function bindName (name, hash) {
   return await fetch(`/api/name/${name}/${hash}`, { method: 'POST' })
     .then(res => res.json())
@@ -95,7 +120,6 @@ export function* loadMeta (action) {
 
 export function* fetchParcel(action) {
   try {
-    console.log(action)
     const parcel = yield call(
       async () => await ethService.getParcelData(action.parcel.x, action.parcel.y)
     );
@@ -105,12 +129,23 @@ export function* fetchParcel(action) {
   }
 }
 
+export function* handleSceneFetch(hash) {
+  try {
+    const result = yield call(loadScene, hash);
+    yield put({ type: types.loadScene.success, scene: result.scene, metadata: result.metadata, hash });
+  } catch (error) {
+    yield put({ type: types.loadScene.failed, error });
+  }
+}
+
 export function* fetchManyParcels(action) {
   try {
     const parcels = yield call(
       async () => await ethService.getMany(action.parcels)
     );
     yield put({ type: types.loadParcel.many, parcels });
+    const parcelState = yield select(selectors.getParcelState)
+    yield call(handleSceneFetch, parcelState.metadata);
   } catch (error) {
     yield put({ type: types.loadParcel.failed, error });
   }

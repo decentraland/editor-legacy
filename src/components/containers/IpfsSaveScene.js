@@ -10,8 +10,6 @@ import Header from '../components/Header'
 import Footer from '../components/Footer'
 import Loading from '../components/Loading'
 import {getSceneName} from '../../lib/utils'
-import { isLoading } from '../utils'
-import parcelMeta from '../utils/parcel-metadata'
 
 import 'react-select/dist/react-select.css';
 
@@ -21,14 +19,12 @@ class IPFSSaveScene extends React.Component {
   static getState(state) {
     return {
       ipfs: state.ipfs,
-      ipns: state.ipns
     }
   }
 
   static getActions(actions) {
     return {
-      ipfsSaveSceneRequest: actions.ipfsSaveSceneRequest,
-      loadMetaRequest: actions.loadMetaRequest
+      ipfsSaveSceneRequest: actions.ipfsSaveSceneRequest
     }
   }
 
@@ -36,8 +32,7 @@ class IPFSSaveScene extends React.Component {
     super(...arguments)
     this.state = {
       editMetadata: false,
-      loading: true,
-      meta: parcelMeta
+      loading: true
     }
     this.dismiss = () => {
       Events.emit('savedismiss')
@@ -81,7 +76,7 @@ class IPFSSaveScene extends React.Component {
 
   renderMetaEditForm() {
     const { ipfs, ipns } = this.props
-    const { meta } = this.state
+    const meta = ipfs.metadata
 
     const formFromMeta = (metaObject) => Object.entries(metaObject).map(([key, value]) => {
       console.log(`${key} ${value}`); // "a 5", "b 7", "c 9"
@@ -166,7 +161,7 @@ class IPFSSaveScene extends React.Component {
     const { tags } = this.state
     event.preventDefault();
     console.log(event.target)
-    const metadata = Object.assign({}, parcelMeta, {
+    const metadata = Object.assign({}, this.props.ipfs.metadata, {
       contact: {
         name: event.target.name.value,
         email: event.target.email.value,

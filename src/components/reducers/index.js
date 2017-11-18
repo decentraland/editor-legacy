@@ -9,34 +9,27 @@ const INITIAL_STATE = {
 
 function ipfs(state = INITIAL_STATE.ipfs, action) {
   switch (action.type) {
+    case types.loadScene.request:
+      return { loading: true };
+    case types.loadScene.success:
+      return {
+        loading: false,
+        scene: action.scene,
+        metadata: action.metadata,
+        hash: action.hash
+      };
+    case types.loadScene.failed:
+      return { loading: false, error: action.error };
     case types.saveScene.request:
       return { loading: true };
     case types.saveScene.success:
       return {
         loading: false,
-        success: true,
         sceneName: action.sceneName,
         metadata: action.metadata,
         hash: action.hash
       };
     case types.saveScene.failed:
-      return { loading: false, error: action.error };
-    default:
-      return state;
-  }
-}
-
-function meta(state = INITIAL_STATE.meta, action) {
-  switch (action.type) {
-    case types.loadMeta.request:
-      return { loading: true };
-    case types.loadMeta.success:
-      return {
-        loading: false,
-        success: true,
-        metadata: action.metadata
-      };
-    case types.loadMeta.failed:
       return { loading: false, error: action.error };
     default:
       return state;
@@ -56,7 +49,7 @@ function ethereum(state = {}, action) {
   }
 }
 
-function parcelStates(state = {}, action) {
+function parcelState(state = {}, action) {
   let newState;
   switch (action.type) {
     case types.loadMeta.request:
@@ -64,7 +57,6 @@ function parcelStates(state = {}, action) {
     case types.loadMeta.success:
       return {
         loading: false,
-        success: true,
         metadata: action.metadata
       };
     case types.loadMeta.failed:
@@ -81,6 +73,7 @@ function parcelStates(state = {}, action) {
       newState = { ...state, loading: false };
       action.parcels.forEach(parcel => {
         newState[`${parcel.x},${parcel.y}`] = parcel;
+        if (!newState.metadata) newState.metadata = parcel.metadata;
       });
       return newState;
     case types.loadParcel.failed:
@@ -92,15 +85,13 @@ function parcelStates(state = {}, action) {
 
 export const selectors = {
   getIpfsState: state => state.ipfs,
-  getParcelStates: state => state.parcelStates,
-  ethereumState: state => state.ethereum,
-  metaState: state => state.meta
+  getParcelState: state => state.parcelState,
+  ethereumState: state => state.ethereum
 };
 
 export default {
   ipfs,
   //ipns,
-  //meta,
   ethereum,
-  parcelStates
+  parcelState
 };

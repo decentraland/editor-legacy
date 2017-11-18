@@ -26,6 +26,7 @@ class Ethereum {
         from: address
       });
     this.methods = {
+      ping: transaction(this.land.methods, "ping"),
       balanceOf: call(this.land.methods, "balanceOf"),
       buildTokenId: async (x, y) =>
         (await call(this.land.methods, "buildTokenId")(x, y)).toString("hex"),
