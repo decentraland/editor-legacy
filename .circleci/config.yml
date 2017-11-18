@@ -1,0 +1,47 @@
+version: 2
+jobs:
+  build:
+    docker:
+      - image: circleci/node:7.10
+    working_directory: /tmp/editor
+    steps:
+      - checkout
+      - restore_cache:
+          keys:
+          - v1-dependencies-{{ checksum "package.json" }}
+          - v1-dependencies-
+      - run: npm install
+      - save_cache:
+          paths:
+            - node_modules
+          key: v1-dependencies-{{ checksum "package.json" }}
+      - run: npm run remotebuild
+      - save_cache:
+          paths:
+            - build
+          key: build-{{ .Revision }}
+  deploy:
+    docker:
+      - image: circleci/node:7.10
+    working_directory: /tmp/editor
+    steps:
+      - restore_cache:
+          keys:
+          - build-{{ .Revision }}
+      - run: |
+        sudo apt-get -y -qq install awscli
+        aws s3 sync public s3://editor.decentraland.today/ --delete --acl public-read
+        aws s3 sync dist s3://editor.decentraland.today/dist --delete --acl public-read
+
+workflows:
+  version: 2
+  build-deploy:
+    jobs:
+      - build
+      - deploy:
+          requires:
+            - build
+          filters:
+            branches:
+              only: master
+
