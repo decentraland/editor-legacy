@@ -2,6 +2,8 @@ import React from 'react'
 import { Link } from 'react-router-dom'
 import Header from './Header'
 import Tabs from './Tabs'
+import getParcelsFromURL from '../../lib/parcels'
+import PreviewParcels from './parcel-preview'
 
 require('./NewScene.css')
 
@@ -11,13 +13,19 @@ export default class NewScene extends React.Component {
 
     this.state = {
       name: '',
-      parcels: []
+      parcels: getParcelsFromURL()
     }
   }
 
   onInput (e) {
     let name = e.target.value.toLowerCase().replace(/[^a-z0-9-]+/g, '')
     this.setState({name})
+  }
+
+  onSubmit (e) {
+    e.preventDefault()
+
+    this.props.history.push(`/scene/${this.state.name}`)
   }
 
   render () {
@@ -31,7 +39,7 @@ export default class NewScene extends React.Component {
 
           <p className='subtitle'>Edit your prototypes for Decentraland's world, in real-time.</p>
 
-          <form id='js-choose-scene' className='choose-scene' method='GET' action='/scene'>
+          <form id='js-choose-scene' className='choose-scene' onSubmit={this.onSubmit.bind(this)}>
             <input
               type='text'
               required='required'
@@ -41,7 +49,13 @@ export default class NewScene extends React.Component {
 
             <br />
             <br />
-            <button>Get Started</button> or <Link to='/scenes'>go back</Link>
+
+            {this.state.parcels && <PreviewParcels parcels={this.state.parcels} />}
+
+            <br />
+            <br />
+
+            <button>Create Scene</button> or <Link to='/scenes'>go back</Link>
           </form>
         </div>
       </section>

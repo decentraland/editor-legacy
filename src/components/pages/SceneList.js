@@ -4,6 +4,7 @@ import React from 'react'
 import { Link } from 'react-router-dom'
 import Header from './Header'
 import Tabs from './Tabs'
+import store from '../../lib/store'
 
 require('./SceneList.css')
 
@@ -11,21 +12,19 @@ export default class SceneList extends React.Component {
   constructor () {
     super()
 
-    var scenes = []
-
-    try {
-      // Catch in case localStorage is broken
-      scenes = JSON.parse(localStorage.getItem('recent-scenes') || [])
-    } catch (e) {
+    this.state = {
+      scenes: []
     }
+  }
 
-    this.state = { scenes: scenes }
+  componentDidMount () {
+    this.setState({ scenes: Array.from(store.scenes) })
   }
 
   render () {
     const scenes = (this.state.scenes.length > 0)
-      ? this.state.scenes.map((s) => {
-        return <li><Link to={`/scenes/${s.name}`}>{s.name}</Link></li>
+      ? this.state.scenes.map((scene) => {
+        return <li><Link to={`/scenes/${scene}`}>{scene}</Link></li>
       })
       : <li><small>No scenes</small></li>
 

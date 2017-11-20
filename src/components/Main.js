@@ -228,19 +228,6 @@ export default class Main extends React.Component {
     return location.pathname === '/scene/new'
   }
 
-  get parcels () {
-    const result = []
-
-    location.search.split('&').forEach((pair) => {
-      const components = pair.split(/(,|=)/).map((i) => parseInt(i, 10))
-      result.push([components[2], components[4]])
-    })
-
-    console.log(result)
-
-    return result
-  }
-
   render () {
     var scene = this.state.sceneEl;
     const showScenegraph = this.state.visible.scenegraph ? null : <div className="toggle-sidebar left"><a onClick={() => {this.state.visible.scenegraph = true; this.forceUpdate()}} className='fa fa-plus' title='Show scenegraph'></a></div>;

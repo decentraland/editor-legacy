@@ -8,6 +8,7 @@ import Footer from '../components/components/Footer'
 import Loading from '../components/components/Loading'
 import defaultScene from './defaultScene'
 import {getSceneName} from './utils'
+import store from './store'
 
 const sceneName = getSceneName()
 
@@ -21,6 +22,7 @@ function loadScene (name) {
     default: true,
     scene: defaultScene
   }
+
   return fetchJSON('/api/name/' + name)
     .then(objectHash => {
       if (!objectHash.ok) {
@@ -52,6 +54,8 @@ export default class IPFSLoader extends React.Component {
   }
 
   componentDidMount () {
+    store.addScene(sceneName)
+
     loadScene(sceneName)
       .then(scene => {
         this.setState({ loading: false, data: scene })
@@ -66,7 +70,8 @@ export default class IPFSLoader extends React.Component {
       <p key='3'>Support for sharing materials, textures, and models is in experimental stage.</p>
     ]
   }
-  renderContent() {
+
+  renderContent () {
     if (this.state.loading) {
       return <div className='loading uploadPrompt'>
         { this.intro() }
@@ -74,14 +79,16 @@ export default class IPFSLoader extends React.Component {
         <h2>Loading scene...</h2>
       </div>
     }
+
     if (this.state.error) {
       return <div className='errored uploadPrompt'>
         { this.intro() }
-        Error loading scene! { this.state.error }
+        Error loading scene! { this.state.error.toString() }
       </div>
     }
   }
-  render() {
+
+  render () {
     return <ReactModal isOpen={true} style={
       {
         overlay: {

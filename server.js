@@ -48,8 +48,8 @@ const sse = function (req, res, next) {
 
 app.use(sse)
 app.use(bodyParser.json())
-app.get('/', function (_, res) { res.sendFile(landingPath) })
 app.use(express.static(path.join(__dirname, 'public')))
+
 app.use(cors())
 app.use('/dist', express.static(path.join(__dirname, 'dist')))
 app.get('/edit', function (req, res) {
