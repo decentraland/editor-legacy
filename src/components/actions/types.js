@@ -52,7 +52,8 @@ export const loadParcel = {
   requestMany: '[Multiple Request] Load parcels',
   many: '[Multiple Success] Load parcels',
   success: '[Success] Load parcel',
-  failed: '[Failed] Load parcel'
+  failed: '[Failed] Load parcel',
+  createNew: '[Success] Create new scene on parcel',
 };
 
 export const balanceParcel = {
