@@ -5,6 +5,8 @@
   "main": "dist/aframe-inspector.min.js",
   "scripts": {
     "build": "webpack --progress --colors",
+    "remotebuild": "NODE_PATH=/tmp/editor/node_modules webpack --progress --colors",
+    "dev": "docker-compose up",
     "dist": "npm run dist:max && npm run dist:min",
     "dist:max": "cross-env AFRAME_DIST=true npm run build",
     "dist:min": "cross-env NODE_ENV=production AFRAME_DIST=true npm run build",
