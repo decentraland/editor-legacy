@@ -12,7 +12,7 @@ export function setEntityInnerHTML (entity, html) {
   var clone = entity.cloneNode()
   clone.innerHTML = html
 
-  Array.from(clone.childNodes).forEach((child) => {
+  Array.from(clone.children).forEach((child) => {
     // entity.flushToDOM();
 
     var copy = child
