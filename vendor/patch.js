@@ -33,7 +33,6 @@ function Patch (global, root, broadcast) {
     return uuid.v4()
   }
 
-  // todo - add uuid to textNodes
   function treeUUID (el, childNodes) {
     var nodes = [el]
 
