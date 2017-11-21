@@ -5,6 +5,7 @@ import ReactModal from 'react-modal'
 import queryString from 'query-string'
 import { connect } from '../store'
 
+import Events from '../../lib/Events'
 import Header from '../components/Header'
 import Footer from '../components/Footer'
 import Loading from '../components/Loading'
@@ -47,6 +48,11 @@ class IPFSLoader extends React.Component {
     const coordinatesArray = parcels.map(a => a.split(',')).map(a => ({x: a[0], y: a[1]}))
 
     this.loadParcels(coordinatesArray)
+  }
+  componentDidUpdate() {
+    if (this.props.ipfs.newScene) {
+      Events.emit('injectscenebound')
+    }
   }
   loadParcels = (coordinates) => {
     // Hack... needs to wait until web3 is ready

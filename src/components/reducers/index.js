@@ -2,7 +2,7 @@ import { createSelector } from 'reselect'
 import * as types from '../actions/types';
 
 const INITIAL_STATE = {
-  ipfs: { loading: true },
+  ipfs: { loading: true, newScene: false },
   parcelStates: { loading: true },
   ethereum: {}
 };
@@ -14,12 +14,15 @@ function ipfs(state = INITIAL_STATE.ipfs, action) {
     case types.loadScene.success:
       return {
         loading: false,
+        newScene: false,
         scene: action.scene,
         metadata: action.metadata,
         hash: action.hash
       };
     case types.loadScene.failed:
       return { loading: false, error: action.error };
+    case types.loadParcel.createNew:
+      return { loading: false, scene: action.scene, metadata: action.scene.metadata, newScene: true };
     case types.saveScene.request:
       return { loading: true };
     case types.saveScene.success:
@@ -76,6 +79,8 @@ function parcelState(state = {}, action) {
         if (!newState.metadata) newState.metadata = parcel.metadata;
       });
       return newState;
+    case types.loadParcel.createNew:
+      return { ...state, loading: false, scene: action.scene };
     case types.loadParcel.failed:
       return { ...state, error: action.error };
     default:

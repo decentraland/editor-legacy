@@ -145,7 +145,12 @@ export function* fetchManyParcels(action) {
     );
     yield put({ type: types.loadParcel.many, parcels });
     const parcelState = yield select(selectors.getParcelState)
-    yield call(handleSceneFetch, parcelState.metadata);
+    // TODO: handle scenes he doesn't own (owner is 0x0000000000000000000000000000000000000000 or another user)...
+    if (parcelState.metadata && parcelState.metadata !== '[]') {
+      yield call(handleSceneFetch, parcelState.metadata);
+    } else {
+      yield put({ type: types.loadParcel.createNew, parcels, scene: { default: true, metadata: dummyParcelMeta }, hash: null });
+    }
   } catch (error) {
     yield put({ type: types.loadParcel.failed, error });
   }

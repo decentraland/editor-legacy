@@ -34,8 +34,6 @@ class Ethereum {
       landMetadata: call(this.land.methods, "landMetadata"),
       ownerOfLand: call(this.land.methods, "ownerOfLand"),
       updateLandMetadata: transaction(this.land.methods, "updateLandMetadata"),
-      // FIXME: doesn't work until there's a new version of LANDToken contract with this method!
-      // https://github.com/decentraland/land/blob/master/contracts/LANDToken.sol
       updateManyLandMetadata: transaction(this.land.methods, "updateManyLandMetadata")
     };
 
