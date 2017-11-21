@@ -1,3 +1,7 @@
+// Moving into parts
+@import './variables';
+@import './scenegraph';
+
 body.aframe-inspector-opened,
 .toggle-edit {
   font-family: BlinkMacSystemFont, -apple-system, "Segoe UI", Helvetica, Arial, sans-serif;
@@ -95,12 +99,12 @@ input {
 }
 
 .collapsible.collapsed .static .collapse-button {
-  border-left-color: #30D7A9;
+  border-left-color: @brand-color;
   margin-top: 2px;
 }
 
 .collapsible:not(.collapsed) .static .collapse-button {
-  border-top-color: #30D7A9;
+  border-top-color: @brand-color;
   margin-top: 6px;
 }
 
@@ -125,74 +129,6 @@ input {
 
 .toggle-edit:hover {
   background-color: rgb(228, 43, 90);
-}
-
-.scenegraph-header{
-  margin: 0;
-  padding: 8px;
-  border-bottom: 1px solid #30D7A9;
-}
-
-.scenegraph {
-  border-top: 1px solid #111;
-}
-
-.scenegraph .search {
-  padding: 5px;
-}
-
-.scenegraph-toolbar {
-  background-color: #333;
-}
-
-.scenegraph-actions {
-  padding: 9px 0 5px 4px;
-}
-
-
-/* Toolbar icons */
-
-#scenegraphToolbar h4{
-  margin: 0;
-  padding: 0 8px 4px 8px;
-  border-bottom: 1px solid #444;
-}
-
-#scenegraphToolbar a.button {
-  position: relative;
-  border-radius: 4px;
-  display: inline-block;
-  border: 1px solid transparent;
-  margin: 0 0 0 2px;
-  padding: 0;
-}
-
-#scenegraphToolbar a.button-download{
-  background: #111;
-  padding: 8px 16px;
-  border-radius: 4px;
-  font: inherit;
-  display: inline-block;
-  margin: 0 0 8px 0;
-}
-
-#scenegraphToolbar a.button img{
-  width: 40px;
-  display: inline-block;
-  border-radius: 4px;
-}
-
-#scenegraphToolbar a.button:hover{
-  border: 1px solid white;
-}
-#scenegraphToolbar a.button:active{
-  border: 1px solid white;
-  top: 1px;
-  left: 1px;
-}
-#scenegraphToolbar a.button:active img{
-  opacity: 0.5;
-  background: black;
 }
 
 /* Search... */
@@ -500,7 +436,7 @@ a.button {
 }
 
 a.button:hover {
-  color: #30D7A9;
+  color: @brand-color;
 }
 
 .scenegraph-bottom a {
@@ -810,7 +746,7 @@ span.subcomponent {
 }
 
 .toolbar .active {
-  background-color: #30D7A9;
+  background-color: @brand-color;
   color: #fff;
 }
 
@@ -851,12 +787,12 @@ span.subcomponent {
 }
 
 .outliner .option.active {
-  background-color: #30D7A9;
+  background-color: @brand-color;
   color: #fff;
 }
 
 .outliner .option .component:hover {
-  color: #30D7A9;
+  color: @brand-color;
 }
 
 .outliner .option.active .component:hover {
@@ -895,7 +831,7 @@ a.flat-button {
 }
 
 a.flat-button:hover {
-  color: #30D7A9;
+  color: @brand-color;
 }
 
 .component-title {
@@ -980,7 +916,7 @@ span.entity-name {
   background-color: #222 !important;
   border: none;
   border-radius: 0;
-  color: #30D7A9;
+  color: @brand-color;
 }
 
 .Select-menu-outer {
@@ -988,7 +924,7 @@ span.entity-name {
 }
 
 .Select-menu-outer .is-focused {
-  background-color: #30D7A9 !important;
+  background-color: @brand-color !important;
   color: #fff;
 }
 
@@ -1003,11 +939,11 @@ span.entity-name {
 
 .Select-placeholder,
 .Select--single > .Select-control .Select-value {
-  color: #30D7A9 !important;
+  color: @brand-color !important;
 }
 
 .Select-value-label {
-  color: #30D7A9 !important;
+  color: @brand-color !important;
 }
 
 .row .Select-control {
@@ -1030,7 +966,7 @@ span.entity-name {
 .row input.number {
   background: #222;
   border: 1px solid transparent;
-  color: #30D7A9;
+  color: @brand-color;
   min-height: 20px;
   padding-left: 5px;
   padding-right: 5px;
@@ -1099,7 +1035,7 @@ span.entity-name {
 }
 
 .add-component .option span {
-  color: #30D7A9;
+  color: @brand-color;
 }
 
 .Select-menu-outer .is-focused span {
@@ -1121,7 +1057,7 @@ span.entity-name {
 }
 
 .aregistry-button:hover {
-  background-color: #30D7A9;
+  background-color: @brand-color;
 }
 
 .aregistry-button img {
@@ -1211,7 +1147,7 @@ span.entity-name {
 }
 
 .toggle-sidebar a:hover {
-  background-color: #30D7A9;
+  background-color: @brand-color;
   color: #fff;
 }
 
@@ -1255,7 +1191,7 @@ span.entity-name {
 }
 
 .dropdown:hover .dropbtn {
-  color: #30D7A9;
+  color: @brand-color;
 }
 
 .savedRecordings {

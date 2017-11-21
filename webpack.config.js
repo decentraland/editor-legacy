@@ -89,6 +89,16 @@ module.exports = {
           { loader: 'css-loader', options: { importLoaders: 1 } },
           'postcss-loader'
         ]
+      },
+      {
+        test: /\.less$/,
+        use: [{
+          loader: 'style-loader'
+        }, {
+          loader: 'css-loader'
+        }, {
+          loader: 'less-loader'
+        }]
       }
     ]
   },

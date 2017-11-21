@@ -17,7 +17,7 @@ import ModalHelp from './modals/ModalHelp';
 import SceneGraph from './scenegraph/SceneGraph';
 import ToolBar from './ToolBar';
 import {getSceneName, injectCSS, injectJS} from '../lib/utils';
-import '../css/main.css';
+import '../styles/main.less';
 
 import IPFSLoader from './containers/IpfsLoader'
 import IPFSSaveScene from './containers/IpfsSaveScene'
