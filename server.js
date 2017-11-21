@@ -22,7 +22,11 @@ if (process.env.NODE_ENV !== 'production') {
   }));
 }
 
-app.use('/api', proxy('localhost:3000'))
+app.use('/api', proxy('localhost:3000', {
+  proxyReqPathResolver: (req) => {
+    return '/api' + require('url').parse(req.url).path
+  }
+}))
 
 const port = (process.env.PORT || 4040)
 
