@@ -1,3 +1,7 @@
+/* globals THREE, location */
+
+import queryString from 'query-string'
+
 function getNumber (value) {
   return parseFloat(value.toFixed(3));
 }
@@ -105,6 +109,17 @@ function getSceneName () {
   return sceneName
 }
 
+function getParcelArray () {
+  const query = queryString.parse(location.search)
+  const parcels = query.parcels.split(';')
+
+  return parcels.map((p) => {
+    const pair = p.split(',').map(s => Number(s))
+
+    return new THREE.Vector2(pair[0], pair[1])
+  })
+}
+
 module.exports = {
   equal: equal,
   getNumber: getNumber,
@@ -114,5 +129,7 @@ module.exports = {
   os: getOS(),
   injectCSS: injectCSS,
   injectJS: injectJS,
-  saveString: saveString
+  saveString: saveString,
+  getParcelArray
 };
+

@@ -27,12 +27,15 @@ import Apply from '../../vendor/apply'
 import WebrtcClient from '../lib/webrtc-client'
 import {setEntityInnerHTML} from '../actions/entity';
 import { store } from './store'
+import { getParcelArray } from '../lib/utils'
 
 var webrtcClient = new WebrtcClient(getSceneName())
 
 // Megahack to include font-awesome.
 injectCSS('https://maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css');
 // injectCSS('https://fonts.googleapis.com/css?family=Roboto:400,300,500');
+
+
 
 export default class Main extends React.Component {
   constructor (props) {
@@ -55,14 +58,14 @@ export default class Main extends React.Component {
     this.getRoot = () => document.querySelector('a-entity#parcel')
 
     this.injectParcelBoundary = () => {
-      const query = queryString.parse(location.search)
+      const parcels = getParcelArray()
+      const bounds = new THREE.Box2().setFromPoints(parcels)
 
-      if (!query.parcels) return
+      // Offset so that the north-west most tile is at 0,0
+      parcels.forEach((p) => p.sub(bounds.min))
 
-      const parcels = query.parcels.split(';')
-      const coordinatesArray = JSON.stringify(parcels.map(p => (p.split(',').map(s => Number(s)))))
-      const aParcel = document.querySelector('a-parcel')
-      aParcel.setAttribute('parcels', coordinatesArray)
+      const arr = parcels.map((p) => [p.x, p.y])
+      document.querySelector('a-parcel').setAttribute('parcel', `parcels: ${JSON.stringify(arr)}`)
     }
 
     this.loadParcel = (data, uuid) => {
@@ -72,7 +75,7 @@ export default class Main extends React.Component {
         this.getRoot().setAttribute('data-uuid', uuid)
       }
       setEntityInnerHTML(this.getRoot(), data)
-      //this.injectParcelBoundary() // FIXME: center to the bounds somehow...
+      this.injectParcelBoundary() // FIXME: center to the bounds somehow...
     }
 
     Events.on('togglesidebar', event => {
