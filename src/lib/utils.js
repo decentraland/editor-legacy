@@ -1,4 +1,4 @@
-/* globals THREE, location */
+/* globals THREE, location, DOMParser, XMLSerializer */
 
 import queryString from 'query-string'
 
@@ -120,6 +120,46 @@ function getParcelArray () {
   })
 }
 
+function createScene (root) {
+  const xmlString = `<html>
+  <head>
+    <script src='//client.decentraland.org/release/*/a-minus.js'></script>
+  </head>
+  <body>
+    <a-scene />
+  </body>
+</html>`
+
+  const parser = new DOMParser()
+  const doc = parser.parseFromString(xmlString, 'text/xml')
+  const scene = doc.querySelector('a-scene')
+
+  Array.from(root.childNodes).forEach((child) => {
+    scene.appendChild(doc.importNode(child, true))
+
+    if (child.nodeType === 1) {
+      scene.appendChild(doc.createTextNode('\n      '))
+    }
+  })
+
+  // Attributes to remove
+  const attributes = ['data-uuid', 'id', 'geometry']
+
+  attributes.forEach((attr) => {
+    Array.from(scene.querySelectorAll(`[${attr}]`)).forEach((node) => {
+      node.removeAttribute(attr)
+    })
+  })
+
+  // Serialize
+  var xml = new XMLSerializer().serializeToString(doc)
+
+  // Fix me this is a terrible hack, need to work out how to use xmlserializer properly
+  xml = xml.replace(/\s*xmlns=".+?"/g, '')
+
+  return xml
+}
+
 module.exports = {
   equal: equal,
   getNumber: getNumber,
@@ -130,6 +170,7 @@ module.exports = {
   injectCSS: injectCSS,
   injectJS: injectJS,
   saveString: saveString,
-  getParcelArray
+  getParcelArray,
+  createScene
 };
 

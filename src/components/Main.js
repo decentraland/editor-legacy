@@ -27,7 +27,7 @@ import Apply from '../../vendor/apply'
 import WebrtcClient from '../lib/webrtc-client'
 import {setEntityInnerHTML} from '../actions/entity';
 import { store } from './store'
-import { getParcelArray } from '../lib/utils'
+import { getParcelArray, createScene } from '../lib/utils'
 
 var webrtcClient = new WebrtcClient(getSceneName())
 
@@ -178,7 +178,7 @@ export default class Main extends React.Component {
     });
 
     Events.on('savescene', val => {
-      this.storedContent = this.getRoot().innerHTML
+      this.storedContent = createScene(this.getRoot())
       this.setState({ saveScene: true });
     });
     Events.on('savedismiss', val => {
