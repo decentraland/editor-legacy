@@ -1,0 +1,99 @@
+#left-sidebar {
+  background: #2b2b2b;
+  bottom: 0;
+  display: flex;
+  flex-direction: column;
+  left: 0;
+  overflow: auto;
+  position: fixed;
+  top: 0;
+  width: 230px;
+}
+
+#sidebar {
+  background: #2b2b2b;
+  width: 331px;
+}
+
+#sidebar * {
+  vertical-align: middle;
+}
+
+.sidebar-title {
+  background-color: #444;
+  color: #aaa;
+  display: flex;
+  font-size: 12px;
+  justify-content: space-between;
+  padding: 6px 10px;
+  position: relative;
+  text-align: center;
+}
+
+#left-sidebar,
+#right-panels {
+  z-index: 9998;
+}
+
+#sidebar,
+#left-sidebar,
+.panel {
+  cursor: default;
+  user-select: none;
+}
+
+/* Search... */
+.search {
+  color: #aaa;
+  font-size: 16px;
+  position: relative;
+}
+
+.search input {
+  background: #222;
+  border-radius: 5px;
+  height: 22px;
+  text-indent: 10px;
+  width: 216px;
+}
+
+.search .fa-search {
+  position: absolute;
+  right: 11px;
+  top: 10px;
+}
+
+.search .fa-times {
+  position: absolute;
+  right: 32px;
+  top: 10px;
+}
+
+/* Sidebar toggling */
+.toggle-sidebar {
+  align-items: center;
+  display: flex;
+  height: 100%;
+  position: absolute;
+  z-index: 9998;
+}
+
+.toggle-sidebar.left {
+  left: 0;
+}
+
+.toggle-sidebar.right {
+  right: 0;
+}
+
+.toggle-sidebar a {
+  background-color: #262626;
+  color: #bcbcbc;
+  padding: 5px;
+  z-index: 9998;
+}
+
+.toggle-sidebar a:hover {
+  background-color: @brand-color;
+  color: #fff;
+}
