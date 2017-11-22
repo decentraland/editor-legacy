@@ -1,15 +1,15 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import {InputWidget} from '../widgets';
-import DEFAULT_COMPONENTS from './DefaultComponents';
-import PropertyRow from './PropertyRow';
-import Collapsible from '../Collapsible';
-import Mixins from './Mixins';
+import DEFAULT_COMPONENTS from './default-components';
+import PropertyRow from './property-row';
+import Collapsible from '../collapsible';
+import Mixins from './mixins';
 import {updateEntity, getClipboardRepresentation} from '../../actions/entity';
 import Events from '../../lib/Events';
 import Clipboard from 'clipboard';
 import {saveString} from '../../lib/utils';
-import HtmlWidget from '../widgets/HtmlWidget';
+import HtmlWidget from '../widgets/html-widget';
 
 // @todo Take this out and use updateEntity?
 function changeId (componentName, value) {

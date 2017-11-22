@@ -1,8 +1,8 @@
 /* global AFRAME */
 import React from 'react';
 import PropTypes from 'prop-types';
-import PropertyRow from './PropertyRow';
-import Collapsible from '../Collapsible';
+import PropertyRow from './property-row';
+import Collapsible from '../collapsible';
 import Clipboard from 'clipboard';
 import {getClipboardRepresentation, getComponentDocsHtmlLink} from '../../actions/component';
 import Events from '../../lib/Events';

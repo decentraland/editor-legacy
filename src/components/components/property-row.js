@@ -2,17 +2,17 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import debounce from 'lodash.debounce';
 
-import BooleanWidget from '../widgets/BooleanWidget';
-import ColorWidget from '../widgets/ColorWidget';
-import InputWidget from '../widgets/InputWidget';
-import NumberWidget from '../widgets/NumberWidget';
-import MtlWidget from '../widgets/MtlWidget';
-import ObjWidget from '../widgets/ObjWidget';
-import SelectWidget from '../widgets/SelectWidget';
-import TextureWidget from '../widgets/TextureWidget';
-import Vec4Widget from '../widgets/Vec4Widget';
-import Vec3Widget from '../widgets/Vec3Widget';
-import Vec2Widget from '../widgets/Vec2Widget';
+import BooleanWidget from '../widgets/boolean-widget';
+import ColorWidget from '../widgets/color-widget';
+import InputWidget from '../widgets/input-widget';
+import NumberWidget from '../widgets/number-widget';
+import MtlWidget from '../widgets/mtl-widget';
+import ObjWidget from '../widgets/obj-widget';
+import SelectWidget from '../widgets/select-widget';
+import TextureWidget from '../widgets/texture-widget';
+import Vec4Widget from '../widgets/vec4-widget';
+import Vec3Widget from '../widgets/vec3-widget';
+import Vec2Widget from '../widgets/vec2-widget';
 import {updateEntity} from '../../actions/entity';
 import {getComponentDocsHtmlLink} from '../../actions/component';
 

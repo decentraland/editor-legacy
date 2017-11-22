@@ -11,17 +11,17 @@ import queryString from 'query-string'
 THREE.ImageUtils.crossOrigin = '';
 
 const Events = require('../lib/Events.js');
-import ComponentsSidebar from './components/Sidebar';
-import ModalTextures from './modals/ModalTextures';
-import ModalHelp from './modals/ModalHelp';
-import SceneGraph from './scenegraph/SceneGraph';
-import ToolBar from './ToolBar';
+import ComponentsSidebar from './components/sidebar';
+import ModalTextures from './modals/modal-textures';
+import ModalHelp from './modals/modal-help';
+import SceneGraph from './scenegraph/scene-graph';
+import TopToolbar from './top-toolbar';
 import {getSceneName, injectCSS, injectJS} from '../lib/utils';
 import '../styles/main.less';
 
-import IPFSLoader from './containers/IpfsLoader'
-import IPFSSaveScene from './containers/IpfsSaveScene'
-import PublishParcels from './containers/PublishParcels'
+import IPFSLoader from './containers/ipfs-loader'
+import IPFSSaveScene from './containers/ipfs-save-scene'
+import PublishParcels from './containers/publish-parcels'
 import Patch from '../../vendor/patch'
 import Apply from '../../vendor/apply'
 import WebrtcClient from '../lib/webrtc-client'
@@ -251,7 +251,7 @@ export default class Main extends React.Component {
           {showScenegraph}
           {showAttributes}
           <div id='right-panels'>
-            <ToolBar/>
+            <TopToolbar/>
             <ComponentsSidebar entity={this.state.entity} visible={this.state.visible.attributes}/>
           </div>
         </div>

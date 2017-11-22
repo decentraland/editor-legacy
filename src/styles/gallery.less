@@ -1,0 +1,110 @@
+/* Gallery */
+.gallery {
+  background: #232323;
+  display: flex;
+  flex-wrap: wrap;
+  margin: 15px auto 0;
+  max-height: 50vh;
+  overflow: auto;
+  padding: 15px 3px 3px;
+}
+
+.gallery li {
+  border-radius: 2px;
+  box-shadow: 0 0 6px rgba(0, 0, 0, 0.6);
+  cursor: pointer;
+  margin: 8px;
+  overflow: hidden;
+  width: 155px;
+}
+
+.gallery li.selected,
+.gallery li:hover {
+  box-shadow: 0 0 0 2px #1eaaf1;
+}
+
+.gallery li .detail {
+  background-color: #323232;
+  margin: 0;
+  min-height: 60px;
+  padding: 3px 10px;
+}
+
+.gallery li .button.fa-external-link {
+  margin-left: 136px;
+  margin-top: 5px;
+  position: fixed;
+}
+
+.preview {
+  padding: 10px;
+  width: 150px;
+}
+
+.preview input {
+  display: block;
+  margin: 8px 0;
+  width: 144px;
+}
+
+.preview button {
+  width: 155px;
+}
+
+.preview .detail .title {
+  color: #fff;
+  display: inline-block;
+  max-width: 155px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.gallery li.selected .detail,
+.gallery li:hover .detail {
+  background-color: #444;
+}
+
+.gallery li .detail span {
+  color: #777;
+  display: block;
+  margin-top: 4px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  width: 140px;
+}
+
+.gallery li.selected .detail span,
+.gallery li:hover .detail span {
+  color: #888;
+}
+
+.gallery li .detail span.title {
+  color: #fff !important;
+}
+
+.gallery a.fa.texture-link {
+  box-shadow: 0 0 14px -1px rgba(0, 0, 0, 0.75);
+  position: fixed;
+}
+
+.newimage {
+  background-color: #323232;
+  color: @grey;
+  display: flex;
+  font-size: 13px;
+  justify-content: space-between;
+  margin-top: 10px;
+  overflow: auto;
+  padding: 10px;
+}
+
+.newimage input {
+  color: #1eaaf1;
+  padding: 3px 5px;
+}
+
+.newimage .gallery {
+  padding: 16px;
+}

@@ -8,7 +8,7 @@ var TransformButtons = [
   {value: 'scale', icon: 'fa-expand'}
 ];
 
-export default class Toolbar extends React.Component {
+export default class TopToolbar extends React.Component {
   constructor (props) {
     super(props);
     this.state = {
@@ -25,14 +25,14 @@ export default class Toolbar extends React.Component {
   changeTransformMode = mode => {
     this.setState({selectedTransform: mode});
     Events.emit('transformmodechanged', mode);
-    ga('send', 'event', 'Toolbar', 'selectHelper', mode);
+    ga('send', 'event', 'TopToolbar', 'selectHelper', mode);
   }
 
   onLocalChange = e => {
     const local = e.target.checked;
     this.setState({localSpace: local});
     Events.emit('spacechanged', local ? 'local' : 'world');
-    ga('send', 'event', 'Toolbar', 'toggleLocal', local);
+    ga('send', 'event', 'TopToolbar', 'toggleLocal', local);
   }
 
   renderTransformButtons = () => {

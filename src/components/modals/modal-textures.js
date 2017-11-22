@@ -3,8 +3,8 @@ window.UPLOADCARE_PUBLIC_KEY = 'f43ad452b58f9e853d05';
 import Events from '../../lib/Events';
 import React from 'react';
 import PropTypes from 'prop-types';
-import Modal from './Modal';
-var insertNewAsset = require('../../lib/assetsUtils').insertNewAsset;
+import Modal from './modal';
+var insertNewAsset = require('../../lib/assets-utils').insertNewAsset;
 import INSPECTOR from '../../lib/inspector.js';
 
 function getFilename (url, converted = false) {

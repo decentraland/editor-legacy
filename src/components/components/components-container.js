@@ -1,9 +1,9 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import AddComponent from './AddComponent';
-import Component from './Component';
-import CommonComponents from './CommonComponents';
-import DEFAULT_COMPONENTS from './DefaultComponents';
+import AddComponent from './add-component';
+import Component from './component';
+import CommonComponents from './common-components';
+import DEFAULT_COMPONENTS from './default-components';
 
 const HIDDEN_COMPONENTS = ['geometry'];
 

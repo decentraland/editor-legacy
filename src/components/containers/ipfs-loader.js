@@ -2,62 +2,67 @@
 
 import React from 'react'
 import ReactModal from 'react-modal'
+import queryString from 'query-string'
+import { connect } from '../store'
 
-import Header from '../components/components/Header'
-import Footer from '../components/components/Footer'
-import Loading from '../components/components/Loading'
-import defaultScene from './defaultScene'
-import {getSceneName} from './utils'
+import Events from '../../lib/Events'
+import Header from '../components/header'
+import Footer from '../components/footer'
+import Loading from '../components/loading'
 
-const sceneName = getSceneName()
-
-function fetchJSON (url) {
-  return fetch(url).then(res => res.json())
-}
-
-function loadScene (name) {
-  let ipnsName, ipfsName
-  const defaultData = {
-    default: true,
-    scene: defaultScene
+class IPFSLoader extends React.Component {
+  static getState(state) {
+    return {
+      ipfs: state.ipfs,
+      ethereum: state.ethereum,
+      parcelStates: state.parcelStates
+    }
   }
-  return fetchJSON('/api/name/' + name)
-    .then(objectHash => {
-      if (!objectHash.ok) {
-        console.log(objectHash.error)
-        return defaultData
-      }
-      ipnsName = objectHash.url.ipns
-      ipfsName = objectHash.url.ipfs
-      return fetchJSON('/api/data/' + ipfsName)
-    }).then(objectData => {
-      if (objectData.default) {
-        return objectData
-      }
-      if (!objectData.ok) {
-        console.log(objectData.error)
-        return defaultData
-      }
-      return { scene: objectData.data, ipfs: ipfsName, ipns: ipnsName}
-    })
-}
 
-export default class IPFSLoader extends React.Component {
+  static getActions(actions) {
+    return {
+      loadManyParcelRequest: actions.loadManyParcelRequest,
+    }
+  }
+
   constructor() {
     super(...arguments)
     this.state = {
-      loading: true
+      loading: true,
+      waitDismissal: true
     }
     this.dismiss = () => {
-      this.props.reportParcel(this.state.data.scene)
+      this.setState({ waitDismissal: false })
+      this.props.reportParcel(this.props.ipfs.scene)
     }
   }
   componentDidMount() {
-    loadScene(sceneName)
-      .then(scene => {
-        this.setState({ loading: false, data: scene, waitDismissal: true })
-      })
-      .catch(error => this.setState({ loading: false, error }))
+    const query = queryString.parse(location.search)
+
+    if (!query.parcels) {
+      this.loadParcels([{x: 0, y: 0}])
+      return
+    }
+
+    const parcels = query.parcels.split(';')
+    const coordinatesArray = parcels.map(a => a.split(',')).map(a => ({x: a[0], y: a[1]}))
+
+    this.loadParcels(coordinatesArray)
+  }
+  componentDidUpdate() {
+    if (this.props.ipfs.newScene) {
+      Events.emit('injectscenebound')
+    }
+  }
+  loadParcels = (coordinates) => {
+    // Hack... needs to wait until web3 is ready
+    // and then fire JUST ONCE
+    setTimeout(() => {
+      if (this.props.ethereum.success) {
+        console.log('loading many parcels...')
+        this.props.actions.loadManyParcelRequest(coordinates)
+      }
+    }, 1000)
   }
   intro() {
     return [
@@ -68,31 +73,32 @@ export default class IPFSLoader extends React.Component {
     ]
   }
   renderContent() {
-    if (this.state.loading) {
+
+    const { ipfs } = this.props
+    if (ipfs.loading) {
       return <div className='loading uploadPrompt'>
         { this.intro() }
         <Loading />
         <h2>Loading scene...</h2>
       </div>
     }
-    if (this.state.error) {
+    if (ipfs.error) {
       return <div className='errored uploadPrompt'>
         { this.intro() }
-        Error loading scene! { this.state.error }
+        Error loading scene! { ipfs.error }
       </div>
     }
     if (this.state.waitDismissal) {
-      if (this.state.data.default) {
+      if (ipfs.scene.default) {
         return <div className='welcome uploadPrompt'>
           { this.intro() }
-          <button onClick={this.dismiss}>Start editing "{sceneName}"</button>
+          <button onClick={this.dismiss}>Start editing</button>
         </div>
       } else {
         return (<div className='dismissal uploadPrompt'>
           { this.intro() }
-          <h2>Scene "{sceneName}" loaded from IPFS</h2>
-          <p>The IPNS locator is: /ipns/{ this.state.data.ipns }</p>
-          <p>The IPFS hash pointed to is: /ipfs/{ this.state.data.ipfs }</p>
+          <h2>Scene loaded from IPFS</h2>
+          <p>The IPFS hash pointed to is: /ipfs/{ ipfs.hash }</p>
           <button onClick={this.dismiss}>Start editing</button>
         </div>)
       }
@@ -119,3 +125,4 @@ export default class IPFSLoader extends React.Component {
   }
 }
 
+export default connect(IPFSLoader)

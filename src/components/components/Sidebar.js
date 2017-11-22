@@ -1,6 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import ComponentsContainer from './ComponentsContainer';
+import ComponentsContainer from './components-container';
 import Events from '../../lib/Events';
 
 export default class Sidebar extends React.Component {
