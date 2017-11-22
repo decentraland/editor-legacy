@@ -71,6 +71,9 @@ export default class Main extends React.Component {
 
       this.setState({ loading: false })
 
+      console.log('#loadParcel')
+      console.log({data})
+
       try {
         scene = parseParcel(data)
       } catch (e) {
@@ -106,8 +109,6 @@ export default class Main extends React.Component {
   }
 
   componentDidMount () {
-    console.log('mounted!')
-
     // Create an observer to notify the changes in the scene
     var observer = new MutationObserver(function (mutations) {
       Events.emit('dommodified', mutations);

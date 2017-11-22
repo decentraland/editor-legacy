@@ -198,5 +198,4 @@ module.exports = {
   getParcelArray,
   createScene,
   parseParcel
-};
-
+}

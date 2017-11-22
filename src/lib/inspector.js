@@ -1,7 +1,5 @@
 var Events = require('./Events');
 var Viewport = require('./viewport/index.js');
-var ComponentLoader = require('./componentloader.js');
-var AssetsLoader = require('./assetsLoader.js');
 var ShaderLoader = require('./shaderloader.js');
 var Shortcuts = require('./shortcuts.js');
 import {GLTFExporter} from './vendor/GLTFExporter';
@@ -32,9 +30,7 @@ Inspector.prototype = {
    * Callback once the DOM is completely loaded so we could query the scene
    */
   onDomLoaded: function () {
-    this.componentLoader = new ComponentLoader();
     this.shaderLoader = new ShaderLoader();
-    this.assetsLoader = new AssetsLoader();
 
     this.sceneEl = AFRAME.scenes[0];
     if (this.sceneEl.hasLoaded) {
@@ -87,7 +83,7 @@ Inspector.prototype = {
   initModules: function () {
     for (var moduleName in this.modules) {
       var module = this.modules[moduleName];
-      console.log('Initializing module <%s>', moduleName);
+      // console.log('Initializing module <%s>', moduleName);
       module.init(this.sceneEl);
     }
   },
