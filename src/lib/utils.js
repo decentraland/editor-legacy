@@ -160,6 +160,31 @@ function createScene (root) {
   return xml
 }
 
+function parseParcel (html) {
+  const parser = new DOMParser()
+  const doc = parser.parseFromString(html, 'application/xml')
+  const error = doc.querySelector('parsererror')
+
+  if (error) {
+    console.error(`Error parsing document ${error.innerText}`)
+    throw new Error(error.innerText)
+  }
+
+  // Get scene node
+  const scene = doc.querySelector('a-scene')
+
+  // Attributes to remove
+  const attributes = ['data-uuid', 'id', 'geometry']
+
+  attributes.forEach((attr) => {
+    Array.from(scene.querySelectorAll(`[${attr}]`)).forEach((node) => {
+      node.removeAttribute(attr)
+    })
+  })
+
+  return scene
+}
+
 module.exports = {
   equal: equal,
   getNumber: getNumber,
@@ -171,6 +196,7 @@ module.exports = {
   injectJS: injectJS,
   saveString: saveString,
   getParcelArray,
-  createScene
+  createScene,
+  parseParcel
 };
 
