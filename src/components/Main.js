@@ -69,17 +69,25 @@ export default class Main extends React.Component {
     }
 
     this.loadParcel = (data, uuid) => {
-      const scene = parseParcel(data)
+      var scene
 
       this.setState({ loading: false })
 
-      if (uuid) {
-        this.getRoot().setAttribute('data-uuid', uuid)
+      try {
+        scene = parseParcel(data)
+      } catch (e) {
+        
       }
 
-      importEntity(this.getRoot(), scene)
+      // if (uuid) {
+      //   this.getRoot().setAttribute('data-uuid', uuid)
+      // }
 
-      this.injectParcelBoundary() // FIXME: center to the bounds somehow...
+      if (scene) {
+        importEntity(this.getRoot(), scene)
+      }
+
+      this.injectParcelBoundary()
     }
 
     Events.on('togglesidebar', event => {
