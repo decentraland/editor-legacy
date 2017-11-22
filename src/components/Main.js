@@ -71,13 +71,9 @@ export default class Main extends React.Component {
 
       this.setState({ loading: false })
 
-      console.log('#loadParcel')
-      console.log({data})
-
       try {
         scene = parseParcel(data)
       } catch (e) {
-
       }
 
       // if (uuid) {
