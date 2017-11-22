@@ -25,9 +25,9 @@ import PublishParcels from './containers/PublishParcels'
 import Patch from '../../vendor/patch'
 import Apply from '../../vendor/apply'
 import WebrtcClient from '../lib/webrtc-client'
-import {setEntityInnerHTML} from '../actions/entity';
+import { importEntity } from '../actions/entity';
 import { store } from './store'
-import { getParcelArray } from '../lib/utils'
+import { getParcelArray, createScene, parseParcel } from '../lib/utils'
 
 var webrtcClient = new WebrtcClient(getSceneName())
 
@@ -69,12 +69,16 @@ export default class Main extends React.Component {
     }
 
     this.loadParcel = (data, uuid) => {
-      console.log(data, uuid)
+      const scene = parseParcel(data)
+
       this.setState({ loading: false })
+
       if (uuid) {
         this.getRoot().setAttribute('data-uuid', uuid)
       }
-      setEntityInnerHTML(this.getRoot(), data)
+
+      importEntity(this.getRoot(), scene)
+
       this.injectParcelBoundary() // FIXME: center to the bounds somehow...
     }
 
@@ -178,7 +182,7 @@ export default class Main extends React.Component {
     });
 
     Events.on('savescene', val => {
-      this.storedContent = this.getRoot().innerHTML
+      this.storedContent = createScene(this.getRoot())
       this.setState({ saveScene: true });
     });
     Events.on('savedismiss', val => {

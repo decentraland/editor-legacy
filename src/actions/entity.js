@@ -1,8 +1,8 @@
-var Events = require('../lib/Events.js');
+var Events = require('../lib/Events.js')
 
-import {equal} from '../lib/utils.js';
+import {equal} from '../lib/utils.js'
 
-export function setEntityInnerHTML (entity, html) {
+export function importEntity (entity, node) {
   Array.from(entity.childNodes).forEach((child) => {
     if (child.nodeType === 1) {
       removeEntity(child, true)
@@ -10,32 +10,25 @@ export function setEntityInnerHTML (entity, html) {
   })
 
   var clone = entity.cloneNode()
-  clone.innerHTML = html
+  clone.innerHTML = node.innerHTML
 
   Array.from(clone.children).forEach((child) => {
-    // entity.flushToDOM();
-
-    var copy = child
-    copy.addEventListener('loaded', function (e) {
-      // AFRAME.INSPECTOR.selectEntity(copy)
+    child.addEventListener('loaded', function (e) {
       Events.emit('dommodified')
     })
 
     // Get a valid unique ID for the entity
-    if (entity.id) {
-      copy.id = getUniqueId(entity.id)
-    }
+    // copy.deleteAttribute('id')
+    // if (entity.id) {
+    //   copy.id = getUniqueId(entity.id)
+    // }
 
-    copy.addEventListener('loaded', function () {
-      // AFRAME.INSPECTOR.selectEntity(copy)
+    child.addEventListener('loaded', function () {
       Events.emit('dommodified')
-
-      window.inspector.addObject(copy.object3D)
+      window.inspector.addObject(child.object3D)
     })
 
     entity.appendChild(child)
-
-    // Events.emit('objectadded', object);
   })
 
   Events.emit('dommodified')
