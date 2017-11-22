@@ -338,11 +338,6 @@ Inspector.prototype = {
     this.opened = true;
     Events.emit('inspectormodechanged', true);
 
-    if (!this.sceneEl.hasAttribute('aframe-inspector-motion-capture-replaying')) {
-      this.sceneEl.pause();
-      this.sceneEl.exitVR();
-    }
-
     if (this.sceneEl.hasAttribute('embedded')) {
       // Remove embedded styles, but keep track of it.
       this.sceneEl.removeAttribute('embedded');
