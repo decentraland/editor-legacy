@@ -1,7 +1,7 @@
 import React from 'react';
 import renderer from 'react-test-renderer';
 
-import Collapsible from '../Collapsible.js';
+import Collapsible from '../collapsible.js';
 
 describe('Collapsible', () => {
  it('does not set class when not collapsed', () => {

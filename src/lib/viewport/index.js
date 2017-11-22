@@ -2,8 +2,8 @@
 import debounce from 'lodash.debounce';
 
 /* eslint-disable no-unused-vars */
-import TransformControls from '../vendor/threejs/TransformControls.js';
-import EditorControls from '../vendor/threejs/EditorControls.js';
+import TransformControls from '../vendor/threejs/transform-controls.js';
+import EditorControls from '../vendor/threejs/editor-controls.js';
 /* eslint-disable no-unused-vars */
 
 import {getNumber} from '../utils';

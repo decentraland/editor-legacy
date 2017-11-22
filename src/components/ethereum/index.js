@@ -1,7 +1,7 @@
 import Web3 from 'web3'
 
-import land from './LANDToken'
-import reverseHash from './reverseHash'
+import land from './land-token'
+import reverseHash from './preimage-lookup'
 
 class Ethereum {
   async init() {

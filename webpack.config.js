@@ -3,7 +3,7 @@ var childProcess = require('child_process');
 var webpack = require('webpack');
 
 // Add HMR for development environments only.
-var entry = ['./src/components/Main.js'];
+var entry = ['./src/components/main.js'];
 if (process.env.NODE_ENV !== 'production') {
   entry = [
     'webpack-hot-middleware/client?path=/__webpack_hmr&timeout=20000&reload=true'

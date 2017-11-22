@@ -1,6 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import Modal from './Modal';
+import Modal from './modal';
 
 export default class ModalHelp extends React.Component {
   static propTypes = {

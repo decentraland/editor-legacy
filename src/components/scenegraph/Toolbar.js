@@ -6,7 +6,7 @@ import queryString from 'query-string'
 import {getSceneName, generateHtml} from '../../lib/exporter';
 import Events from '../../lib/Events.js';
 import {saveString} from '../../lib/utils';
-import MotionCapture from './MotionCapture';
+import MotionCapture from './motion-capture';
 
 const LOCALSTORAGE_MOCAP_UI = 'aframeinspectormocapuienabled';
 

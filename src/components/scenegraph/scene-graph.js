@@ -3,8 +3,8 @@ import PropTypes from 'prop-types';
 import classnames from 'classnames';
 import debounce from 'lodash.debounce';
 import {removeEntity, cloneEntity} from '../../actions/entity';
-import Toolbar from './Toolbar';
-import Chat from './Chat';
+import Toolbar from './toolbar';
+import Chat from './chat';
 const Events = require('../../lib/Events.js');
 
 const ICONS = {
