@@ -76,7 +76,7 @@ export default class Main extends React.Component {
       try {
         scene = parseParcel(data)
       } catch (e) {
-        
+
       }
 
       // if (uuid) {
@@ -260,7 +260,7 @@ export default class Main extends React.Component {
           {showAttributes}
           <div id='right-panels'>
             <ToolBar/>
-            <ComponentsSidebar entity={this.state.entity} visible={this.state.visible.attributes}/>
+            <ComponentsSidebar entity={this.state.entity} visible={this.state.visible.attributes} content={this.storedContent}/>
           </div>
         </div>
         <ModalHelp isOpen={this.state.isHelpOpen} onClose={this.onCloseHelpModal}/>

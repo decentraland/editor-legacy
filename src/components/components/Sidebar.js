@@ -56,7 +56,7 @@ export default class Sidebar extends React.Component {
     if (entity && visible) {
       return (
         <div id='sidebar'>
-          <ComponentsContainer entity={this.state.entity}/>
+          <ComponentsContainer entity={this.state.entity} content={this.props.content} />
         </div>
       );
     } else {
