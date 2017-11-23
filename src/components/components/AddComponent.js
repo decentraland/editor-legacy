@@ -24,9 +24,6 @@ export default class AddComponent extends React.Component {
     })[0];
 
     if (selectedOption.origin === 'registry') {
-      [packageName, componentName] = selectedOption.value.split(DELIMITER);
-      INSPECTOR.componentLoader.addComponentToScene(packageName, componentName)
-        .then(addComponent);
     } else {
       componentName = selectedOption.value;
       addComponent(componentName);
@@ -62,15 +59,17 @@ export default class AddComponent extends React.Component {
 
     // Create the list of components that should appear in the registry group
     var registryComponents = [];
-    Object.keys(INSPECTOR.componentLoader.components)
-      .forEach(function (componentPackageName) {
-        var componentPackage = INSPECTOR.componentLoader.components[componentPackageName];
-        componentPackage.names.forEach(function (componentName) {
-          if (usedComponents.indexOf(componentName) === -1) {
-            registryComponents.push({componentPackageName, componentName});
-          }
-        });
-      });
+
+    // Object.keys(INSPECTOR.componentLoader.components)
+    //   .forEach(function (componentPackageName) {
+    //     var componentPackage = INSPECTOR.componentLoader.components[componentPackageName];
+    //     componentPackage.names.forEach(function (componentName) {
+    //       if (usedComponents.indexOf(componentName) === -1) {
+    //         registryComponents.push({componentPackageName, componentName});
+    //       }
+    //     });
+    //   });
+
     var registryOptions = registryComponents
       .map(function (item) {
         return {value: item.componentPackageName + DELIMITER + item.componentName,

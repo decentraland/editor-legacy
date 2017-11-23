@@ -36,6 +36,7 @@ class IPFSLoader extends React.Component {
       this.props.reportParcel(this.props.ipfs.scene)
     }
   }
+
   componentDidMount() {
     const query = queryString.parse(location.search)
 
@@ -49,21 +50,24 @@ class IPFSLoader extends React.Component {
 
     this.loadParcels(coordinatesArray)
   }
+
   componentDidUpdate() {
     if (this.props.ipfs.newScene) {
       Events.emit('injectscenebound')
     }
   }
-  loadParcels = (coordinates) => {
+
+  loadParcels (coordinates) {
     // Hack... needs to wait until web3 is ready
     // and then fire JUST ONCE
+
     setTimeout(() => {
       if (this.props.ethereum.success) {
-        console.log('loading many parcels...')
         this.props.actions.loadManyParcelRequest(coordinates)
       }
     }, 1000)
   }
+
   intro() {
     return [
       <h1 key='1'>Welcome to the Decentraland Scene Editor!</h1>,
@@ -72,6 +76,13 @@ class IPFSLoader extends React.Component {
       <p key='4'>The contents can be stored to the IPFS network using the <span className="fa fa-download" title="Save HTML"></span> button on the top left corner.</p>
     ]
   }
+
+  componentWillUpdate (nextProps) {
+    if (!nextProps.ipfs.loading) {
+      setTimeout(() => this.dismiss(), 50)
+    }
+  }
+
   renderContent() {
 
     const { ipfs } = this.props

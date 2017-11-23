@@ -74,7 +74,6 @@ export default class Main extends React.Component {
       try {
         scene = parseParcel(data)
       } catch (e) {
-
       }
 
       // if (uuid) {
@@ -106,8 +105,6 @@ export default class Main extends React.Component {
   }
 
   componentDidMount () {
-    console.log('mounted!')
-
     // Create an observer to notify the changes in the scene
     var observer = new MutationObserver(function (mutations) {
       Events.emit('dommodified', mutations);

@@ -62,10 +62,6 @@ export default class ModalTextures extends React.Component {
   }
 
   componentDidMount () {
-    Events.on('assetsimagesloaded', (images) => {
-      this.generateFromRegistry();
-    });
-
     this.generateFromAssets();
     this.generateFromTextureCache();
   }
@@ -111,26 +107,6 @@ export default class ModalTextures extends React.Component {
     if (this.props.onClose) {
       this.props.onClose(value);
     }
-  }
-
-  generateFromRegistry = () => {
-    var self = this;
-    INSPECTOR.assetsLoader.images.forEach((imageData) => {
-      var image = new Image();
-      image.addEventListener('load', () => {
-        self.state.registryImages.push({
-          id: imageData.id,
-          src: imageData.fullPath,
-          width: imageData.width,
-          height: imageData.height,
-          name: imageData.id,
-          type: 'registry',
-          tags: imageData.tags,
-          value: 'url(' + imageData.fullPath + ')'});
-        self.setState({registryImages: self.state.registryImages});
-      });
-      image.src = imageData.fullThumbPath;
-    });
   }
 
   generateFromAssets = () => {
