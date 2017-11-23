@@ -6,9 +6,6 @@ import queryString from 'query-string'
 import {getSceneName, generateHtml} from '../../lib/exporter';
 import Events from '../../lib/Events.js';
 import {saveString} from '../../lib/utils';
-import MotionCapture from './MotionCapture';
-
-const LOCALSTORAGE_MOCAP_UI = 'aframeinspectormocapuienabled';
 
 /**
  * Tools and actions.
@@ -37,14 +34,6 @@ class Toolbar extends React.Component {
     clipboard.on('error', e => {
       // @todo Show Error on the UI
     });
-
-    Events.on('togglemotioncapture', () => {
-      this.toggleMotionCaptureUI();
-    });
-
-    this.state ={
-      motionCaptureUIEnabled: JSON.parse(localStorage.getItem(LOCALSTORAGE_MOCAP_UI))
-    };
   }
   exportSceneToGLTF () {
     INSPECTOR.exporters.gltf.parse(AFRAME.scenes[0].object3D, function (result) {
@@ -68,11 +57,6 @@ class Toolbar extends React.Component {
     Events.emit('createnewentity', {element: nodeType, components: {
       shadow: { cast: true, receive: true }
     }});
-  }
-
-  toggleMotionCaptureUI = () => {
-    localStorage.setItem(LOCALSTORAGE_MOCAP_UI, !this.state.motionCaptureUIEnabled);
-    this.setState({motionCaptureUIEnabled: !this.state.motionCaptureUIEnabled});
   }
 
   render () {
@@ -99,8 +83,6 @@ class Toolbar extends React.Component {
             <img src='/img/icons/icon-html.png' />
           </a>
         </div>
-
-        {this.state.motionCaptureUIEnabled && <MotionCapture/>}
       </div>
     );
   }

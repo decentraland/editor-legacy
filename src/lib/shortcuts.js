@@ -51,11 +51,6 @@ var Shortcuts = {
       Events.emit('togglegrid');
     }
 
-    // m: motion capture
-    if (keyCode === 77) {
-      Events.emit('togglemotioncapture');
-    }
-
     // n: new entity
     if (keyCode === 78) {
       Events.emit('createnewentity', {element: 'a-entity', components: {}});
