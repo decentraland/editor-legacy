@@ -33,14 +33,6 @@ class MetadataForm extends React.Component {
     }
   }
 
-  componentDidMount () {
-
-  }
-
-  renderCommonAttributes () {
-
-  }
-
   checkGeometry = (stats) => {
     if (stats && stats.vertices > 1000000) {
       throw Error('Vertices limit is 1,000,000!');
@@ -48,8 +40,8 @@ class MetadataForm extends React.Component {
   }
 
   renderMetaEditForm() {
-    const { ipfs, ipns } = this.props
-    const meta = ipfs.metadata
+    const { ipfs } = this.props
+    const meta = ipfs.metadata || this.state.meta
 
     const formFromMeta = (metaObject) => Object.entries(metaObject).map(([key, value]) => {
       console.log(`${key} ${value}`); // "a 5", "b 7", "c 9"
@@ -74,7 +66,6 @@ class MetadataForm extends React.Component {
       this.setState({ tags: val.map(t => t.value) });
     };
 
-    console.log(this.props.ipfs.hash)
     return (
       <div>
         <form onSubmit={e => this.onMetaFormSubmit(e)}>
@@ -129,7 +120,9 @@ class MetadataForm extends React.Component {
                 multi={true}
               />
               <div className="meta-edit-buttons uploadPrompt">
-                <button type="submit">Update metadata</button>
+                <button type="submit" disabled={ipfs.loading}>
+                  {ipfs.loading ? 'Updating...' : 'Update metadata'}
+                </button>
               </div>
             </div>
           </Collapsible>
@@ -141,7 +134,9 @@ class MetadataForm extends React.Component {
   onMetaFormSubmit = (event) => {
     const { tags } = this.state
     event.preventDefault();
-    console.log(event.target)
+    //console.log(event.target)
+    const scene = this.props.getSceneHtml()
+
     const metadata = Object.assign({}, this.props.ipfs.metadata, {
       contact: {
         name: event.target.name.value,
@@ -172,8 +167,7 @@ class MetadataForm extends React.Component {
     }
 
     this.setState({ meta: metadata })
-    console.log(metadata)
-    this.props.actions.ipfsSaveSceneRequest(metadata.display.title, this.props.content, metadata)
+    this.props.actions.ipfsSaveSceneRequest(metadata.display.title, scene, metadata)
   }
 
   render () {
