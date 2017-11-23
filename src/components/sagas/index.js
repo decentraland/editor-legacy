@@ -39,11 +39,6 @@ export function* handleSaveScene (action) {
       metadata: action.metadata,
       hash: result
     });
-    // Just testing...
-    //yield put({ type: types.saveMeta.request, x: 5, y: 0, ipfsHash: result });
-    // FIXME: doesn't work until there's a new version of LANDToken contract with this method!
-    // https://github.com/decentraland/land/blob/master/contracts/LANDToken.sol
-    //yield put({ type: types.saveMetaManyParcels.request, parcels: '2,0;2,-1;2,-2', ipfsHash: result });
   }
 }
 

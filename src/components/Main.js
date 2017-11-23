@@ -35,8 +35,6 @@ var webrtcClient = new WebrtcClient(getSceneName())
 injectCSS('https://maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css');
 // injectCSS('https://fonts.googleapis.com/css?family=Roboto:400,300,500');
 
-
-
 export default class Main extends React.Component {
   constructor (props) {
     super(props);
@@ -76,7 +74,7 @@ export default class Main extends React.Component {
       try {
         scene = parseParcel(data)
       } catch (e) {
-        
+
       }
 
       // if (uuid) {
@@ -102,8 +100,8 @@ export default class Main extends React.Component {
       } else if (event.which == 'scenegraph') {
         this.state.visible.scenegraph = !this.state.visible.scenegraph;
       }
-      this.forceUpdate();
 
+      this.forceUpdate();
     });
   }
 
@@ -233,6 +231,8 @@ export default class Main extends React.Component {
     const showScenegraph = this.state.visible.scenegraph ? null : <div className="toggle-sidebar left"><a onClick={() => {this.state.visible.scenegraph = true; this.forceUpdate()}} className='fa fa-plus' title='Show scenegraph'></a></div>;
     const showAttributes = !this.state.entity || this.state.visible.attributes ? null : <div className="toggle-sidebar right"><a onClick={() => {this.state.visible.attributes = true; this.forceUpdate()}} className='fa fa-plus' title='Show components'></a></div>;
 
+    const getSceneHtml = () => createScene(this.getRoot())
+
     let toggleButtonText = 'Inspect Scene';
     if (this.state.motionCaptureCountdown !== -1) {
       toggleButtonText = this.state.motionCaptureCountdown;
@@ -260,7 +260,7 @@ export default class Main extends React.Component {
           {showAttributes}
           <div id='right-panels'>
             <ToolBar/>
-            <ComponentsSidebar entity={this.state.entity} visible={this.state.visible.attributes}/>
+            <ComponentsSidebar entity={this.state.entity} visible={this.state.visible.attributes} getSceneHtml={getSceneHtml}/>
           </div>
         </div>
         <ModalHelp isOpen={this.state.isHelpOpen} onClose={this.onCloseHelpModal}/>
