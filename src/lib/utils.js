@@ -166,7 +166,8 @@ function parseParcel (html) {
   const error = doc.querySelector('parsererror')
 
   if (error) {
-    console.error(`Error parsing document ${error.innerText}`)
+    console.log(`Error parsing document ${error.innerText}`)
+    console.log(html)
     throw new Error(error.innerText)
   }
 
