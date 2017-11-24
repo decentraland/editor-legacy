@@ -1,70 +1,95 @@
-var INSPECTOR = require('../../lib/inspector.js');
-import React from 'react';
+import React from 'react'
 import { connect } from '../store'
-import Clipboard from 'clipboard';
-import queryString from 'query-string'
-import {getSceneName, generateHtml} from '../../lib/exporter';
-import Events from '../../lib/Events.js';
-import {saveString} from '../../lib/utils';
+import Clipboard from 'clipboard'
+import { generateHtml } from '../../lib/exporter'
+import Events from '../../lib/Events.js'
+import { getParcelArray, createScene, saveString } from '../../lib/utils'
+import { saveScene } from '../sagas'
+import assert from 'assert'
+import ethService from '../ethereum'
 
 /**
  * Tools and actions.
  */
 class Toolbar extends React.Component {
-  static getState(state) {
+  static getState (state) {
     return {
-      ipfs: state.ipfs,
+      ipfs: state.ipfs
     }
   }
 
-  static getActions(actions) {
+  static getActions (actions) {
     return {
       updateManyParcelsRequest: actions.updateManyParcelsRequest
     }
   }
 
-  constructor(props) {
+  constructor (props) {
     super(props)
 
     const clipboard = new Clipboard('[data-action="copy-scene-to-clipboard"]', {
       text: trigger => {
-        return generateHtml();
+        return generateHtml()
       }
-    });
+    })
     clipboard.on('error', e => {
       // @todo Show Error on the UI
-    });
-  }
-  exportSceneToGLTF () {
-    INSPECTOR.exporters.gltf.parse(AFRAME.scenes[0].object3D, function (result) {
-      var output = JSON.stringify(result, null, 2);
-      saveString(output, 'scene.gltf', 'application/json');
-    });
+    })
+
+    this.state = {
+      saving: false
+    }
   }
 
   saveScene () {
-    Events.emit('savescene')
+    const html = createScene(document.querySelector('a-entity#parcel'))
+    const metadata = this.props.ipfs.metadata
+
+    // Some sanity asserts
+    assert(typeof html === 'string')
+    assert(typeof metadata === 'object')
+
+    return saveScene(html, metadata)
   }
 
-  publishParcels = () => {
-    const { ipfs } = this.props
-    const query = queryString.parse(location.search)
-    const parcels = query.parcels
-    this.props.actions.updateManyParcelsRequest(parcels, ipfs.hash)
+  publishParcels () {
+    this.setState({
+      saving: true
+    })
+
+    this.saveScene()
+      .then((hash) => {
+        const parcels = getParcelArray()
+
+        console.log({ parcels, hash })
+
+        return this.props.actions.updateManyParcelsRequest(parcels, hash)
+      })
+      .then(() => {
+        this.setState({
+          saving: false
+        })
+      })
   }
 
   addEntity (nodeType) {
-    Events.emit('createnewentity', {element: nodeType, components: {
-      shadow: { cast: true, receive: true }
-    }});
+    Events.emit('createnewentity', {
+      element: nodeType,
+      components: {
+        shadow: { cast: true, receive: true },
+        position: '0 0.5 0'
+      }
+    })
   }
 
   render () {
     return (
-      <div id="scenegraphToolbar">
+      <div id='scenegraphToolbar'>
         <div className='scenegraph-actions'>
-          <a className='button-download' title='Save' onClick={this.saveScene}>Save</a>{' '}
-          <a className='button-download' title='Publish' onClick={this.publishParcels}>Publish</a>{' '}
+          { this.state.saving
+            ? 'Saving...'
+            : <a className='button-download' title='Publish' onClick={this.publishParcels.bind(this)}>Publish</a>
+          }
         </div>
 
         <h4>Add...</h4>

@@ -117,10 +117,10 @@ class Ethereum {
     return this.methods.updateLandMetadata(x, y, ipfsHash)
   }
 
-  updateManyParcelsMetadata(parcels, ipfsHash) {
-    const coordinatesArray = parcels.split(';').map(coords => coords.split(','))
-    const x = coordinatesArray.map(x => Number(x[0])) // [x1, x2, ... , xn] -> type: Array
-    const y = coordinatesArray.map(y => Number(y[1])) // [y1, y2, ... , yn] -> type: Array
+  updateManyParcelsMetadata (parcels, ipfsHash) {
+    // const coordinatesArray = parcels.split(';').map(coords => coords.split(','))
+    const x = parcels.map(p => p.x) // [x1, x2, ... , xn] -> type: Array
+    const y = parcels.map(p => p.y) // [y1, y2, ... , yn] -> type: Array
     return this.methods.updateManyLandMetadata(x, y, ipfsHash)
   }
 }
