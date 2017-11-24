@@ -1,7 +1,6 @@
 /* globals fetch */
 import { delay } from "redux-saga";
 import { call, takeEvery, takeLatest, select, put, take, all, fork } from 'redux-saga/effects'
-import { env } from "decentraland-commons";
 
 import * as actions from '../actions';
 import * as types from '../actions/types';
@@ -10,7 +9,7 @@ import defaultScene from '../../lib/defaultScene'
 import dummyParcelMeta from '../utils/parcel-metadata'
 import ethService from "../ethereum";
 
-const EDITOR_URL = env.get('EDITOR_URL', '')
+const EDITOR_URL = process.env.REACT_APP_EDITOR_URL || '';
 
 export function* connectWeb3() {
   try {
