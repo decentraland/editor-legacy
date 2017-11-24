@@ -29,6 +29,9 @@ import { importEntity } from '../actions/entity';
 import { store } from './store'
 import { getParcelArray, createScene, parseParcel } from '../lib/utils'
 
+// Debugging...
+const MULTIUSER_ENABLED = false
+
 var webrtcClient = new WebrtcClient(getSceneName())
 
 // Megahack to include font-awesome.
@@ -139,18 +142,20 @@ export default class Main extends React.Component {
       }
     })
 
-    webrtcClient.on('snapshot', (packet) => {
-      console.log('Got snapshot...', packet.rootUUID)
-      this.loadParcel(packet.html, packet.rootUUID)
-    })
+    if (MULTIUSER_ENABLED) {
+      webrtcClient.on('snapshot', (packet) => {
+        console.log('Got snapshot...', packet.rootUUID)
+        this.loadParcel(packet.html, packet.rootUUID)
+      })
 
-    const parser = new DOMParser()
+      const parser = new DOMParser()
 
-    webrtcClient.on('patch', (packet) => {
-      const doc = parser.parseFromString(packet.patch, 'application/xml')
-      const message = doc.querySelector('patch')
-      apply.onMessage(message);
-    })
+      webrtcClient.on('patch', (packet) => {
+        const doc = parser.parseFromString(packet.patch, 'application/xml')
+        const message = doc.querySelector('patch')
+        apply.onMessage(message);
+      })
+    }
 
     webrtcClient.connect()
 
