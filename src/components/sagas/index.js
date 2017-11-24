@@ -8,6 +8,8 @@ import defaultScene from '../../lib/defaultScene'
 import dummyParcelMeta from '../utils/parcel-metadata'
 import ethService from "../ethereum";
 
+const EDITOR_URL = 'https://editor.decentraland.org'
+
 export function* connectWeb3() {
   try {
     let retries = 0;
@@ -59,7 +61,7 @@ export async function saveScene (content, metadata) {
     files.push({ data: new Buffer(JSON.stringify(metadata)).toString('base64'), path: 'scene.json' })
   }
   // return: string, ipfs hash
-  return await fetch('/api/ipfs', {
+  return await fetch(`${EDITOR_URL}/api/ipfs`, {
     method: 'POST',
     headers: { 'Content-type': 'application/json' },
     body: JSON.stringify({ files })
@@ -81,7 +83,7 @@ export async function loadScene (hash) {
     metadata: dummyParcelMeta,
     ipfs: hash
   };
-  return await fetch(`/api/data/${hash}`, { method: 'GET' })
+  return await fetch(`${EDITOR_URL}/api/data/${hash}`, { method: 'GET' })
     .then(res => res.json())
     .then(objectData => {
       if (objectData.default) {
@@ -97,7 +99,7 @@ export async function loadScene (hash) {
 }
 
 export async function bindName (name, hash) {
-  return await fetch(`/api/name/${name}/${hash}`, { method: 'POST' })
+  return await fetch(`${EDITOR_URL}/api/name/${name}/${hash}`, { method: 'POST' })
     .then(res => res.json())
     .then(res => res.address);
 }
