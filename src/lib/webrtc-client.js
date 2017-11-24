@@ -4,6 +4,8 @@ import Peer from 'simple-peer'
 import EventEmitter from 'events'
 import assert from 'assert'
 
+const EDITOR_URL = process.env.REACT_APP_EDITOR_URL || process.env.EDITOR_URL || 'https://editor.decentraland.org';
+
 export default class WebrtcClient extends EventEmitter {
   constructor (sceneName) {
     super()
@@ -17,7 +19,7 @@ export default class WebrtcClient extends EventEmitter {
   }
 
   get endpoint () {
-    return `/scene/${this.sceneName}`
+    return `${EDITOR_URL}/scene/${this.sceneName}`
   }
 
   getEpoch () {
