@@ -60,9 +60,6 @@ class Toolbar extends React.Component {
     this.saveScene()
       .then((hash) => {
         const parcels = getParcelArray()
-
-        console.log({ parcels, hash })
-
         return this.props.actions.updateManyParcelsRequest(parcels, hash)
       })
       .then(() => {
