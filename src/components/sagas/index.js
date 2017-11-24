@@ -188,6 +188,8 @@ export function* updateParcelMetadata(action) {
 
 export function* updateManyParcelsMetadata(action) {
   try {
+    console.log(action)
+
     const transaction = yield call(
       async () => await ethService.updateManyParcelsMetadata(action.parcels, action.ipfsHash)
     );
@@ -199,7 +201,6 @@ export function* updateManyParcelsMetadata(action) {
 
 export default function* rootSaga() {
   yield takeLatest(types.saveScene.request, handleSaveScene);
-  // yield takeLatest(types.saveScene.success, handleBindName);
   yield takeEvery(types.loadMeta.request, loadMeta);
   yield takeEvery(types.loadParcel.request, fetchParcel);
   yield takeEvery(types.loadParcel.requestMany, fetchManyParcels);
