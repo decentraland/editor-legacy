@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import INSPECTOR from '../../lib/inspector'
 import { extname } from 'path'
 
-const EDITOR_URL = process.env.REACT_APP_EDITOR_URL || '';
+const EDITOR_URL = process.env.REACT_APP_EDITOR_URL || process.env.EDITOR_URL || 'https://editor.decentraland.org';
 
 var Events = require('../../lib/Events.js')
 

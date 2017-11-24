@@ -9,7 +9,7 @@ import defaultScene from '../../lib/defaultScene'
 import dummyParcelMeta from '../utils/parcel-metadata'
 import ethService from "../ethereum";
 
-const EDITOR_URL = process.env.REACT_APP_EDITOR_URL || '';
+const EDITOR_URL = process.env.REACT_APP_EDITOR_URL || process.env.EDITOR_URL || 'https://editor.decentraland.org';
 
 export function* connectWeb3() {
   try {
