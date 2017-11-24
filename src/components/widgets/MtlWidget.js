@@ -2,9 +2,8 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import INSPECTOR from '../../lib/inspector'
 import { extname } from 'path'
-import { env } from 'decentraland-commons';
 
-const EDITOR_URL = env.get('EDITOR_URL', '');
+const EDITOR_URL = process.env.REACT_APP_EDITOR_URL || '';
 
 var Events = require('../../lib/Events.js')
 
