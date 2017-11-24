@@ -120,7 +120,7 @@ export function* fetchParcel(action) {
     );
     yield put({ type: types.loadParcel.success, parcel });
   } catch (error) {
-    yield put({ type: types.loadParcel.failed, error.toString() });
+    yield put({ type: types.loadParcel.failed, error: error.toString() });
   }
 }
 
@@ -129,7 +129,7 @@ export function* handleSceneFetch(hash) {
     const result = yield call(loadScene, hash);
     yield put({ type: types.loadScene.success, scene: result.scene, metadata: result.metadata, hash });
   } catch (error) {
-    yield put({ type: types.loadScene.failed, error.toString() });
+    yield put({ type: types.loadScene.failed, error: error.toString() });
   }
 }
 
@@ -147,7 +147,7 @@ export function* fetchManyParcels(action) {
       yield put({ type: types.loadParcel.createNew, parcels, scene: { default: true, metadata: dummyParcelMeta }, hash: null });
     }
   } catch (error) {
-    yield put({ type: types.loadParcel.failed, error.toString() });
+    yield put({ type: types.loadParcel.failed, error: error.toString() });
   }
 }
 
@@ -182,7 +182,7 @@ export function* updateParcelMetadata(action) {
     );
     yield put({ type: types.saveMeta.success, transaction });
   } catch (error) {
-    yield put({ type: types.saveMeta.failed, error.toString() });
+    yield put({ type: types.saveMeta.failed, error: error.toString() });
   }
 }
 
@@ -195,7 +195,7 @@ export function* updateManyParcelsMetadata(action) {
     );
     yield put({ type: types.saveMetaManyParcels.success, transaction });
   } catch (error) {
-    yield put({ type: types.saveMetaManyParcels.failed, error.toString() });
+    yield put({ type: types.saveMetaManyParcels.failed, error: error.toString() });
   }
 }
 
