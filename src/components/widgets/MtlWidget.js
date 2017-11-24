@@ -2,6 +2,9 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import INSPECTOR from '../../lib/inspector'
 import { extname } from 'path'
+import { env } from 'decentraland-commons';
+
+const EDITOR_URL = env.get('EDITOR_URL', '');
 
 var Events = require('../../lib/Events.js')
 
@@ -90,7 +93,7 @@ export default class MtlWidget extends React.Component {
   }
 
   uploadFile (mtlPath, files) {
-    return fetch('/api/ipfs', {
+    return fetch(`${EDITOR_URL}/api/ipfs`, {
       method: 'POST',
       headers: { 'Content-type': 'application/json' },
       body: JSON.stringify({ files: files })
