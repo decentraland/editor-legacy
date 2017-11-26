@@ -22,6 +22,7 @@
   "dependencies": {
     "classnames": "^2.2.5",
     "clipboard": "^1.5.12",
+    "cors": "^2.8.4",
     "decentraland-commons": "git+https://github.com/decentraland/commons.git#release",
     "express": "^4.16.2",
     "express-http-proxy": "^1.0.7",
