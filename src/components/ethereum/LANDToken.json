@@ -1,6 +1,6 @@
 {
   "contract_name": "LANDToken",
-  "address": "0x62fee2d50625f19ad180e2baab5b2fe738ba3b2d",
+  "address": "0x6b67c56f069f9ba1ad8f155db04f2c3fc3ff0871",
   "abi": [
     {
       "constant": true,
