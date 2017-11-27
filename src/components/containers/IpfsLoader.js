@@ -1,4 +1,4 @@
-/* globals fetch */
+/* globals location */
 
 import React from 'react'
 import ReactModal from 'react-modal'
@@ -21,7 +21,7 @@ class IPFSLoader extends React.Component {
 
   static getActions(actions) {
     return {
-      loadManyParcelRequest: actions.loadManyParcelRequest,
+      loadManyParcelRequest: actions.loadManyParcelRequest
     }
   }
 
@@ -41,7 +41,10 @@ class IPFSLoader extends React.Component {
     const query = queryString.parse(location.search)
 
     if (!query.parcels) {
-      this.loadParcels([{x: 0, y: 0}])
+      this.setState({
+        loading: false,
+        error: 'No parcels specified'
+      })
       return
     }
 
@@ -78,7 +81,7 @@ class IPFSLoader extends React.Component {
   }
 
   componentWillUpdate (nextProps) {
-    if (!nextProps.ipfs.loading) {
+    if (!nextProps.ipfs.loading && !this.state.error) {
       setTimeout(() => this.dismiss(), 50)
     }
   }
@@ -93,10 +96,10 @@ class IPFSLoader extends React.Component {
         <h2>Loading scene...</h2>
       </div>
     }
-    if (ipfs.error) {
+    if (ipfs.error || this.state.error) {
       return <div className='errored uploadPrompt'>
         { this.intro() }
-        Error loading scene! { ipfs.error }
+        Error loading scene! { ipfs.error || this.state.error }
       </div>
     }
     if (this.state.waitDismissal) {
