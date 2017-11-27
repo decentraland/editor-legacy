@@ -274,6 +274,8 @@ export default class SceneGraph extends React.Component {
 
     let clearFilter = this.state.filterText ? <a onClick={this.clearFilter} className='button fa fa-times'></a> : null;
 
+    // <Chat webrtcClient={this.props.webrtcClient} />
+
     return (
       <div id={this.props.id} className='scenegraph'>
         <h3 className='scenegraph-header'>
@@ -292,7 +294,6 @@ export default class SceneGraph extends React.Component {
           onKeyUp={this.onKeyUp}>
           {this.renderOptions()}
         </div>
-        <Chat webrtcClient={this.props.webrtcClient} />
       </div>
     );
   }

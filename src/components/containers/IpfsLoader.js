@@ -76,7 +76,7 @@ class IPFSLoader extends React.Component {
       <h1 key='1'>Welcome to the Decentraland Scene Editor!</h1>,
       <p key='2'>This editor allows real-time collaboration when working on A-Frame scenes. You can edit in real time a scene with other users while communicating through voice and text chat. All changes to the parcel you are editing are shared in real time with other users looking at the same scene. </p>,
       <p key='3'>Support for sharing materials, textures, and models is in experimental stage.</p>,
-      <p key='4'>The contents can be stored to the IPFS network using the <span className="fa fa-download" title="Save HTML"></span> button on the top left corner.</p>
+      <p key='4'>The contents can be published to ethereum using the <b>Publish</b> button on the top left corner.</p>
     ]
   }
 
