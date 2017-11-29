@@ -54,9 +54,10 @@ app.get('/', function (_, res) { res.sendFile(landingPath) })
 app.use(express.static(path.join(__dirname, 'public')))
 app.use(cors())
 app.use('/dist', express.static(path.join(__dirname, 'dist')))
-app.get('/scene/:name', function (req, res) {
+app.get('/edit', function (req, res) {
   const parcels = req.query.parcels
   console.log('Parcels coordinates: ', parcels)
+
   res.sendFile(indexPath)
 })
 
