@@ -31,7 +31,7 @@ jobs:
           - build-{{ .Revision }}
       - run: |
              sudo apt-get -y -qq install awscli
-             aws s3 sync public 's3://editor.decentraland.today/' --delete --exclude 'editor.decentraland.today/branch/*' --acl public-read
+             aws s3 sync public 's3://editor.decentraland.today/' --delete --exclude 'editor.decentraland.today/branch' --acl public-read
              aws s3 sync dist 's3://editor.decentraland.today/dist' --acl public-read
   branch-deploy:
     docker:
