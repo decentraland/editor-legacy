@@ -1,3 +1,5 @@
+/* globals AFRAME */
+
 import React from 'react'
 import { connect } from '../store'
 import Clipboard from 'clipboard'
@@ -5,8 +7,6 @@ import { generateHtml } from '../../lib/exporter'
 import Events from '../../lib/Events.js'
 import { getParcelArray, createScene, saveString } from '../../lib/utils'
 import { saveScene } from '../sagas'
-import assert from 'assert'
-import ethService from '../ethereum'
 
 /**
  * Tools and actions.
@@ -41,32 +41,8 @@ class Toolbar extends React.Component {
     }
   }
 
-  saveScene () {
-    const html = createScene(document.querySelector('a-entity#parcel'))
-    const metadata = this.props.ipfs.metadata
-
-    // Some sanity asserts
-    assert(typeof html === 'string')
-    assert(typeof metadata === 'object')
-
-    return saveScene(html, metadata)
-  }
-
-  publishParcels () {
-    this.setState({
-      saving: true
-    })
-
-    this.saveScene()
-      .then((hash) => {
-        const parcels = getParcelArray()
-        return this.props.actions.updateManyParcelsRequest(parcels, hash)
-      })
-      .then(() => {
-        this.setState({
-          saving: false
-        })
-      })
+  onSave () {
+    AFRAME.INSPECTOR.selectEntity(document.querySelector('a-scene'))
   }
 
   addEntity (nodeType) {
@@ -85,7 +61,7 @@ class Toolbar extends React.Component {
         <div className='scenegraph-actions'>
           { this.state.saving
             ? 'Saving...'
-            : <a className='button-download' title='Publish' onClick={this.publishParcels.bind(this)}>Publish</a>
+            : <a className='button-download' title='Save' onClick={this.onSave.bind(this)}>Save...</a>
           }
         </div>
 

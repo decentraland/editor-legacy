@@ -118,7 +118,6 @@ class Ethereum {
   }
 
   updateManyParcelsMetadata (parcels, ipfsHash) {
-    // const coordinatesArray = parcels.split(';').map(coords => coords.split(','))
     const x = parcels.map(p => p.x) // [x1, x2, ... , xn] -> type: Array
     const y = parcels.map(p => p.y) // [y1, y2, ... , yn] -> type: Array
     return this.methods.updateManyLandMetadata(x, y, ipfsHash)

@@ -72,7 +72,7 @@ export async function saveScene (content, metadata) {
       if (!res.success) {
         throw new Error(res.error)
       }
-      console.log('Metadata and/or content uploaded to: ', res.url, res)
+      console.log('Content uploaded to: ', res.url, res)
       return res.url
     })
 }

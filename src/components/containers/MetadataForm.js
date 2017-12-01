@@ -1,27 +1,19 @@
-import React from 'react';
-import PropTypes from 'prop-types';
+import React from 'react'
 import { Creatable } from 'react-select'
 import { connect } from '../store'
-import {InputWidget} from '../widgets';
-import PropertyRow from '../components/PropertyRow';
-import Collapsible from '../Collapsible';
-import Events from '../../lib/Events';
-import {saveString} from '../../lib/utils';
+import Collapsible from '../Collapsible'
+import { getParcelArray, createScene } from '../../lib/utils'
+import { saveScene, updateManyParcelsMetadata } from '../sagas'
+import baseMetadata from '../utils/parcel-metadata'
+import { updateManyParcelsRequest } from '../actions'
+import PreviewParcels from '../components/preview-parcels'
+import assert from 'assert'
+import ethService from '../ethereum'
 
 class MetadataForm extends React.Component {
-  static propTypes = {
-    entity: PropTypes.object
-  };
-
   static getState(state) {
     return {
-      ipfs: state.ipfs,
-    }
-  }
-
-  static getActions(actions) {
-    return {
-      ipfsSaveSceneRequest: actions.ipfsSaveSceneRequest
+      ipfs: state.ipfs
     }
   }
 
@@ -29,13 +21,8 @@ class MetadataForm extends React.Component {
     super(...arguments)
     this.state = {
       editMetadata: false,
-      loading: true
-    }
-  }
-
-  checkGeometry = (stats) => {
-    if (stats && stats.vertices > 1000000) {
-      throw Error('Vertices limit is 1,000,000!');
+      loading: true,
+      saving: false
     }
   }
 
@@ -44,16 +31,15 @@ class MetadataForm extends React.Component {
     const meta = ipfs.metadata || this.state.meta
 
     const formFromMeta = (metaObject) => Object.entries(metaObject).map(([key, value]) => {
-      console.log(`${key} ${value}`); // "a 5", "b 7", "c 9"
       if (key !== 'preview') {
         return (
-          <div key={key} className="row">
+          <div key={key} className='row'>
             <span className='text'>{key}</span>
-            <input type="text" className="string" name={key} defaultValue={value} />
+            <input type='text' className='string' name={key} defaultValue={value} />
           </div>
-        );
+        )
       }
-    });
+    })
 
     // Just dummy tags for now...
     var options = [
@@ -68,7 +54,7 @@ class MetadataForm extends React.Component {
 
     return (
       <div>
-        <form onSubmit={e => this.onMetaFormSubmit(e)}>
+        <form onSubmit={e => this.onPublish(e)}>
           <Collapsible>
             <div className='collapsible-header'>
               <span className='entity-name'>Contact info</span>
@@ -119,9 +105,9 @@ class MetadataForm extends React.Component {
                 searchable
                 multi={true}
               />
-              <div className="meta-edit-buttons uploadPrompt">
-                <button type="submit" disabled={ipfs.loading}>
-                  {ipfs.loading ? 'Updating...' : 'Update metadata'}
+              <div className='meta-edit-buttons uploadPrompt'>
+                <button type='submit' disabled={ipfs.saving}>
+                  {ipfs.saving ? 'Publishing...' : 'Publish'}
                 </button>
               </div>
             </div>
@@ -131,13 +117,47 @@ class MetadataForm extends React.Component {
     )
   }
 
-  onMetaFormSubmit = (event) => {
-    const { tags } = this.state
-    event.preventDefault();
-    //console.log(event.target)
-    const scene = this.props.getSceneHtml()
+  onPublish (event) {
+    event.preventDefault()
 
-    const metadata = Object.assign({}, this.props.ipfs.metadata, {
+    this.setState({
+      saving: true
+    })
+
+    const html = createScene(document.querySelector('a-entity#parcel'))
+    assert(typeof html === 'string')
+
+    const metadata = this.getMetadata(event)
+    assert(typeof metadata === 'object')
+
+    console.log(metadata)
+
+    saveScene(html, metadata)
+      .then((hash) => {
+        const parcels = getParcelArray()
+        return ethService.updateManyParcelsMetadata(parcels, hash)
+      })
+      .then(() => {
+        this.setState({
+          saving: false
+        })
+      })
+  }
+
+  checkGeometry (stats) {
+    if (stats && stats.vertices > 1000000) {
+      throw Error('Vertices limit is 1,000,000!')
+    }
+  }
+
+  getMetadata (event) {
+    // The parcel data is gotten from the URL bar, we ignore what
+    // the metadata says about the parcels
+    const parcels = getParcelArray().map(p => `${p.x},${p.y}`)
+
+    const { tags } = this.state
+
+    const metadata = Object.assign({}, baseMetadata, {
       contact: {
         name: event.target.name.value,
         email: event.target.email.value,
@@ -155,19 +175,22 @@ class MetadataForm extends React.Component {
       policy: {
         contentRating: event.target.contentRating.value
       },
+      scene: {
+        parcels
+      },
       tags
-    });
+    })
 
-    try {
-      this.checkGeometry(this.rendererStats);
-    } catch (err) {
-      this.setState({ geometryLimitError: err.message });
-      console.log(err)
-      return;
-    }
+    // try {
+    //   this.checkGeometry(this.rendererStats);
+    // } catch (err) {
+    //   this.setState({ geometryLimitError: err.message });
+    //   console.log(err)
+    //   return;
+    // }
 
-    this.setState({ meta: metadata })
-    this.props.actions.ipfsSaveSceneRequest(metadata.display.title, scene, metadata)
+    return metadata
+    // this.setState({ meta: metadata })
   }
 
   render () {
@@ -189,11 +212,15 @@ class MetadataForm extends React.Component {
           <div className='collapsible-content'>
             <div className='row'>
               <span className='text'>Faces</span>
-              <input type="text" className="string" value={this.rendererStats.faces} disabled />
+              <input type='text' className='string' value={this.rendererStats.faces} disabled />
             </div>
             <div className='row' style={{color: geometryLimitError ? 'red' : 'inherit'}}>
               <span className='text'>Vertices</span>
-              <input type="text" className="string" value={this.rendererStats.vertices} disabled />
+              <input type='text' className='string' value={this.rendererStats.vertices} disabled />
+            </div>
+            <div>
+              <b>Parcels:</b>
+              <PreviewParcels parcels={getParcelArray()} />
             </div>
           </div>
         </Collapsible>
