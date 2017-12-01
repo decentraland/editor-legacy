@@ -9,8 +9,18 @@ export function importEntity (entity, node) {
     }
   })
 
+  var temp = entity.cloneNode()
   var clone = entity.cloneNode()
-  clone.innerHTML = node.innerHTML
+
+  // <a-entity /> => <a-entity></a-entity>
+  var parser = new DOMParser();
+  var doc = parser.parseFromString(node.outerHTML, 'text/xml');
+
+  Array.from(doc.querySelector('a-scene').children).forEach(child => {
+    temp.appendChild(child)
+  })
+
+  clone.innerHTML = temp.innerHTML
 
   Array.from(clone.children).forEach((child) => {
     child.addEventListener('loaded', function (e) {
