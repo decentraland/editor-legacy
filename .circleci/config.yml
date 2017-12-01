@@ -44,7 +44,7 @@ jobs:
       - run: |
              sudo apt-get -y -qq install awscli
              aws s3 sync public "s3://editor.decentraland.today/branch/$CIRCLE_BRANCH/" --acl public-read
-             aws s3 sync dist 's3://editor.decentraland.today/branch/$CIRCLE_BRANCH/dist' --acl public-read
+             aws s3 sync dist "s3://editor.decentraland.today/branch/$CIRCLE_BRANCH/dist" --acl public-read
 
 workflows:
   version: 2
