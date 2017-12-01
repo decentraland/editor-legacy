@@ -123,7 +123,7 @@ function getParcelArray () {
 function createScene (root) {
   const xmlString = `<html>
   <head>
-    <script src='https://client.decentraland.today/versions/*/preview.js'></script>
+    <script src='https://client.decentraland.today/preview.js'></script>
   </head>
   <body>
     <a-scene />
