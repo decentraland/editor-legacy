@@ -14,8 +14,7 @@
     "lint:css": "stylelint src/css/main.css",
     "lintfile": "node --harmony node_modules/.bin/eslint",
     "start": "node server.js",
-    "test": "jest --watch",
-    "test:ci": "jest"
+    "test": "tape -r babel-register test/*.js"
   },
   "repository": "decentraland/editor",
   "license": "MIT",
@@ -44,6 +43,7 @@
     "reselect": "^3.0.1",
     "simple-peer": "^8.1.1",
     "tape": "^4.8.0",
+    "three": "^0.88.0",
     "web3": "^1.0.0-beta.26",
     "web3-provider-engine": "git+https://github.com/decentraland/provider-engine.git#releases"
   },
