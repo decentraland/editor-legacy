@@ -13,7 +13,8 @@ import ethService from '../ethereum'
 class MetadataForm extends React.Component {
   static getState(state) {
     return {
-      ipfs: state.ipfs
+      ipfs: state.ipfs,
+      parcelState: state.parcelState
     }
   }
 
@@ -27,7 +28,7 @@ class MetadataForm extends React.Component {
   }
 
   renderMetaEditForm() {
-    const { ipfs } = this.props
+    const { ipfs, parcelState } = this.props
     const meta = ipfs.metadata || this.state.meta
 
     const formFromMeta = (metaObject) => Object.entries(metaObject).map(([key, value]) => {
@@ -55,6 +56,24 @@ class MetadataForm extends React.Component {
     return (
       <div>
         <form onSubmit={e => this.onPublish(e)}>
+          <Collapsible>
+            <div className='collapsible-header'>
+              <span className='entity-name'>Previous version</span>
+            </div>
+            <div className='collapsible-content'>
+              <div className="row">
+                <span className='text'>Hash</span>
+                <input className="string" type="text" defaultValue={parcelState.metadata} disabled />
+              </div>
+              {this.state.newHash && !this.state.saving && this.state.newHash !== parcelState.metadata ? (
+              <div className='meta-edit-buttons uploadPrompt'>
+                <button onClick={e => this.onRollback(e)} disabled={ipfs.saving}>
+                  {ipfs.saving ? 'Rollbacking...' : 'Rollback'}
+                </button>
+              </div>
+              ) : ''}
+            </div>
+          </Collapsible>
           <Collapsible>
             <div className='collapsible-header'>
               <span className='entity-name'>Contact info</span>
@@ -134,6 +153,7 @@ class MetadataForm extends React.Component {
 
     saveScene(html, metadata)
       .then((hash) => {
+        this.setState({ newHash: hash })
         const parcels = getParcelArray()
         return ethService.updateManyParcelsMetadata(parcels, hash)
       })
@@ -141,6 +161,26 @@ class MetadataForm extends React.Component {
         this.setState({
           saving: false
         })
+      })
+  }
+
+  onRollback (event) {
+    event.preventDefault()
+
+    const { parcelState } = this.props
+
+    this.setState({
+      saving: true
+    })
+
+    const parcels = getParcelArray()
+    const hash = parcelState.metadata
+    return ethService.updateManyParcelsMetadata(parcels, hash)
+      .then(() => {
+        this.setState({
+          saving: false
+        })
+        alert('To see old version, you need to refresh your browser.')
       })
   }
 
