@@ -62,6 +62,7 @@ test('no holes', (t) => {
   t.end()
 })
 
+// L shaped parcel boundary and object in the hole generated
 test('box in a hole', (t) => {
   const parcels = [
     new THREE.Vector2(0, 0),
