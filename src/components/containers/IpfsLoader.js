@@ -28,11 +28,9 @@ class IPFSLoader extends React.Component {
   constructor() {
     super(...arguments)
     this.state = {
-      loading: true,
-      waitDismissal: true
+      loading: true
     }
     this.dismiss = () => {
-      this.setState({ waitDismissal: false })
       this.props.reportParcel(this.props.ipfs.scene)
     }
   }
@@ -72,12 +70,7 @@ class IPFSLoader extends React.Component {
   }
 
   intro() {
-    return [
-      <h1 key='1'>Welcome to the Decentraland Scene Editor!</h1>,
-      <p key='2'>This editor allows real-time collaboration when working on A-Frame scenes. You can edit in real time a scene with other users while communicating through voice and text chat. All changes to the parcel you are editing are shared in real time with other users looking at the same scene. </p>,
-      <p key='3'>Support for sharing materials, textures, and models is in experimental stage.</p>,
-      <p key='4'>The contents can be published to ethereum using the <b>Publish</b> button on the top left corner.</p>
-    ]
+    return <h1 key='1'>Welcome to the Decentraland Scene Editor!</h1>
   }
 
   componentWillUpdate (nextProps) {
@@ -87,8 +80,31 @@ class IPFSLoader extends React.Component {
   }
 
   renderContent() {
+    console.log(this.state)
+    console.log(this.props)
 
-    const { ipfs } = this.props
+    const { ipfs, ethereum } = this.props
+
+    if (ethereum.error) {
+      return <div className='errored uploadPrompt'>
+        { this.intro() }
+        <p>
+          Error connecting to web3 or metamask.
+        </p>
+
+        <p className='error'>
+          { ethereum.error.toString() }
+        </p>
+      </div>
+    }
+
+    if (ipfs.error || this.state.error) {
+      return <div className='errored uploadPrompt'>
+        { this.intro() }
+        Error loading scene! { ipfs.error || this.state.error }
+      </div>
+    }
+
     if (ipfs.loading) {
       return <div className='loading uploadPrompt'>
         { this.intro() }
@@ -96,42 +112,14 @@ class IPFSLoader extends React.Component {
         <h2>Loading scene...</h2>
       </div>
     }
-    if (ipfs.error || this.state.error) {
-      return <div className='errored uploadPrompt'>
-        { this.intro() }
-        Error loading scene! { ipfs.error || this.state.error }
-      </div>
-    }
-    if (this.state.waitDismissal) {
-      if (ipfs.scene.default) {
-        return <div className='welcome uploadPrompt'>
-          { this.intro() }
-          <button onClick={this.dismiss}>Start editing</button>
-        </div>
-      } else {
-        return (<div className='dismissal uploadPrompt'>
-          { this.intro() }
-          <h2>Scene loaded from IPFS</h2>
-          <p>The IPFS hash pointed to is: /ipfs/{ ipfs.hash }</p>
-          <button onClick={this.dismiss}>Start editing</button>
-        </div>)
-      }
-    }
   }
   render() {
-    return <ReactModal isOpen={true} style={
-      {
-        overlay: {
-          zIndex: 10000
-        },
-        content: {
-          background: '#2b2b2b',
-          color: '#ccc'
-        }
-      }
-    }>
+    return <ReactModal isOpen style={{
+      overlay: { zIndex: 10000 },
+      content: { background: '#2b2b2b', color: '#ccc', height: '50%', top: '25%', marginLeft: '10%', marginRight: '10%' }
+    }}>
       <div style={{ display: 'flex', flexDirection: 'column', height: '100%', justifyContent: 'space-between' }}>
-        <Header />
+      <Header />
         { this.renderContent() }
         <Footer />
       </div>
