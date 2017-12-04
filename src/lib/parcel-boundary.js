@@ -106,9 +106,6 @@ export default class ParcelBoundary {
 
       // Must be in bounds
       if (!bounds.containsBox(bbox)) {
-        console.log('does not contain')
-        console.dir(bounds)
-        console.dir(bbox)
         valid = false
       }
 
