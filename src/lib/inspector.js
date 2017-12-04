@@ -89,8 +89,8 @@ Inspector.prototype = {
   },
 
   initUI: function () {
-    this.EDITOR_CAMERA.position.set(4, 4, 8);
-    this.EDITOR_CAMERA.lookAt(new THREE.Vector3());
+    this.EDITOR_CAMERA.position.set(9, 4, 13);
+    this.EDITOR_CAMERA.lookAt(new THREE.Vector3(5, 0, 5));
     this.EDITOR_CAMERA.updateMatrixWorld();
     this.camera = this.EDITOR_CAMERA;
 

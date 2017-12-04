@@ -1,4 +1,6 @@
-import * as THREE from 'three'
+/* globals THREE */
+
+// import * as THREE from 'three'
 import assert from 'assert'
 
 /*
@@ -104,6 +106,9 @@ export default class ParcelBoundary {
 
       // Must be in bounds
       if (!bounds.containsBox(bbox)) {
+        console.log('does not contain')
+        console.dir(bounds)
+        console.dir(bbox)
         valid = false
       }
 

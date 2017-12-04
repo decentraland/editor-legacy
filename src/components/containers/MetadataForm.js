@@ -9,6 +9,7 @@ import { updateManyParcelsRequest } from '../actions'
 import PreviewParcels from '../components/preview-parcels'
 import assert from 'assert'
 import ethService from '../ethereum'
+import ParcelBoundary from '../../lib/parcel-boundary'
 
 class MetadataForm extends React.Component {
   static getState(state) {
@@ -19,11 +20,36 @@ class MetadataForm extends React.Component {
 
   constructor() {
     super(...arguments)
+
     this.state = {
       editMetadata: false,
       loading: true,
-      saving: false
+      saving: false,
+      valid: false,
+      invalidObjects: []
     }
+  }
+
+  componentDidMount () {
+    this.testBoundaries()
+  }
+
+  get object3D () {
+    return document.querySelector('a-entity#parcel').object3D
+  }
+
+  testBoundaries () {
+    const parcels = getParcelArray()
+    console.log(parcels)
+
+    const boundary = new ParcelBoundary(parcels, this.object3D)
+    const valid = boundary.validate()
+    const invalidObjects = boundary.invalidObjects
+
+    console.log(boundary, valid, invalidObjects)
+    this.setState({
+      valid, invalidObjects
+    })
   }
 
   renderMetaEditForm() {
@@ -105,11 +131,13 @@ class MetadataForm extends React.Component {
                 searchable
                 multi={true}
               />
-              <div className='meta-edit-buttons uploadPrompt'>
-                <button type='submit' disabled={ipfs.saving}>
-                  {ipfs.saving ? 'Publishing...' : 'Publish'}
-                </button>
-              </div>
+              { this.state.valid && (
+                <div className='meta-edit-buttons uploadPrompt'>
+                  <button type='submit' disabled={ipfs.saving}>
+                    {ipfs.saving ? 'Publishing...' : 'Publish'}
+                  </button>
+                </div>
+              ) }
             </div>
           </Collapsible>
         </form>
@@ -129,8 +157,6 @@ class MetadataForm extends React.Component {
 
     const metadata = this.getMetadata(event)
     assert(typeof metadata === 'object')
-
-    console.log(metadata)
 
     saveScene(html, metadata)
       .then((hash) => {
@@ -199,9 +225,11 @@ class MetadataForm extends React.Component {
 
     const { geometryLimitError } = this.state
 
-    const limitMessage = geometryLimitError ? (<p style={{color: 'red'}}>
-      You cannot publish scene with more than 1,000,000 vertices!
-    </p>) : ''
+    var warning
+
+    if (!this.state.valid) {
+      warning = <p>Cannot save, {this.state.invalidObjects.length} objects do not fit inside your parcel boundaries</p>
+    }
 
     return (
       <div>
@@ -222,6 +250,7 @@ class MetadataForm extends React.Component {
               <b>Parcels:</b>
               <PreviewParcels parcels={getParcelArray()} />
             </div>
+            { warning }
           </div>
         </Collapsible>
         {this.renderMetaEditForm()}
