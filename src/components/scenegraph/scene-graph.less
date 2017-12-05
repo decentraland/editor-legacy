@@ -1,0 +1,33 @@
+@border: #555;
+
+.scenegraph__tabs, .scenegraph__tabs *{
+  box-sizing: border-box;
+}
+
+.scenegraph__tabs{
+  border-bottom: 1px solid @border;
+  margin: 0;
+  padding: 0;
+  height: 30px;
+
+  li{
+    margin: 0 0 0 4px;
+    padding: 4px 8px;
+    display: inline-block;
+    border: 1px solid @border;
+    height: 30px;
+    color: #aaa;
+    line-height: 20px;
+  }
+
+  li.active{
+    color: white;
+    background: #333;
+    border-bottom-color: #333;
+  }
+
+  li:hover{
+    text-decoration: underline;
+    color: white;
+  }
+}

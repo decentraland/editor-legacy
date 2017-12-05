@@ -3,8 +3,12 @@ import PropTypes from 'prop-types';
 import classnames from 'classnames';
 import debounce from 'lodash.debounce';
 import {removeEntity, cloneEntity} from '../../actions/entity';
+import ModelSidebar from '../components/model-sidebar';
 import Toolbar from './Toolbar';
 import Chat from './Chat';
+
+import './scene-graph.less'
+
 const Events = require('../../lib/Events.js');
 
 const ICONS = {
@@ -39,7 +43,8 @@ export default class SceneGraph extends React.Component {
       value: this.props.value || '',
       options: [],
       selectedIndex: -1,
-      filterText: ''
+      filterText: '',
+      tab: 'outliner'
     };
 
   }
@@ -274,26 +279,42 @@ export default class SceneGraph extends React.Component {
 
     let clearFilter = this.state.filterText ? <a onClick={this.clearFilter} className='button fa fa-times'></a> : null;
 
-    // <Chat webrtcClient={this.props.webrtcClient} />
-
     return (
       <div id={this.props.id} className='scenegraph'>
         <h3 className='scenegraph-header'>
           Decentraland Editor
         </h3>
-        <div className='scenegraph-toolbar'>
-          <Toolbar/>
-          <div className='search'>
-            <input id="filter" placeholder='Search...' value={this.state.filterText}
-              onChange={this.onChangeFilter} onKeyUp={this.onFilterKeyUp}/>
-            {clearFilter}
-            <span className='fa fa-search'></span>
+
+        <Toolbar/>
+
+        <ul className='scenegraph__tabs'>
+          <li 
+            className={this.state.tab === 'outliner' && 'active'}
+            onClick={() => this.setState({ tab: 'outliner' })}>Outliner</li>
+          <li 
+            className={this.state.tab === 'poly' && 'active'}
+            onClick={() => this.setState({ tab: 'poly' })}>Poly</li>
+        </ul>
+
+        { this.state.tab === 'poly' && <ModelSidebar entity={this.state.entity} visible={true}/> }
+
+        { this.state.tab === 'outliner' && 
+          <div>
+            <div className='scenegraph-toolbar'>
+              <div className='search'>
+                <input id="filter" placeholder='Search...' value={this.state.filterText}
+                  onChange={this.onChangeFilter} onKeyUp={this.onFilterKeyUp}/>
+                {clearFilter}
+                <span className='fa fa-search'></span>
+              </div>
+            </div>
+
+            <div className='outliner' tabIndex='0' onKeyDown={this.onKeyDown}
+              onKeyUp={this.onKeyUp}>
+              {this.renderOptions()}
+            </div>
           </div>
-        </div>
-        <div className='outliner' tabIndex='0' onKeyDown={this.onKeyDown}
-          onKeyUp={this.onKeyUp}>
-          {this.renderOptions()}
-        </div>
+        }
       </div>
     );
   }

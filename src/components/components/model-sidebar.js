@@ -6,6 +6,10 @@ import ComponentsContainer from './ComponentsContainer';
 import Events from '../../lib/Events';
 import path from 'path'
 
+import './model-sidebar.less'
+
+const API_KEY = 'AIzaSyB-QXwaKpNUKK5w349BT4DJziLGymwiYTs'
+
 function truncate (string, length = 50) {
   return string.length < length ? string : string.slice(0, length).replace(/\s$/, '') + '...'
 }
@@ -22,8 +26,8 @@ export default class ModelSidebar extends React.Component {
       open: false,
       entity: props.entity,
       query: 'forklift',
-      searching: false,
-      results: []
+      searching: true,
+      results: {}
     };
   }
 
@@ -32,9 +36,11 @@ export default class ModelSidebar extends React.Component {
       searching: true
     })
 
-    fetch(`/model/search?q=${encodeURIComponent(this.state.query)}`)
+    fetch(`https://poly.googleapis.com/v1/assets?keywords=${encodeURIComponent(this.state.query)}&key=${API_KEY}`)
       .then((r) => r.json())
       .then((results) => {
+        console.log(results)
+
         this.setState({results, searching: false})
       })
   }
@@ -119,13 +125,13 @@ export default class ModelSidebar extends React.Component {
 
     if (this.state.searching) {
       results = <div className='searching'><i className='fa fa-spinner' aria-hidden='true'></i></div>
-    } else {
-      results = this.state.results.map((r) => {
+    } else if (this.state.results) {
+      results = this.state.results.assets.map((r) => {
         return (
           <div className='model-result' onClick={() => this.insertModel(r.id)}>
-            <h3><a onClick={(e) => {e.preventDefault(); this.insertModel(r.id)}} href={`https://poly.google.com/view/${r.id}`}>{r.name}</a></h3>
-            <p>{truncate(r.description)}</p>
-            <img src={r.image} />
+            <h3><a onClick={(e) => {e.preventDefault(); this.insertModel(r.id)}} href={`https://poly.google.com/view/${r.id}`}>{r.displayName}</a></h3>
+            <p>By {truncate(r.authorName)}</p>
+            <img src={r.thumbnail.url} />
           </div>
         )
       })
@@ -133,7 +139,7 @@ export default class ModelSidebar extends React.Component {
 
     if (visible) {
       return (
-        <div id='sidebar'>
+        <div>
           <div className='model-search'>
             <img src='/img/poly.png' /> Google Poly search
 

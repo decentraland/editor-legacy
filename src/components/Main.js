@@ -12,7 +12,6 @@ THREE.ImageUtils.crossOrigin = '';
 
 const Events = require('../lib/Events.js');
 import ComponentsSidebar from './components/Sidebar';
-import ModelSidebar from './components/ModelSidebar';
 import ModalTextures from './modals/ModalTextures';
 import ModalHelp from './modals/ModalHelp';
 import SceneGraph from './scenegraph/SceneGraph';
@@ -247,7 +246,6 @@ export default class Main extends React.Component {
           <div id='right-panels'>
             <ToolBar/>
             <ComponentsSidebar entity={this.state.entity} visible={this.state.visible.attributes} getSceneHtml={getSceneHtml}/>
-            <ModelSidebar entity={this.state.entity} visible={true}/>
           </div>
         </div>
         <ModalHelp isOpen={this.state.isHelpOpen} onClose={this.onCloseHelpModal}/>
