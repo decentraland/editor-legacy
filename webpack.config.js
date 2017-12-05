@@ -57,6 +57,10 @@ if (process.env.AFRAME_DIST) {
   }
 }
 
+const PATH = (process.env.CI && process.env.CIRCLE_BRANCH !== 'master')
+  ? '/branch/' + process.env.CIRCLE_BRANCH + '/dist/'
+  : '/dist/'
+
 module.exports = {
   devServer: {
     contentBase: './dist',
@@ -67,7 +71,7 @@ module.exports = {
   output: {
     path: path.join(__dirname, outPath),
     filename: filename,
-    publicPath: '/dist/'
+    publicPath: PATH
   },
   module: {
     rules: [
@@ -89,6 +93,16 @@ module.exports = {
           { loader: 'css-loader', options: { importLoaders: 1 } },
           'postcss-loader'
         ]
+      },
+      {
+        test: /\.less$/,
+        use: [{
+          loader: 'style-loader'
+        }, {
+          loader: 'css-loader'
+        }, {
+          loader: 'less-loader'
+        }]
       }
     ]
   },

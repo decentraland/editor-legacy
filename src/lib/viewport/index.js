@@ -29,12 +29,6 @@ function Viewport (inspector) {
       if (event.detail.cameraEl !== inspector.inspectorCameraEl) {
         prevActiveCameraEl = event.detail.cameraEl;
       }
-
-      // Force keep the Inspector camera as active.
-      if (!event.detail.cameraEl.isInspector) {
-        // TODO: Motion capture.
-        // inspector.inspectorCameraEl.setAttribute('camera', 'active', 'true');
-      }
     }
   });
 

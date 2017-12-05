@@ -185,6 +185,10 @@ export default class TextureWidget extends React.Component {
   }
 
   uploadFile (data, path) {
+    this.setState({
+      uploading: true
+    })
+
     return fetch('/api/ipfs', {
       method: 'POST',
       headers: { 'Content-type': 'application/json' },
@@ -199,6 +203,10 @@ export default class TextureWidget extends React.Component {
       this.setValue(value)
       this.setState({value})
       this.notifyChanged(value)
+
+      this.setState({
+        uploading: false
+      })
 
       return res.url
     })
@@ -219,15 +227,28 @@ export default class TextureWidget extends React.Component {
         href={this.state.url}></a>;
     }
 
+    var input
+
+    if (this.state.uploading) {
+      input = '  Uploading...'
+    } else {
+      input = (
+        <span>
+          <input className='map_value string' type='text' title={hint} value={this.state.value} onChange={this.onChange}/>
+          {openLink}
+          <a onClick={this.removeMap} className='button fa fa-times'></a>
+        </span>
+      )
+    }
+
     return (
       <span className='texture'>
         <div className='texture-uploader'>
           <canvas ref='canvas' width='32' height='24' title={hint}></canvas>
           <input  type='file' onChange={this.readFile.bind(this)} />
         </div>
-        <input className='map_value string' type='text' title={hint} value={this.state.value} onChange={this.onChange}/>
-        {openLink}
-        <a onClick={this.removeMap} className='button fa fa-times'></a>
+
+        { input }
       </span>
     );
   }

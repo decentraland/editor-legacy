@@ -5,9 +5,11 @@
     <title>Example Scene</title>
     <script src="/aframe-master.min.js"></script>
     <script src="https://unpkg.com/aframe-html-shader@0.2.0/dist/aframe-html-shader.min.js"></script>
+    <script src="/js/a-billboard.js"></script>
+    <script src="/js/a-parcel.js"></script>
   </head>
   <body>
-    <a-scene debug="true" light="shadowMapType: basic">
+    <a-scene debug="true" shadow>
       <a-entity id="parcel">
       </a-entity>
 
@@ -16,7 +18,6 @@
         fixed="true"
         id="sky"
         scale="-256 256 256"
-        shadow="castShadow: false; recieveShadow: false"
         material="src: /textures/sky.png; shader: flat"></a-sphere>
 
       <!-- Floor. -->
@@ -27,7 +28,7 @@
         position="0 0.01 0"
         rotation="-90 0 0"
         shadow
-        material="side: double; src: /textures/grid-4x4.png; color: #eee; repeat: 128 128; metalness: 0; roughness: 1"></a-plane>
+        material="side: double; src: /textures/grid-4x4.png; repeat: 128 128; metalness: 0; roughness: 1"></a-plane>
 
       <a-entity fixed="true" light="color: #888; type: ambient"></a-entity>
 
@@ -38,13 +39,16 @@
         fixed="true"
         geometry="primitive: sphere; radius: 0.15"
         material="color: #FAFAFA; shader: flat"
-        light="castShadow: true; color: #FAFAFA; intensity: 0.5; shadowCameraNear: 1; type: point; shadowMapWidth: 1024; shadowMapHeight: 1024" position="10 10 10">
+        light="color: #FAFAFA; intensity: 0.5; castShadow: true; shadowCameraNear: 1; type: point; shadowMapWidth: 1024; shadowMapHeight: 1024" position="10 10 10">
       </a-entity>
     </a-scene>
-
-    <script src="/js/a-billboard.js"></script>
-    <script src="/js/a-parcel.js"></script>
-
-    <script src="/dist/aframe-inspector.js"></script>
+    <script src="./dist/aframe-inspector.js"></script>
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-63691338-5"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'UA-63691338-5');
+    </script>
   </body>
 </html>

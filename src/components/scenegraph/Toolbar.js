@@ -1,64 +1,68 @@
-var INSPECTOR = require('../../lib/inspector.js');
-import React from 'react';
-import Clipboard from 'clipboard';
-import {getSceneName, generateHtml} from '../../lib/exporter';
-import Events from '../../lib/Events.js';
-import {saveString} from '../../lib/utils';
-import MotionCapture from './MotionCapture';
+/* globals AFRAME */
 
-const LOCALSTORAGE_MOCAP_UI = 'aframeinspectormocapuienabled';
+import React from 'react'
+import { connect } from '../store'
+import Clipboard from 'clipboard'
+import { generateHtml } from '../../lib/exporter'
+import Events from '../../lib/Events.js'
+import { getParcelArray, createScene, saveString } from '../../lib/utils'
+import { saveScene } from '../sagas'
 
 /**
  * Tools and actions.
  */
-export default class Toolbar extends React.Component {
-  constructor(props) {
+class Toolbar extends React.Component {
+  static getState (state) {
+    return {
+      ipfs: state.ipfs
+    }
+  }
+
+  static getActions (actions) {
+    return {
+      updateManyParcelsRequest: actions.updateManyParcelsRequest
+    }
+  }
+
+  constructor (props) {
     super(props)
 
     const clipboard = new Clipboard('[data-action="copy-scene-to-clipboard"]', {
       text: trigger => {
-        return generateHtml();
+        return generateHtml()
       }
-    });
+    })
     clipboard.on('error', e => {
       // @todo Show Error on the UI
-    });
+    })
 
-    Events.on('togglemotioncapture', () => {
-      this.toggleMotionCaptureUI();
-    });
-
-    this.state ={
-      motionCaptureUIEnabled: JSON.parse(localStorage.getItem(LOCALSTORAGE_MOCAP_UI))
-    };
-  }
-  exportSceneToGLTF () {
-    INSPECTOR.exporters.gltf.parse(AFRAME.scenes[0].object3D, function (result) {
-      var output = JSON.stringify(result, null, 2);
-      saveString(output, 'scene.gltf', 'application/json');
-    });
+    this.state = {
+      saving: false
+    }
   }
 
-  saveScene () {
-    Events.emit('savescene')
+  onSave () {
+    AFRAME.INSPECTOR.selectEntity(document.querySelector('a-scene'))
   }
 
   addEntity (nodeType) {
-    Events.emit('createnewentity', {element: nodeType, components: {
-      shadow: { cast: true, recieve: true }
-    }});
-  }
-
-  toggleMotionCaptureUI = () => {
-    localStorage.setItem(LOCALSTORAGE_MOCAP_UI, !this.state.motionCaptureUIEnabled);
-    this.setState({motionCaptureUIEnabled: !this.state.motionCaptureUIEnabled});
+    Events.emit('createnewentity', {
+      element: nodeType,
+      components: {
+        shadow: { cast: true, receive: true },
+        position: '0 0.5 0'
+      }
+    })
   }
 
   render () {
     return (
-      <div id="scenegraphToolbar">
+      <div id='scenegraphToolbar'>
         <div className='scenegraph-actions'>
-          <a className='button-download' title='Save HTML' onClick={this.saveScene}>Save</a>
+          { this.state.saving
+            ? 'Saving...'
+            : <a className='button-download' title='Save' onClick={this.onSave.bind(this)}>Save...</a>
+          }
         </div>
 
         <h4>Add...</h4>
@@ -77,9 +81,9 @@ export default class Toolbar extends React.Component {
             <img src='/img/icons/icon-html.png' />
           </a>
         </div>
-
-        {this.state.motionCaptureUIEnabled && <MotionCapture/>}
       </div>
     );
   }
 }
+
+export default connect(Toolbar)

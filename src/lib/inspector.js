@@ -1,7 +1,5 @@
 var Events = require('./Events');
 var Viewport = require('./viewport/index.js');
-var ComponentLoader = require('./componentloader.js');
-var AssetsLoader = require('./assetsLoader.js');
 var ShaderLoader = require('./shaderloader.js');
 var Shortcuts = require('./shortcuts.js');
 import {GLTFExporter} from './vendor/GLTFExporter';
@@ -32,9 +30,7 @@ Inspector.prototype = {
    * Callback once the DOM is completely loaded so we could query the scene
    */
   onDomLoaded: function () {
-    this.componentLoader = new ComponentLoader();
     this.shaderLoader = new ShaderLoader();
-    this.assetsLoader = new AssetsLoader();
 
     this.sceneEl = AFRAME.scenes[0];
     if (this.sceneEl.hasLoaded) {
@@ -87,13 +83,13 @@ Inspector.prototype = {
   initModules: function () {
     for (var moduleName in this.modules) {
       var module = this.modules[moduleName];
-      console.log('Initializing module <%s>', moduleName);
+      // console.log('Initializing module <%s>', moduleName);
       module.init(this.sceneEl);
     }
   },
 
   initUI: function () {
-    this.EDITOR_CAMERA.position.set(20, 10, 20);
+    this.EDITOR_CAMERA.position.set(4, 4, 8);
     this.EDITOR_CAMERA.lookAt(new THREE.Vector3());
     this.EDITOR_CAMERA.updateMatrixWorld();
     this.camera = this.EDITOR_CAMERA;
@@ -337,11 +333,6 @@ Inspector.prototype = {
   open: function () {
     this.opened = true;
     Events.emit('inspectormodechanged', true);
-
-    if (!this.sceneEl.hasAttribute('aframe-inspector-motion-capture-replaying')) {
-      this.sceneEl.pause();
-      this.sceneEl.exitVR();
-    }
 
     if (this.sceneEl.hasAttribute('embedded')) {
       // Remove embedded styles, but keep track of it.

@@ -2,6 +2,8 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import INSPECTOR from '../../lib/inspector';
 
+const EDITOR_URL = process.env.REACT_APP_EDITOR_URL || process.env.EDITOR_URL || 'https://editor.decentraland.org';
+
 var Events = require('../../lib/Events.js');
 
 export default class ObjWidget extends React.Component {
@@ -71,7 +73,7 @@ export default class ObjWidget extends React.Component {
   }
 
   uploadFile (data, path) {
-    return fetch('/api/ipfs', {
+    return fetch(`${EDITOR_URL}/api/ipfs`, {
       method: 'POST',
       headers: { 'Content-type': 'application/json' },
       body: JSON.stringify({ files: [{ data, path }] })

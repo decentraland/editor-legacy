@@ -1,3 +1,7 @@
+/* globals THREE, location, DOMParser, XMLSerializer */
+
+import queryString from 'query-string'
+
 function getNumber (value) {
   return parseFloat(value.toFixed(3));
 }
@@ -101,8 +105,85 @@ function saveString (text, filename, mimeType) {
 // Get the current scene name from the URL
 function getSceneName () {
   const urlParts = window.location.href.split('/')
-  const sceneName = urlParts[urlParts.length - 1]
+  const sceneName = urlParts[urlParts.length - 1].split('?')[0]
   return sceneName
+}
+
+function getParcelArray () {
+  const query = queryString.parse(location.search)
+  const parcels = query.parcels.split(';')
+
+  return parcels.map((p) => {
+    const pair = p.split(',').map(s => Number(s))
+
+    return new THREE.Vector2(pair[0], pair[1])
+  })
+}
+
+function createScene (root) {
+  const xmlString = `<html>
+  <head>
+    <script src='https://client.decentraland.today/preview.js'></script>
+  </head>
+  <body>
+    <a-scene />
+  </body>
+</html>`
+
+  const parser = new DOMParser()
+  const doc = parser.parseFromString(xmlString, 'text/xml')
+  const scene = doc.querySelector('a-scene')
+
+  Array.from(root.childNodes).forEach((child) => {
+    scene.appendChild(doc.importNode(child, true))
+
+    if (child.nodeType === 1) {
+      scene.appendChild(doc.createTextNode('\n      '))
+    }
+  })
+
+  // Attributes to remove
+  const attributes = ['data-uuid', 'id', 'geometry']
+
+  attributes.forEach((attr) => {
+    Array.from(scene.querySelectorAll(`[${attr}]`)).forEach((node) => {
+      node.removeAttribute(attr)
+    })
+  })
+
+  // Serialize
+  var xml = new XMLSerializer().serializeToString(doc)
+
+  // Fix me this is a terrible hack, need to work out how to use xmlserializer properly
+  xml = xml.replace(/\s*xmlns=".+?"/g, '')
+
+  return xml
+}
+
+function parseParcel (html) {
+  const parser = new DOMParser()
+  const doc = parser.parseFromString(html, 'application/xml')
+  const error = doc.querySelector('parsererror')
+
+  if (error) {
+    console.log(`Error parsing document ${error.innerText}`)
+    console.log(html)
+    throw new Error(error.innerText)
+  }
+
+  // Get scene node
+  const scene = doc.querySelector('a-scene')
+
+  // Attributes to remove
+  const attributes = ['data-uuid', 'id', 'geometry']
+
+  attributes.forEach((attr) => {
+    Array.from(scene.querySelectorAll(`[${attr}]`)).forEach((node) => {
+      node.removeAttribute(attr)
+    })
+  })
+
+  return scene
 }
 
 module.exports = {
@@ -114,5 +195,8 @@ module.exports = {
   os: getOS(),
   injectCSS: injectCSS,
   injectJS: injectJS,
-  saveString: saveString
-};
+  saveString: saveString,
+  getParcelArray,
+  createScene,
+  parseParcel
+}

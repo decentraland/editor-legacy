@@ -43,7 +43,7 @@ function loadScene (name) {
 }
 
 export default class IPFSLoader extends React.Component {
-  constructor() {
+  constructor () {
     super(...arguments)
     this.state = {
       loading: true
@@ -52,19 +52,21 @@ export default class IPFSLoader extends React.Component {
       this.props.reportParcel(this.state.data.scene)
     }
   }
-  componentDidMount() {
+
+  componentDidMount () {
     loadScene(sceneName)
       .then(scene => {
-        this.setState({ loading: false, data: scene, waitDismissal: true })
+        this.setState({ loading: false, data: scene })
       })
       .catch(error => this.setState({ loading: false, error }))
   }
-  intro() {
+
+  intro () {
     return [
       <h1 key='1'>Welcome to the Decentraland Scene Editor!</h1>,
       <p key='2'>This editor allows real-time collaboration when working on A-Frame scenes. You can edit in real time a scene with other users while communicating through voice and text chat. All changes to the parcel you are editing are shared in real time with other users looking at the same scene. </p>,
       <p key='3'>Support for sharing materials, textures, and models is in experimental stage.</p>,
-      <p key='4'>The contents can be stored to the IPFS network using the <span className="fa fa-download" title="Save HTML"></span> button on the top left corner.</p>
+      <p key='4'>The contents can be published to ethereum using the <b>Publish</b> button on the top left corner.</p>
     ]
   }
   renderContent() {
@@ -80,22 +82,6 @@ export default class IPFSLoader extends React.Component {
         { this.intro() }
         Error loading scene! { this.state.error }
       </div>
-    }
-    if (this.state.waitDismissal) {
-      if (this.state.data.default) {
-        return <div className='welcome uploadPrompt'>
-          { this.intro() }
-          <button onClick={this.dismiss}>Start editing "{sceneName}"</button>
-        </div>
-      } else {
-        return (<div className='dismissal uploadPrompt'>
-          { this.intro() }
-          <h2>Scene "{sceneName}" loaded from IPFS</h2>
-          <p>The IPNS locator is: /ipns/{ this.state.data.ipns }</p>
-          <p>The IPFS hash pointed to is: /ipfs/{ this.state.data.ipfs }</p>
-          <button onClick={this.dismiss}>Start editing</button>
-        </div>)
-      }
     }
   }
   render() {

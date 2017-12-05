@@ -2,6 +2,7 @@ const path = require('path')
 const express = require('express')
 const webpack = require('webpack')
 const bodyParser = require('body-parser')
+const cors = require('cors');
 const proxy = require('express-http-proxy')
 const assert = require('assert')
 const Scene = require('./server/scene')
@@ -52,8 +53,14 @@ app.use(sse)
 app.use(bodyParser.json())
 app.get('/', function (_, res) { res.sendFile(landingPath) })
 app.use(express.static(path.join(__dirname, 'public')))
+app.use(cors())
 app.use('/dist', express.static(path.join(__dirname, 'dist')))
-app.get('/scene/:name', function (_, res) { res.sendFile(indexPath) })
+app.get('/edit', function (req, res) {
+  const parcels = req.query.parcels
+  console.log('Parcels coordinates: ', parcels)
+
+  res.sendFile(indexPath)
+})
 
 app.listen(port)
 

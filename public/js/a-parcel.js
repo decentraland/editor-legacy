@@ -72,16 +72,16 @@ function generateGeometry (parceldata) {
 
       // add border on right
       if (contains(p) && !contains(pAcross)) {
-        mergeBox(new THREE.Vector3(p.x * 10 + 5, 0, p.y * 10), new THREE.Vector3(thickness, thickness, 10))
+        mergeBox(new THREE.Vector3(p.x * 10 + 5, 0, p.y * 10), new THREE.Vector3(thickness, thickness, 10 + thickness))
       } else if (!contains(p) && contains(pAcross)) {
-        mergeBox(new THREE.Vector3(p.x * 10 + 5, 0, p.y * 10), new THREE.Vector3(thickness, thickness, 10))
+        mergeBox(new THREE.Vector3(p.x * 10 + 5, 0, p.y * 10), new THREE.Vector3(thickness, thickness, 10 + thickness))
       }
 
       // add border on bottom
       if (contains(p) && !contains(pAbove)) {
-        mergeBox(new THREE.Vector3(p.x * 10, 0, p.y * 10 + 5), new THREE.Vector3(10, thickness, thickness))
+        mergeBox(new THREE.Vector3(p.x * 10, 0, p.y * 10 + 5), new THREE.Vector3(10 + thickness, thickness, thickness))
       } else if (!contains(p) && contains(pAbove)) {
-        mergeBox(new THREE.Vector3(p.x * 10, 0, p.y * 10 + 5), new THREE.Vector3(10, thickness, thickness))
+        mergeBox(new THREE.Vector3(p.x * 10, 0, p.y * 10 + 5), new THREE.Vector3(10 + thickness, thickness, thickness))
       }
     }
   }

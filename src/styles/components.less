@@ -1,0 +1,106 @@
+/* Components in right sidebar */
+.components {
+  background-color: #323232;
+  color: @grey;
+  height: 100%;
+  overflow: auto;
+  position: fixed;
+  width: 331px;
+}
+
+.components * {
+  vertical-align: middle;
+}
+
+.component-title span {
+  float: left;
+  max-width: 110px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  text-transform: uppercase;
+  white-space: nowrap;
+  align-items: center;
+  display: flex;
+}
+
+.components .row {
+  margin-bottom: 10px;
+  min-height: 20px;
+}
+
+.components .row .color_value {
+  margin: 0 0 0 5px;
+  width: 68px;
+}
+
+.components .row .text {
+  cursor: default;
+  display: inline-block;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  vertical-align: middle;
+  width: 120px;
+}
+
+.components .row .map_value {
+  margin: 0 0 0 5px;
+  width: 68px;
+}
+
+/* Collapsible component styles */
+.collapsible .static {
+  background-color: #323232;
+  border-bottom: 1px solid #262626;
+  border-top: 1px solid #262626;
+  color: #fff;
+  height: 16px;
+  margin: 0;
+  padding: 10px;
+  vertical-align: middle;
+  cursor: pointer;
+}
+
+.collapsible .menu {
+  text-align: right;
+}
+
+.collapsible .menu::after {
+  color: #bbb;
+  content: '\2807';
+  font-size: 12px;
+  padding: 5px;
+  text-align: right;
+}
+
+.collapsible .content {
+  background-color: #2b2b2b;
+  padding: 10px;
+}
+
+.collapsible .static .collapse-button {
+  border: 6px solid transparent;
+  float: left;
+  height: 0;
+  margin-right: 6px;
+  margin-top: 2px;
+  width: 0;
+}
+
+.collapsible-header {
+  display: flex;
+  justify-content: space-between;
+}
+
+.collapsible.collapsed .content {
+  display: none;
+}
+
+.collapsible.collapsed .static .collapse-button {
+  border-left-color: #bbb;
+  margin-top: 2px;
+}
+
+.collapsible:not(.collapsed) .static .collapse-button {
+  border-top-color: #bbb;
+  margin-top: 6px;
+}

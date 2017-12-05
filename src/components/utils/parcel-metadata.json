@@ -1,0 +1,25 @@
+{
+  "contact": {
+    "name": "",
+    "email": "",
+    "im": "",
+    "url": ""
+  },
+
+  "main": "index.html",
+
+  "scene": {
+    "parcels": []
+  },
+
+  "policy": {
+    "contentRating": "E"
+  },
+
+  "tags": [],
+
+  "display": {
+    "title": "",
+    "favicon": ""
+  }
+}
