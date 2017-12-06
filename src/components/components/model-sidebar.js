@@ -98,8 +98,35 @@ export default class ModelSidebar extends React.Component {
       inserting: model // 🤔 state parameter name
     })
 
+    function getTransform (url) {
+      const objLoader = new THREE.OBJLoader()
+
+      return (
+        new Promise((resolve, reject) => {
+          objLoader.load(url, (obj) => {
+            const bbox = new THREE.Box3().setFromObject(obj);
+
+            // Make the largest dimensional component 2.0 meters
+            const size = 2.0 / bbox.size().length()
+            const scale = new THREE.Vector3(size, size, size)
+
+            // Place the object on the floor
+            const position = bbox.center()
+            position.y = bbox.min.y
+            position.multiplyScalar(-size)
+
+            resolve({
+              position, scale
+            })
+          })
+        })
+      )
+    }
+
+    const objUrl = format.root.url
     const files = []
-    fetch(format.root.url)
+
+    fetch(objUrl)
       .then(r => r.text())
       .then(body => {
         files.push({ data: btoa(body), path: `${name}.obj` })
@@ -113,6 +140,9 @@ export default class ModelSidebar extends React.Component {
         }
       })
       .then(() => {
+        return getTransform(objUrl)
+      })
+      .then((transform) => {
         assert(files.length > 0, 'No files ready to upload to IPFS')
 
         return fetch(`/api/ipfs`, {
@@ -132,7 +162,9 @@ export default class ModelSidebar extends React.Component {
             components: {
               title: `${model.displayName} by ${model.authorName} licensed under ${model.license.toLowerCase()}`,
               shadow: { cast: true, recieve: true },
-              'obj-model': { obj, mtl }
+              'obj-model': { obj, mtl },
+              position: transform.position,
+              scale: transform.scale,
             }
           });
 
