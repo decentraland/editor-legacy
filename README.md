@@ -45,3 +45,15 @@ npm run build
 ```
 
 Then load the server on `https://localhost:4444/`.
+
+## Deployment
+
+To deploy to `editor.decentraland.org`:
+
+ * `ssh ubuntu@editor.decentraland.org`
+ * `cd editor`
+ * `git pull`
+ * `cd ..`
+ * `sudo docker-compose down && sudo docker-compose build && sudo docker-compose up -d`
+
+Branches are auto deployed to `editor.decentraland.today/branch/<branchname>/index.html`
