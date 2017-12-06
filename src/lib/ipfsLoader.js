@@ -24,7 +24,6 @@ function loadScene (name) {
   return fetchJSON('/api/name/' + name)
     .then(objectHash => {
       if (!objectHash.ok) {
-        console.log(objectHash.error)
         return defaultData
       }
       ipnsName = objectHash.url.ipns
@@ -35,7 +34,6 @@ function loadScene (name) {
         return objectData
       }
       if (!objectData.ok) {
-        console.log(objectData.error)
         return defaultData
       }
       return { scene: objectData.data, ipfs: ipfsName, ipns: ipnsName}

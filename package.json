@@ -28,6 +28,7 @@
     "immutable": "^3.8.2",
     "invariant": "^2.2.2",
     "lodash.debounce": "^4.0.6",
+    "node-fetch": "^1.7.3",
     "prop-types": "^15.6.0",
     "query-string": "^5.0.1",
     "react": "^15.3.0",
@@ -43,9 +44,11 @@
     "reselect": "^3.0.1",
     "simple-peer": "^8.1.1",
     "tape": "^4.8.0",
+    "tempy": "^0.2.1",
     "three": "^0.88.0",
     "web3": "^1.0.0-beta.26",
-    "web3-provider-engine": "git+https://github.com/decentraland/provider-engine.git#releases"
+    "web3-provider-engine": "git+https://github.com/decentraland/provider-engine.git#releases",
+    "tempy": "^0.2.1"
   },
   "devDependencies": {
     "autoprefixer": "^6.3.7",

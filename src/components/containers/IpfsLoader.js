@@ -80,9 +80,6 @@ class IPFSLoader extends React.Component {
   }
 
   renderContent() {
-    console.log(this.state)
-    console.log(this.props)
-
     const { ipfs, ethereum } = this.props
 
     if (ethereum.error) {

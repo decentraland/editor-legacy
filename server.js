@@ -1,13 +1,14 @@
 const path = require('path')
 const express = require('express')
-const webpack = require('webpack');
+const webpack = require('webpack')
 const bodyParser = require('body-parser')
 const cors = require('cors');
 const proxy = require('express-http-proxy')
 const assert = require('assert')
 const Scene = require('./server/scene')
-const webpackConfig = require('./webpack.config');
-const compiler = webpack(webpackConfig);
+const webpackConfig = require('./webpack.config')
+const compiler = webpack(webpackConfig)
+const { search, download } = require('./server/google-poly')
 
 const app = express()
 const indexPath = path.join(__dirname, 'public', 'index.html')
@@ -16,11 +17,11 @@ const landingPath = path.join(__dirname, 'public', 'landing.html')
 if (process.env.NODE_ENV !== 'production') {
   app.use(require('webpack-dev-middleware')(compiler, {
     noInfo: true, publicPath: webpackConfig.output.publicPath
-  }));
+  }))
 
   app.use(require('webpack-hot-middleware')(compiler, {
     log: console.log, path: '/__webpack_hmr', heartbeat: 10 * 1000
-  }));
+  }))
 }
 
 app.use('/api', proxy('localhost:3000', {
@@ -62,6 +63,20 @@ app.get('/edit', function (req, res) {
 })
 
 app.listen(port)
+
+app.get('/model/search', function (req, res) {
+  const query = req.query.q
+
+  search(query)
+    .then((results) => res.json(results))
+})
+
+app.get('/model/get-url', function (req, res) {
+  const id = req.query.id
+
+  download(id)
+    .then((url) => res.json({url}))
+})
 
 // All the scenes we are acting as a signalhub for
 var scenes = {}
