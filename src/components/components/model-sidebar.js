@@ -127,9 +127,11 @@ export default class ModelSidebar extends React.Component {
       results = <div className='searching'><i className='fa fa-spinner' aria-hidden='true'></i></div>
     } else if (this.state.results) {
       results = this.state.results.assets.map((r) => {
+        const id = r.name.split('/')[1]
+
         return (
           <div className='model-result' onClick={() => this.insertModel(r.id)}>
-            <h3><a onClick={(e) => {e.preventDefault(); this.insertModel(r.id)}} href={`https://poly.google.com/view/${r.id}`}>{r.displayName}</a></h3>
+            <h3><a onClick={(e) => {e.preventDefault(); this.insertModel(r.id)}} href={`https://poly.google.com/view/${id}`}>{r.displayName}</a></h3>
             <p>By {truncate(r.authorName)}</p>
             <img src={r.thumbnail.url} />
           </div>
