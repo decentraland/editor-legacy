@@ -5,20 +5,26 @@ import PropTypes from 'prop-types';
 import ComponentsContainer from './ComponentsContainer';
 import Events from '../../lib/Events';
 import path from 'path'
+import assert from 'assert'
 
 import './model-sidebar.less'
 
 const API_KEY = 'AIzaSyB-QXwaKpNUKK5w349BT4DJziLGymwiYTs'
+const EDITOR_URL = process.env.REACT_APP_EDITOR_URL || process.env.EDITOR_URL || 'https://editor.decentraland.org';
 
 function truncate (string, length = 50) {
   return string.length < length ? string : string.slice(0, length).replace(/\s$/, '') + '...'
 }
 
+function toSlug (string) {
+  return string.toLowerCase().replace(/[^a-z]+/g, '-').replace(/^-*/, '').replace(/-*$/, '')
+}
+
 export default class ModelSidebar extends React.Component {
-  static propTypes = {
-    entity: PropTypes.object,
-    visible: PropTypes.bool
-  };
+  // static propTypes = {
+  //   entity: PropTypes.object,
+  //   visible: PropTypes.bool
+  // };
 
   constructor (props) {
     super(props);
@@ -27,6 +33,7 @@ export default class ModelSidebar extends React.Component {
       entity: props.entity,
       query: 'forklift',
       searching: true,
+      inserting: false,
       results: {}
     };
   }
@@ -36,11 +43,9 @@ export default class ModelSidebar extends React.Component {
       searching: true
     })
 
-    fetch(`https://poly.googleapis.com/v1/assets?keywords=${encodeURIComponent(this.state.query)}&key=${API_KEY}`)
+    fetch(`https://poly.googleapis.com/v1/assets?format=OBJ&pageSize=50&keywords=${encodeURIComponent(this.state.query)}&key=${API_KEY}`)
       .then((r) => r.json())
       .then((results) => {
-        console.log(results)
-
         this.setState({results, searching: false})
       })
   }
@@ -80,33 +85,63 @@ export default class ModelSidebar extends React.Component {
     }
   }
 
-  insertModel (id) {
-    fetch(`/model/get-url?id=${id}`)
-      .then((r) => r.json())
-      .then((r) => {
-        return fetch('/api/reupload', {
-          method: 'POST', 
-          headers: { 'Content-type': 'application/json' },
-          body: JSON.stringify({ url: r.url })
-        })
+  insertModel (model) {
+    const format = model.formats.find(f => f.formatType === 'OBJ')
+    assert(format, 'Could not find OBJ model')
+
+    const name = toSlug(model.displayName)
+    assert(name.length > 0, 'Invalid model name')
+
+    const mtlUrl = format.resources[0] && format.resources[0].url
+
+    this.setState({
+      inserting: model // 🤔 state parameter name
+    })
+
+    const files = []
+    fetch(format.root.url)
+      .then(r => r.text())
+      .then(body => {
+        files.push({ data: btoa(body), path: `${name}.obj` })
+
+        if (mtlUrl) {
+          return fetch(mtlUrl)
+            .then(r => r.text())
+            .then(body => {
+              files.push({ data: btoa(body), path: `${name}.mtl` })
+            })
+        }
       })
-      .then((r) => r.json())
-      .then((res) => {
-        console.log('Got...')
-        console.dir(res)
+      .then(() => {
+        assert(files.length > 0, 'No files ready to upload to IPFS')
 
-        const mtlPath = res.files.find((f) => path.extname(f).toLowerCase() === '.mtl')
-        const objPath = res.files.find((f) => path.extname(f).toLowerCase() === '.obj')
+        return fetch(`/api/ipfs`, {
+          method: 'POST',
+          headers: { 'Content-type': 'application/json' },
+          body: JSON.stringify({ files: files })
+        }).then(res => res.json()).then(res => {
+          if (!res.success) {
+            throw new Error(res.error)
+          }
 
-        const mtl = mtlPath && `https://gateway.ipfs.io/ipfs/${res.url}/${mtlPath}`
-        const obj = objPath && `https://gateway.ipfs.io/ipfs/${res.url}/${objPath}`
+          const obj = `https://gateway.ipfs.io/ipfs/${res.url}/${name}.obj`
+          const mtl = mtlUrl && `https://gateway.ipfs.io/ipfs/${res.url}/${name}.mtl`
 
-        console.log({mtl, obj})
+          Events.emit('createnewentity', {
+            element: 'a-obj-model', 
+            components: {
+              title: `${model.displayName} by ${model.authorName} licensed under ${model.license.toLowerCase()}`,
+              shadow: { cast: true, recieve: true },
+              'obj-model': { obj, mtl }
+            }
+          });
 
-        Events.emit('createnewentity', {element: 'a-obj-model', components: {
-            shadow: { cast: true, recieve: true },
-            'obj-model': { obj, mtl }
-          }});
+          this.setState({
+            inserting: false
+          })
+
+          return res.url
+        })
       })
   }
 
@@ -123,15 +158,17 @@ export default class ModelSidebar extends React.Component {
 
     var results
 
-    if (this.state.searching) {
+    if (this.state.inserting) {
+      results = <div className='inserting'>Inserting {this.state.inserting.displayName}...</div>
+    } else if (this.state.searching) {
       results = <div className='searching'><i className='fa fa-spinner' aria-hidden='true'></i></div>
     } else if (this.state.results) {
       results = this.state.results.assets.map((r) => {
         const id = r.name.split('/')[1]
 
         return (
-          <div className='model-result' onClick={() => this.insertModel(r.id)}>
-            <h3><a onClick={(e) => {e.preventDefault(); this.insertModel(r.id)}} href={`https://poly.google.com/view/${id}`}>{r.displayName}</a></h3>
+          <div className='model-result'>
+            <h3><a onClick={(e) => {e.preventDefault(); this.insertModel(r)}} href={`https://poly.google.com/view/${id}`}>{r.displayName}</a></h3>
             <p>By {truncate(r.authorName)}</p>
             <img src={r.thumbnail.url} />
           </div>
