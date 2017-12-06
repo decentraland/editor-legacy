@@ -141,7 +141,9 @@ export default class ModelSidebar extends React.Component {
       return (
         <div>
           <div className='model-search'>
-            <img src='/img/poly.png' /> Google Poly search
+            <h2>
+              <img src='/img/poly.png' /> Google Poly search
+            </h2>
 
             <div className="search">
               <input 
