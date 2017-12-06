@@ -1,3 +1,5 @@
+/* globals Element */
+
 import test from 'tape'
 import utils from '../src/lib/utils'
 
@@ -12,7 +14,6 @@ test('createScene', (t) => {
       </a-billboard>`
 
   const xml = utils.createScene(element)
-  console.log(xml)
 
   // Returns string
   t.ok(xml)
@@ -30,6 +31,32 @@ test('createScene', (t) => {
 
   // No data-uuid
   t.ok(!xml.match(/data-uuid/))
+
+  t.end()
+})
+
+test('parse parcel', (t) => {
+  const xml = `
+      <html>
+        <body>
+          <a-scene>
+            <a-box />
+            <a-sphere />
+          </a-scene>
+        </body>
+      </html>
+  `
+
+  const el = utils.parseParcel(xml)
+  t.ok(el instanceof Element, 'returns element')
+
+  const box = el.querySelector('a-box')
+  t.ok(box)
+  t.equal(box.childNodes.length, 0)
+
+  const sphere = el.querySelector('a-sphere')
+  t.ok(sphere)
+  t.equal(sphere.parentNode.nodeName, 'a-scene')
 
   t.end()
 })
