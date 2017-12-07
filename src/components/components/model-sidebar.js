@@ -145,7 +145,7 @@ export default class ModelSidebar extends React.Component {
       .then((transform) => {
         assert(files.length > 0, 'No files ready to upload to IPFS')
 
-        return fetch(`/api/ipfs`, {
+        return fetch(`${EDITOR_URL}/api/ipfs`, {
           method: 'POST',
           headers: { 'Content-type': 'application/json' },
           body: JSON.stringify({ files: files })
