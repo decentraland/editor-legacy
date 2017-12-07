@@ -1,4 +1,6 @@
-import * as THREE from 'three'
+/* globals THREE */
+
+// import * as THREE from 'three'
 import assert from 'assert'
 
 /*

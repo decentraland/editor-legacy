@@ -2,6 +2,9 @@ import test from 'tape'
 import ParcelBoundary from '../src/lib/parcel-boundary'
 import * as THREE from 'three'
 
+// Stupid global three
+global.THREE = THREE
+
 test('empty object3d', (t) => {
   const parcels = [new THREE.Vector2(0, 0)]
   const obj = new THREE.Object3D()
