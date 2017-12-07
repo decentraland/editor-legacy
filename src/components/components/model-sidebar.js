@@ -111,7 +111,7 @@ export default class ModelSidebar extends React.Component {
             const scale = new THREE.Vector3(size, size, size)
 
             // Place the object on the floor
-            const position = bbox.center()
+            const position = bbox.getCenter()
             position.y = bbox.min.y
             position.multiplyScalar(-size)
 

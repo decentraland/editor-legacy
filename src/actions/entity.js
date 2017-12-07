@@ -13,8 +13,8 @@ export function importEntity (entity, node) {
   var clone = entity.cloneNode()
 
   // <a-entity /> => <a-entity></a-entity>
-  var parser = new DOMParser();
-  var doc = parser.parseFromString(node.outerHTML, 'text/xml');
+  var parser = new DOMParser()
+  var doc = parser.parseFromString(node.outerHTML, 'text/xml')
 
   Array.from(doc.querySelector('a-scene').children).forEach(child => {
     temp.appendChild(child)
