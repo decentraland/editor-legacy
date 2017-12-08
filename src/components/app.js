@@ -15,15 +15,12 @@ import './app.less'
 // import { store } from './store'
 
 import HomePage from './pages/HomePage'
-import SceneList from './pages/SceneList'
+import SceneList from './pages/scene-list'
 import NewScene from './pages/new-scene'
+import ShowScene from './pages/show-scene'
 
-// Gross
-import * as three from 'three'
-window.THREE = three
-
-class ShowScene {
-
+const EditScene = () => {
+  return <b>boop</b>
 }
 
 const App = () => {
@@ -33,8 +30,8 @@ const App = () => {
         <Route exact path='/' component={HomePage} />
         <Route exact path='/scenes' component={SceneList} />
         <Route path='/scenes/new' component={NewScene} />
-        <Route path='/scene/:ipfs' component={ShowScene} />
-        <Route path='/scene/parcel' component={ShowScene} />
+        <Route path='/scenes/:ipfshash' component={ShowScene} />
+        <Route path='/scenes/:ipfshash/edit' component={EditScene} />
       </div>
     </Router>
   )

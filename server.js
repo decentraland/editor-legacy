@@ -53,7 +53,7 @@ app.use(express.static(path.join(__dirname, 'public')))
 app.use(cors())
 app.use('/dist', express.static(path.join(__dirname, 'dist')))
 
-const paths = ['/', '/scenes', '/scene/edit', '/scenes/new', '/scene/:ipfshash']
+const paths = ['/', '/scenes', '/scenes/:ipfshash/edit', '/scenes/new', '/scenes/:ipfshash']
 
 // React routes
 paths.forEach(path => {

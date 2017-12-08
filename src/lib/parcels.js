@@ -14,7 +14,5 @@ export default function getParcelsFromURL () {
     result.push([components[2], components[4]])
   })
 
-  console.log(result)
-
   return result
 }

@@ -1,12 +1,10 @@
-/* globals localStorage */
-
 import React from 'react'
 import { Link } from 'react-router-dom'
 import Header from './Header'
 import Tabs from './tabs'
 import store from '../../lib/store'
 
-require('./SceneList.css')
+require('./scene-list.css')
 
 export default class SceneList extends React.Component {
   constructor () {
@@ -24,7 +22,12 @@ export default class SceneList extends React.Component {
   render () {
     const scenes = (this.state.scenes.length > 0)
       ? this.state.scenes.map((scene) => {
-        return <li><Link to={`/scenes/${scene}`}>{scene}</Link></li>
+        return (
+          <li>
+            <Link to={`/scenes/${scene.hash}`}>{scene.title}</Link>
+            {scene.parcels && <small>Parcel {scene.parcels.join(' and ')}</small>}
+          </li>
+        )
       })
       : <li><small>No scenes</small></li>
 
@@ -43,10 +46,6 @@ export default class SceneList extends React.Component {
           </p>
 
           <ul>{ scenes }</ul>
-
-          <p>
-            &raquo; <Link to='/scenes/new'>New Scene</Link>
-          </p>
         </div>
       </section>
     )

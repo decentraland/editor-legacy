@@ -35,7 +35,7 @@ export default class NewScene extends React.Component {
           <Header />
           <Tabs />
 
-          <h1 className='title'>New Parcel</h1>
+          <h1 className='title'>Create Scene</h1>
 
           <p className='subtitle'>Edit your prototypes for Decentraland's world, in real-time.</p>
 
