@@ -6,7 +6,8 @@ import ReactModal from 'react-modal'
 
 import Events from '../../lib/Events'
 import Header from '../components/Header'
-import Footer from '../components/Footer'
+// import Footer from '../components/Footer'
+import Tabs from './tabs'
 
 class PreviewParcels extends React.Component {
   componentDidMount () {
@@ -100,20 +101,12 @@ export default class NewScene extends React.Component {
   }
 
   render () {
-    return <ReactModal isOpen={this.state.open} style={
-      {
-        overlay: {
-          zIndex: 10000
-        },
-        content: {
-          background: '#2b2b2b',
-          color: '#ccc'
-        }
-      }
-    }>
-      <div style={{ display: 'flex', flexDirection: 'column', height: '100%', justifyContent: 'space-between' }}>
+    return (
+      <section className='overlay'>
         <Header />
-        <div>
+        <Tabs />
+
+        <div className='new-scene'>
           <h1>Create a scene for your {this.props.parcels.length} parcels</h1>
 
           <PreviewParcels parcels={this.props.parcels} />
@@ -122,8 +115,7 @@ export default class NewScene extends React.Component {
             <button onClick={() => this.createScene()}>Start Creating</button>
           </p>
         </div>
-        <Footer />
-      </div>
-    </ReactModal>
+      </section>
+    )
   }
 }

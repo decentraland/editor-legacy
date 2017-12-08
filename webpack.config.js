@@ -1,59 +1,64 @@
-var path = require('path');
-var childProcess = require('child_process');
-var webpack = require('webpack');
+var path = require('path')
+var childProcess = require('child_process')
+var webpack = require('webpack')
 
 // Add HMR for development environments only.
-var entry = ['./src/components/Main.js'];
+var entry = {
+  editor: ['./src/components/Main.js'],
+  app: ['./src/components/app.js']
+}
+
 if (process.env.NODE_ENV !== 'production') {
-  entry = [
-    'webpack-hot-middleware/client?path=/__webpack_hmr&timeout=20000&reload=true'
-  ].concat(entry);
+  // entry = [
+  //   'webpack-hot-middleware/client?path=/__webpack_hmr&timeout=20000&reload=true'
+  // ].concat(entry)
 }
 
 function getBuildTimestamp () {
   function pad2 (value) {
-    return ('0' + value).slice(-2);
+    return ('0' + value).slice(-2)
   }
-  var date = new Date();
+  var date = new Date()
   var timestamp = [
     pad2(date.getUTCDate()),
-    pad2(date.getUTCMonth()+1),
+    pad2(date.getUTCMonth() + 1),
     date.getUTCFullYear()
   ]
-  return timestamp.join('-');
+  return timestamp.join('-')
 }
 
-var commitHash = childProcess.execSync('git rev-parse HEAD').toString();
+var commitHash = childProcess.execSync('git rev-parse HEAD').toString()
 
 // Minification.
 var plugins = [
   new webpack.DefinePlugin({
-    'process.env':{
+    'process.env': {
       'NODE_ENV': JSON.stringify(process.env.NODE_ENV)
     },
     VERSION: JSON.stringify(require('./package.json').version),
     BUILD_TIMESTAMP: JSON.stringify(getBuildTimestamp()),
     COMMIT_HASH: JSON.stringify(commitHash)
-  }),
-];
+  })
+]
+
 if (process.env.NODE_ENV === 'production') {
   plugins.push(new webpack.optimize.UglifyJsPlugin({
     compress: {warnings: false}
-  }));
+  }))
 } else {
   // Development
-  plugins.push(new webpack.NamedModulesPlugin());
-  plugins.push(new webpack.HotModuleReplacementPlugin());
-  plugins.push(new webpack.NoEmitOnErrorsPlugin());
+  plugins.push(new webpack.NamedModulesPlugin())
+  plugins.push(new webpack.HotModuleReplacementPlugin())
+  plugins.push(new webpack.NoEmitOnErrorsPlugin())
 }
 
 // dist/
-var filename = 'aframe-inspector.js';
-var outPath = 'dist';
+let filename = '[name].js'
+var outPath = 'dist'
 if (process.env.AFRAME_DIST) {
-  outPath = 'dist';
+  outPath = 'dist'
   if (process.env.NODE_ENV === 'production') {
-    filename = 'aframe-inspector.min.js';
+    filename = '[name].min.js'
   }
 }
 

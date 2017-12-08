@@ -8,8 +8,8 @@ const webpackConfig = require('./webpack.config')
 const compiler = webpack(webpackConfig)
 
 const app = express()
-const indexPath = path.join(__dirname, 'public', 'index.html')
-const landingPath = path.join(__dirname, 'public', 'landing.html')
+const editorPath = path.join(__dirname, 'public', 'editor.html')
+const appPath = path.join(__dirname, 'public', 'app.html')
 
 if (process.env.NODE_ENV !== 'production') {
   app.use(require('webpack-dev-middleware')(compiler, {
@@ -52,9 +52,19 @@ app.use(express.static(path.join(__dirname, 'public')))
 
 app.use(cors())
 app.use('/dist', express.static(path.join(__dirname, 'dist')))
-app.get('/edit', function (req, res) {
-  // const parcels = req.query.parcels
-  res.sendFile(indexPath)
+
+const paths = ['/', '/scenes', '/scene/edit', '/scenes/new', '/scene/:ipfshash']
+
+// React routes
+paths.forEach(path => {
+  app.get(path, (req, res) => {
+    res.sendFile(appPath)
+  })
+})
+
+// Editor
+app.get('/edit', (req, res) => {
+  res.sendFile(editorPath)
 })
 
 app.listen(port)

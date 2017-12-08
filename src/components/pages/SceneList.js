@@ -3,7 +3,7 @@
 import React from 'react'
 import { Link } from 'react-router-dom'
 import Header from './Header'
-import Tabs from './Tabs'
+import Tabs from './tabs'
 import store from '../../lib/store'
 
 require('./SceneList.css')

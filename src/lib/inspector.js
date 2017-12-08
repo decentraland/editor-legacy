@@ -2,7 +2,6 @@ var Events = require('./Events');
 var Viewport = require('./viewport/index.js');
 var ShaderLoader = require('./shaderloader.js');
 var Shortcuts = require('./shortcuts.js');
-import {GLTFExporter} from './vendor/GLTFExporter';
 
 function Inspector () {
 

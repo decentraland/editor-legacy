@@ -27,7 +27,7 @@ import '../styles/main.less';
 import IPFSLoader from './containers/IpfsLoader'
 import IPFSSaveScene from './containers/IpfsSaveScene'
 import PublishParcels from './containers/PublishParcels'
-import NewScene from './containers/NewScene'
+// import NewScene from './containers/NewScene'
 import Patch from '../../vendor/patch'
 import Apply from '../../vendor/apply'
 import WebrtcClient from '../lib/webrtc-client'
@@ -37,10 +37,6 @@ import { getParcelArray, createScene, parseParcel } from '../lib/utils'
 
 // Debugging...
 const MULTIUSER_ENABLED = false
-
-import HomePage from './pages/HomePage'
-import SceneList from './pages/SceneList'
-import SceneNew from './pages/NewScene'
 
 var webrtcClient = new WebrtcClient(getSceneName())
 
@@ -244,7 +240,7 @@ export default class Main extends React.Component {
     var modal
 
     if (this.isNewScene) {
-      modal = <NewScene parcels={this.parcels} />
+      // modal = <NewScene parcels={this.parcels} />
     } else if (this.state.loading) {
       modal = <IPFSLoader reportParcel={this.loadParcel}/>
     } else if (this.state.saveScene) {

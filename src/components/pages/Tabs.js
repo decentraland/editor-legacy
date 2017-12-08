@@ -1,14 +1,16 @@
 import React from 'react'
-import { Link } from 'react-router-dom'
+import { NavLink } from 'react-router-dom'
 
 require('./Tabs.css')
 
-export default function Tabs () {
-  return (
-    <ul className='tabs'>
-      <li><Link to='/'>Home</Link></li>
-      <li><Link to='/scenes'>My Scenes</Link></li>
-      <li><Link to='/scenes/new'>Create Scene</Link></li>
-    </ul>
-  )
+export default class Tabs extends React.Component {
+  render () {
+    return (
+      <ul className='tabs'>
+        <li><NavLink exact activeClassName='active' to='/'>Home</NavLink></li>
+        <li><NavLink exact activeClassName='active' to='/scenes'>My Scenes</NavLink></li>
+        <li><NavLink exact activeClassName='active' to='/scenes/new'>Create Scene</NavLink></li>
+      </ul>
+    )
+  }
 }

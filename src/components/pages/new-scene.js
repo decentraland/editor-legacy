@@ -1,11 +1,11 @@
 import React from 'react'
 import { Link } from 'react-router-dom'
 import Header from './Header'
-import Tabs from './Tabs'
+import Tabs from './tabs'
 import getParcelsFromURL from '../../lib/parcels'
 import PreviewParcels from './parcel-preview'
 
-require('./NewScene.css')
+import './new-scene.css';
 
 export default class NewScene extends React.Component {
   constructor () {

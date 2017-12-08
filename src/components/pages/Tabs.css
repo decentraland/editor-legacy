@@ -20,7 +20,7 @@
     }
   }
 
-  li:first-child a{
+  a.active{
     border-bottom-color: white;
   }
 }
