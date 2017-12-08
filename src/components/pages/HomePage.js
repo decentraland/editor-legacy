@@ -1,5 +1,5 @@
 import React from 'react'
-import Header from './Header'
+import Header from './header'
 import Tabs from './tabs'
 
 require('./HomePage.css')

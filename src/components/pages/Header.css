@@ -1,11 +1,4 @@
 .navbar {
-  max-width: 1170px;
-  padding: 0 20px;
-  margin-right: auto;
-  margin-left: auto;
-  border-radius: 0;
-  margin-bottom: 0;
-  background-color: transparent;
   color: #232323;
   height: 80px;
 
@@ -14,12 +7,14 @@
   }
 
   .navbar-logo {
-    padding: 20px 0;
     float: left;
-    display: block;
+    display: flex;
+    flex-direction: row;
+    position: relative;
+    left: -8px;
   }
 
-  .navbar-logo > h1 {
+  .navbar-logo h1 {
     margin: 0 10px;
     font-size: 18px;
     line-height: 50px;
@@ -42,6 +37,7 @@
   }
 
   .nav.navbar-nav li {
+    list-style: none;
     float: left;
   }
 

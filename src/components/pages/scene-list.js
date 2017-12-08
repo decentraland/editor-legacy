@@ -1,6 +1,6 @@
 import React from 'react'
 import { Link } from 'react-router-dom'
-import Header from './Header'
+import Header from './header'
 import Tabs from './tabs'
 import store from '../../lib/store'
 
@@ -38,11 +38,11 @@ export default class SceneList extends React.Component {
 
         <div className='scene-list'>
           <h1>
-            My Scenes
+            Scenes
           </h1>
 
           <p>
-            Scene you have recently edited:
+            Scenes you have recently edited:
           </p>
 
           <ul>{ scenes }</ul>

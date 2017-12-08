@@ -48,7 +48,7 @@ if (process.env.NODE_ENV === 'production') {
 } else {
   // Development
   plugins.push(new webpack.NamedModulesPlugin())
-  plugins.push(new webpack.HotModuleReplacementPlugin())
+  // plugins.push(new webpack.HotModuleReplacementPlugin())
   plugins.push(new webpack.NoEmitOnErrorsPlugin())
 }
 
@@ -70,7 +70,7 @@ module.exports = {
   devServer: {
     contentBase: './dist',
     disableHostCheck: true,
-    hot: true
+    // hot: true
   },
   entry: entry,
   output: {

@@ -69,10 +69,6 @@ class IPFSLoader extends React.Component {
     }, 1000)
   }
 
-  intro() {
-    return <h1 key='1'>Welcome to the Decentraland Scene Editor!</h1>
-  }
-
   componentWillUpdate (nextProps) {
     if (!nextProps.ipfs.loading && !this.state.error) {
       setTimeout(() => this.dismiss(), 50)
@@ -84,7 +80,8 @@ class IPFSLoader extends React.Component {
 
     if (ethereum.error) {
       return <div className='errored uploadPrompt'>
-        { this.intro() }
+        <h3>Loading...</h3>
+
         <p>
           Error connecting to web3 or metamask.
         </p>
@@ -97,14 +94,12 @@ class IPFSLoader extends React.Component {
 
     if (ipfs.error || this.state.error) {
       return <div className='errored uploadPrompt'>
-        { this.intro() }
         Error loading scene! { ipfs.error || this.state.error }
       </div>
     }
 
     if (ipfs.loading) {
       return <div className='loading uploadPrompt'>
-        { this.intro() }
         <Loading />
         <h2>Loading scene...</h2>
       </div>
@@ -116,7 +111,6 @@ class IPFSLoader extends React.Component {
       content: { background: '#2b2b2b', color: '#ccc', height: '50%', top: '25%', marginLeft: '10%', marginRight: '10%' }
     }}>
       <div style={{ display: 'flex', flexDirection: 'column', height: '100%', justifyContent: 'space-between' }}>
-      <Header />
         { this.renderContent() }
         <Footer />
       </div>

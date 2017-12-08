@@ -63,18 +63,9 @@ export default class IPFSLoader extends React.Component {
       .catch(error => this.setState({ loading: false, error }))
   }
 
-  intro () {
-    return [
-      <h1 key='1'>Welcome to the Decentraland Scene Editor!</h1>,
-      <p key='2'>This editor allows real-time collaboration when working on A-Frame scenes. You can edit in real time a scene with other users while communicating through voice and text chat. All changes to the parcel you are editing are shared in real time with other users looking at the same scene. </p>,
-      <p key='3'>Support for sharing materials, textures, and models is in experimental stage.</p>
-    ]
-  }
-
   renderContent () {
     if (this.state.loading) {
       return <div className='loading uploadPrompt'>
-        { this.intro() }
         <Loading />
         <h2>Loading scene...</h2>
       </div>
@@ -82,7 +73,6 @@ export default class IPFSLoader extends React.Component {
 
     if (this.state.error) {
       return <div className='errored uploadPrompt'>
-        { this.intro() }
         Error loading scene! { this.state.error.toString() }
       </div>
     }
@@ -101,7 +91,6 @@ export default class IPFSLoader extends React.Component {
       }
     }>
       <div style={{ display: 'flex', flexDirection: 'column', height: '100%', justifyContent: 'space-between' }}>
-        <Header />
         { this.renderContent() }
         <Footer />
       </div>

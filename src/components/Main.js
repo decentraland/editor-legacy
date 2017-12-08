@@ -273,23 +273,11 @@ export default class Main extends React.Component {
 
 const App = () => {
   return (
-    <Router>
-      <div className='app'>
-        <Route exact path="/" component={HomePage}/>
-        <Route path="/scenes" component={SceneList}/>
-        <Route path="/scene/:name" component={Main}/>
-        <Route path='/scenes/new' component={SceneNew}/>
-      </div>
-    </Router>
+    <Provider store={store}>
+      <Main />
+    </Provider>
   )
 }
-
-// const App = () => process.env.NODE_ENV === 'production' ? (
-//   <Main />
-// ) : (
-//   <Provider store={store}>
-//   </Provider>
-// );
 
 (function init () {
   injectJS('https://ajax.googleapis.com/ajax/libs/webfont/1.6.16/webfont.js', function () {

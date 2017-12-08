@@ -1,0 +1,32 @@
+
+.show-scene{
+
+  dl{
+    border-top: 1px solid #ddd;
+
+    dt{
+      position: absolute;
+      font-size: 0.8em;
+      line-height: 1.5em;
+      padding: 8px 0;
+      color: #555;
+    }
+
+    dd{
+      margin: 0;
+      padding: 8px 0;
+      border-bottom: 1px solid #ddd;
+      padding-left: 240px;
+    }
+  }
+
+  iframe{
+    width: 800px;
+    height: 600px;
+  }
+
+  pre{
+    font-size: 0.8em;
+    color: #555;
+  }
+}

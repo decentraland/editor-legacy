@@ -1,6 +1,6 @@
 import React from 'react'
 
-require('./Header.css')
+import './header.css'
 
 export default function Header () {
   return (

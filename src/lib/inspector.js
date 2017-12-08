@@ -5,9 +5,6 @@ var Shortcuts = require('./shortcuts.js');
 
 function Inspector () {
 
-  this.exporters = {
-    gltf: new THREE.GLTFExporter()
-  };
   this.modules = {};
   this.on = Events.on;
   this.opened = false;

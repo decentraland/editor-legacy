@@ -1,31 +1,35 @@
+/* globals fetch */
+
 import React from 'react'
 import { Link } from 'react-router-dom'
-import Header from './Header'
+import Header from './header'
 import Tabs from './tabs'
 import getParcelsFromURL from '../../lib/parcels'
 import PreviewParcels from './parcel-preview'
 
-import './new-scene.css';
+import './show-scene.css'
 
 export default class NewScene extends React.Component {
   constructor () {
     super()
 
     this.state = {
-      name: '',
-      parcels: getParcelsFromURL()
+      loading: true
     }
   }
 
-  onInput (e) {
-    let name = e.target.value.toLowerCase().replace(/[^a-z0-9-]+/g, '')
-    this.setState({name})
+  componentDidMount () {
+    this.load()
   }
 
-  onSubmit (e) {
-    e.preventDefault()
+  load () {
+    fetch(`https://gateway.ipfs.io/ipfs/${this.ipfshash}/scene.json`)
+      .then(r => r.json())
+      .then(metadata => this.setState({ loading: false, metadata }))
 
-    this.props.history.push(`/scene/${this.state.name}`)
+    fetch(`https://gateway.ipfs.io/ipfs/${this.ipfshash}/parcel.aframe`)
+      .then(r => r.text())
+      .then(source => this.setState({ source }))
   }
 
   get ipfshash () {
@@ -37,22 +41,34 @@ export default class NewScene extends React.Component {
       return <section className='overlay'>Loading...</section>
     }
 
-    const metadata = {"contact":{"name":"Ben Nolan","email":"","im":"","url":"http://twitter.com/bnolan"},"main":"index.html","scene":{"parcels":["0,0","0,1"]},"policy":{"contentRating":"E"},"display":{"title":"Rocket ship","favicon":""},"communications":{"type":"webrtc","signalling":"https://signalling-01.decentraland.org"}}
+    const metadata = this.state.metadata
     const previewUrl = `https://gateway.ipfs.io/ipfs/${this.ipfshash}/parcel.aframe`
+
+    var editUrl
+
+    if (metadata.scene && metadata.scene.parcels) {
+      editUrl = `/edit?parcels=${metadata.scene.parcels.join(';')}`
+    } else {
+      editUrl = `/edit?hash=${this.ipfshash}`
+    }
 
     return (
       <section className='overlay'>
-        <div className='new-scene'>
+        <div className='show-scene'>
           <Header />
           <Tabs />
 
-          <h1 className='title'>{metadata.display && metadata.display.title}</h1>
+          <h1>{metadata.display && metadata.display.title}</h1>
 
-          <p className='subtitle'>By {metadata.contact && metadata.contact.name}</p>
+          <p>
+            <a href={editUrl}>Edit</a>
+          </p>
 
           <dl>
+            <dt>Preview URL</dt>
+            <dd><small><a href={previewUrl}>{previewUrl.slice(0, 40)}...</a></small></dd>
             <dt>Author Name</dt>
-            <dd>{metadata.contact && metadata.contact.name || 'anonymous'}</dd>
+            <dd><b>{metadata.contact && metadata.contact.name || 'anonymous'}</b></dd>
             <dt>Author Email</dt>
             <dd>{metadata.contact && metadata.contact.email || '-'}</dd>
             <dt>Author <abbr title='Instant messenger'>IM</abbr></dt>
@@ -65,7 +81,11 @@ export default class NewScene extends React.Component {
             <dd>{metadata.scene && metadata.scene.parcels.join(' and ')}</dd>
           </dl>
 
+          <h4>Debug Mode Preview</h4>
+
           <iframe src={previewUrl} />
+
+          { this.state.source && <div><h4>Source code</h4><pre><code>{this.state.source}</code></pre></div>}
         </div>
       </section>
     )
