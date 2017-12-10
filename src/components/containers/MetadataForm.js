@@ -28,12 +28,22 @@ class MetadataForm extends React.Component {
       loading: true,
       saving: false,
       valid: false,
-      invalidObjects: []
+      invalidObjects: [],
+      rendererStats: {
+        faces: '-',
+        vertices: '-'
+      }
     }
   }
 
   componentDidMount () {
     this.testBoundaries()
+
+    // Have to wait until all the grab handle UI has been removed before
+    // calculating
+    setTimeout(() => {
+      this.getRenderStats()
+    }, 100)
   }
 
   get object3D () {
@@ -198,9 +208,22 @@ class MetadataForm extends React.Component {
     return result
   }
 
-  render () {
+  getRenderStats () {
     const scene = document.querySelector('a-scene')
-    this.rendererStats = scene.renderer.info.render
+
+    // Fixme: Calculate this instead of hard code
+
+    this.setState({
+      rendererStats: {
+        faces: scene.renderer.info.render.faces - 1286,
+        vertices: scene.renderer.info.render.vertices - 3858
+      }
+    })
+  }
+
+  render () {
+    // const scene = document.querySelector('a-scene')
+    // this.rendererStats = scene.renderer.info.render
 
     const { geometryLimitError } = this.state
 
@@ -219,11 +242,11 @@ class MetadataForm extends React.Component {
           <div className='collapsible-content'>
             <div className='row'>
               <span className='text'>Faces</span>
-              <input type='text' className='string' value={this.rendererStats.faces} disabled />
+              <input type='text' className='string' value={this.state.rendererStats.faces} disabled />
             </div>
             <div className='row' style={{color: geometryLimitError ? 'red' : 'inherit'}}>
               <span className='text'>Vertices</span>
-              <input type='text' className='string' value={this.rendererStats.vertices} disabled />
+              <input type='text' className='string' value={this.state.rendererStats.vertices} disabled />
             </div>
             <div>
               <b>Parcels:</b>
