@@ -4,12 +4,14 @@ import { connect } from '../store'
 import Collapsible from '../Collapsible'
 import { getParcelArray, createScene } from '../../lib/utils'
 import { saveScene, updateManyParcelsMetadata } from '../sagas'
-import baseMetadata from '../utils/parcel-metadata'
+import * as parcelMetadata from '../utils/parcel-metadata'
 import { updateManyParcelsRequest } from '../actions'
 import PreviewParcels from '../components/preview-parcels'
 import assert from 'assert'
 import ethService from '../ethereum'
 import ParcelBoundary from '../../lib/parcel-boundary'
+
+const baseMetadata = parcelMetadata.metadata
 
 class MetadataForm extends React.Component {
   static getState(state) {
@@ -40,21 +42,19 @@ class MetadataForm extends React.Component {
 
   testBoundaries () {
     const parcels = getParcelArray()
-    console.log(parcels)
 
     const boundary = new ParcelBoundary(parcels, this.object3D)
     const valid = boundary.validate()
     const invalidObjects = boundary.invalidObjects
 
-    console.log(boundary, valid, invalidObjects)
     this.setState({
       valid, invalidObjects
     })
   }
 
-  renderMetaEditForm() {
+  renderMetaEditForm () {
     const { ipfs } = this.props
-    const meta = ipfs.metadata || this.state.meta
+    const meta = ipfs.metadata || this.state.meta || baseMetadata
 
     const formFromMeta = (metaObject) => Object.entries(metaObject).map(([key, value]) => {
       if (key !== 'preview') {
@@ -72,11 +72,11 @@ class MetadataForm extends React.Component {
       { value: 'land', label: 'land' },
       { value: 'decentraland', label: 'decentraland' },
       { value: 'parcel', label: 'parcel' }
-    ];
+    ]
 
     const getTags = (val) => {
-      this.setState({ tags: val.map(t => t.value) });
-    };
+      this.setState({ tags: val.map(t => t.value) })
+    }
 
     return (
       <div>
@@ -91,20 +91,12 @@ class MetadataForm extends React.Component {
           </Collapsible>
           <Collapsible>
             <div className='collapsible-header'>
-              <span className='entity-name'>Comunications</span>
-            </div>
-            <div className='collapsible-content'>
-              {formFromMeta(meta.communications)}
-            </div>
-          </Collapsible>
-          <Collapsible>
-            <div className='collapsible-header'>
               <span className='entity-name'>Policy</span>
             </div>
             <div className='collapsible-content'>
-              <div className="row">
+              <div className='row'>
                 <span className='text'>Content rating</span>
-                <input className="string" type="text" name="contentRating" defaultValue={meta.policy.contentRating} />
+                <input className='string' type='text' name='contentRating' defaultValue={meta.policy.contentRating} />
               </div>
             </div>
           </Collapsible>
@@ -122,14 +114,14 @@ class MetadataForm extends React.Component {
             </div>
             <div className='collapsible-content'>
               <Creatable
-                name="tags"
-                className="string"
+                name='tags'
+                className='string'
                 options={options}
                 onChange={getTags}
                 value={this.state.tags}
                 clearable
                 searchable
-                multi={true}
+                multi
               />
               { this.state.valid && (
                 <div className='meta-edit-buttons uploadPrompt'>
@@ -183,16 +175,12 @@ class MetadataForm extends React.Component {
 
     const { tags } = this.state
 
-    const metadata = Object.assign({}, baseMetadata, {
+    const result = Object.assign({}, baseMetadata, {
       contact: {
         name: event.target.name.value,
         email: event.target.email.value,
         im: event.target.im.value,
         url: event.target.url.value
-      },
-      communications: {
-        type: event.target.type.value,
-        signalling: event.target.signalling.value
       },
       display: {
         title: event.target.title.value,
@@ -207,21 +195,12 @@ class MetadataForm extends React.Component {
       tags
     })
 
-    // try {
-    //   this.checkGeometry(this.rendererStats);
-    // } catch (err) {
-    //   this.setState({ geometryLimitError: err.message });
-    //   console.log(err)
-    //   return;
-    // }
-
-    return metadata
-    // this.setState({ meta: metadata })
+    return result
   }
 
   render () {
-    const scene = document.querySelector('a-scene');
-    this.rendererStats = scene.renderer.info.render;
+    const scene = document.querySelector('a-scene')
+    this.rendererStats = scene.renderer.info.render
 
     const { geometryLimitError } = this.state
 

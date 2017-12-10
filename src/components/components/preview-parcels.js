@@ -33,7 +33,7 @@ export default class PreviewParcels extends React.Component {
     context.font = '12px sans-serif'
     context.textAlign = 'center'
 
-    const offset = bounds.center()
+    const offset = bounds.getCenter()
     context.translate(128 - this.size / 2 + offset.x * -this.size, 128 - this.size / 2 + offset.y * -this.size)
 
     var x, y
