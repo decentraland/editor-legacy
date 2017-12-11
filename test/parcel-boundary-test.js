@@ -31,6 +31,24 @@ test('box in range', (t) => {
   t.end()
 })
 
+test('valid with parcel far from origin', (t) => {
+  const parcels = [new THREE.Vector2(-100, 0)]
+  const geometry = new THREE.BoxGeometry(1, 1, 1)
+  const material = new THREE.MeshBasicMaterial({ color: 0xffff00 })
+  const mesh = new THREE.Mesh(geometry, material)
+  mesh.position.set(5, 5, 5)
+
+  const boundary = new ParcelBoundary(parcels, mesh)
+
+  // Offset was applied
+  t.ok(boundary.getBounds().min.equals(new THREE.Vector2(0, 0)))
+  t.ok(boundary.getBounds().max.equals(new THREE.Vector2(0, 0)))
+
+  // Validates
+  t.ok(boundary.validate())
+  t.end()
+})
+
 test('box out of range', (t) => {
   const parcels = [new THREE.Vector2(0, 0)]
   const geometry = new THREE.BoxGeometry(1, 1, 1)

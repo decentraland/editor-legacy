@@ -46,6 +46,13 @@ export default class ParcelBoundary {
 
     assert(object3D instanceof THREE.Object3D)
     this.object3D = object3D
+
+    // Translate to 0, 0
+    const bounds = this.getBounds()
+    const offset = bounds.min.multiplyScalar(-1)
+
+    // Apply correction
+    this.parcels.forEach(p => p.add(offset))
   }
 
   getBounds () {
@@ -55,12 +62,10 @@ export default class ParcelBoundary {
   getWorldBounds () {
     const b = this.getBounds()
 
-    return (
-      new THREE.Box3(
-        new THREE.Vector3(b.min.x * PARCEL_SIZE, -HEIGHT, b.min.y * PARCEL_SIZE),
-        new THREE.Vector3(
-          (b.max.x + 1) * PARCEL_SIZE, HEIGHT, (b.max.y + 1) * PARCEL_SIZE)
-      )
+    return new THREE.Box3(
+      new THREE.Vector3(b.min.x * PARCEL_SIZE, -HEIGHT, b.min.y * PARCEL_SIZE),
+      new THREE.Vector3(
+        (b.max.x + 1) * PARCEL_SIZE, HEIGHT, (b.max.y + 1) * PARCEL_SIZE)
     )
   }
 
@@ -90,9 +95,6 @@ export default class ParcelBoundary {
   }
 
   validate () {
-    // TODO: Fixme! The editor was impossible to use and this is a quick hack to allow users to continue editing
-    return true
-
     const bounds = this.getWorldBounds()
     const holes = this.getHoles()
 
