@@ -90,6 +90,9 @@ export default class ParcelBoundary {
   }
 
   validate () {
+    // TODO: Fixme! The editor was impossible to use and this is a quick hack to allow users to continue editing
+    return true
+
     const bounds = this.getWorldBounds()
     const holes = this.getHoles()
 
