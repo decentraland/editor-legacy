@@ -44,7 +44,7 @@ function ethereum(state = {}, action) {
     case types.connectWeb3.request:
       return { loading: true };
     case types.connectWeb3.success:
-      return { loading: false, success: true };
+      return { loading: false, success: true, network: action.network };
     case types.connectWeb3.failed:
       return { loading: false, error: action.error };
     default:

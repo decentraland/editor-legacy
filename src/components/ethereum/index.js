@@ -48,6 +48,10 @@ class Ethereum {
     return this.methods.balanceOf(this.address);
   }
 
+  async getNetwork() {
+    return this._web3.eth.net.getNetworkType();
+  }
+
   get address() {
     return this._address;
   }

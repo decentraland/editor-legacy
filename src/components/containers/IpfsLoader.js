@@ -63,8 +63,20 @@ class IPFSLoader extends React.Component {
     // and then fire JUST ONCE
 
     setTimeout(() => {
-      if (this.props.ethereum.success) {
+      const connected = this.props.ethereum.success
+      const isMainnet = connected && this.props.ethereum.network === 'main'
+
+      if (connected && isMainnet) {
+        this.setState({
+          loading: false,
+          error: 'Your MetaMask is currently set to mainnet!'
+        })
+        return
+      }
+
+      if (connected && !isMainnet) {
         this.props.actions.loadManyParcelRequest(coordinates)
+        return
       }
     }, 1000)
   }
@@ -98,7 +110,7 @@ class IPFSLoader extends React.Component {
     if (ipfs.error || this.state.error) {
       return <div className='errored uploadPrompt'>
         { this.intro() }
-        Error loading scene! { ipfs.error || this.state.error }
+        <p>Error loading scene! { ipfs.error || this.state.error }</p>
       </div>
     }
 
