@@ -1,9 +1,10 @@
 /* globals fetch */
 
-import React from 'react';
-import PropTypes from 'prop-types';
-import ComponentsContainer from './ComponentsContainer';
-import Events from '../../lib/Events';
+import React from 'react'
+import PropTypes from 'prop-types'
+import ComponentsContainer from './ComponentsContainer'
+import Events from '../../lib/Events'
+import URL from 'url'
 import path from 'path'
 import assert from 'assert'
 
@@ -20,6 +21,23 @@ function toSlug (string) {
   return string.toLowerCase().replace(/[^a-z]+/g, '-').replace(/^-*/, '').replace(/-*$/, '')
 }
 
+function fetcher (url) {
+  var reader = new FileReader()
+
+  return new Promise((resolve, reject) => {
+    reader.onload = () => {
+      var dataUrl = reader.result
+      var base64 = dataUrl.split(',')[1]
+      resolve(base64)
+    }
+
+    fetch(url)
+      .then(r => r.blob())
+      .then(blob => {
+        reader.readAsDataURL(blob)
+      })
+  })
+}
 export default class ModelSidebar extends React.Component {
   // static propTypes = {
   //   entity: PropTypes.object,
@@ -31,7 +49,7 @@ export default class ModelSidebar extends React.Component {
     this.state = {
       open: false,
       entity: props.entity,
-      query: 'forklift',
+      query: 'space shuttle',
       searching: true,
       inserting: false,
       results: {}
@@ -92,7 +110,7 @@ export default class ModelSidebar extends React.Component {
     const name = toSlug(model.displayName)
     assert(name.length > 0, 'Invalid model name')
 
-    const mtlUrl = format.resources[0] && format.resources[0].url
+    let hasMtl = false
 
     this.setState({
       inserting: model // 🤔 state parameter name
@@ -123,6 +141,9 @@ export default class ModelSidebar extends React.Component {
       )
     }
 
+    // Todo - do objUrl fetch using Promise.all instead
+    //   of seperate request
+    //   - merge files and uploads arrays
     const objUrl = format.root.url
     const files = []
 
@@ -131,13 +152,21 @@ export default class ModelSidebar extends React.Component {
       .then(body => {
         files.push({ data: btoa(body), path: `${name}.obj` })
 
-        if (mtlUrl) {
-          return fetch(mtlUrl)
-            .then(r => r.text())
-            .then(body => {
-              files.push({ data: btoa(body), path: `${name}.mtl` })
+        const uploads = format.resources.map((r) => {
+          return fetcher(r.url)
+            .then(data => {
+              let filename = r.relativePath
+
+              if (path.extname(filename).toLowerCase() === '.mtl') {
+                filename = `${name}.mtl`
+                hasMtl = true
+              }
+
+              files.push({ data, path: filename })
             })
-        }
+        })
+
+        return Promise.all(uploads)
       })
       .then(() => {
         return getTransform(objUrl)
@@ -155,7 +184,7 @@ export default class ModelSidebar extends React.Component {
           }
 
           const obj = `https://gateway.ipfs.io/ipfs/${res.url}/${name}.obj`
-          const mtl = mtlUrl && `https://gateway.ipfs.io/ipfs/${res.url}/${name}.mtl`
+          const mtl = hasMtl && `https://gateway.ipfs.io/ipfs/${res.url}/${name}.mtl`
 
           Events.emit('createnewentity', {
             element: 'a-obj-model', 
