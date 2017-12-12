@@ -23,7 +23,9 @@ export function* connectWeb3() {
     }
     if (!connected) throw new Error("Could not connect to web3");
 
-    yield put({ type: types.connectWeb3.success, web3Connected: true });
+    const network = yield call(async () => await ethService.getNetwork());
+
+    yield put({ type: types.connectWeb3.success, web3Connected: true, network });
   } catch (error) {
     yield put({ type: types.connectWeb3.failed, error: error.message });
   }
