@@ -28,7 +28,7 @@ export default class MtlWidget extends React.Component {
 
   constructor (props) {
     super(props);
-    this.state = {value: this.props.value || ''};
+    this.state = {uploading: false, value: this.props.value || ''};
   }
 
   componentDidMount () {
@@ -92,6 +92,8 @@ export default class MtlWidget extends React.Component {
   }
 
   uploadFile (mtlPath, files) {
+    this.setState({ uploading: true })
+
     return fetch(`${EDITOR_URL}/api/ipfs`, {
       method: 'POST',
       headers: { 'Content-type': 'application/json' },
@@ -103,15 +105,22 @@ export default class MtlWidget extends React.Component {
 
       const value = `https://gateway.ipfs.io/ipfs/${res.url}/${mtlPath}`
 
-      this.setState({value})
+      this.setState({ uploading: false, value})
       this.notifyChanged(value)
 
       return res.url
+    }).catch(err => {
+      alert(`Error uploading file, may be too large\n\n${err}`)
+      this.setState({ uploading: false })
     })
   }
 
   render () {
     let hint = 'Upload MTL';
+
+    if (this.state.uploading) {
+      return <span className='texture'>Uploading...</span>
+    }
 
     return (
       <span className='texture'>
