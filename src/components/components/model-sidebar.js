@@ -223,6 +223,8 @@ export default class ModelSidebar extends React.Component {
       results = <div className='inserting'>Inserting {this.state.inserting.displayName}...</div>
     } else if (this.state.searching) {
       results = <div className='searching'><i className='fa fa-spinner' aria-hidden='true'></i></div>
+    } else if (this.state.results && !this.state.results.assets) {
+      results = <div className='not-found'>Nothing found</div>
     } else if (this.state.results) {
       results = this.state.results.assets.map((r) => {
         const id = r.name.split('/')[1]
