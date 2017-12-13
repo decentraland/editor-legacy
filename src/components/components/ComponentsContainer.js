@@ -22,7 +22,7 @@ export default class ComponentsContainer extends React.Component {
     if (entity.isScene) {
       return (
         <div className='components'>
-          <MetadataForm getSceneHtml={this.props.getSceneHtml} />
+          <MetadataForm />
         </div>
       )
     }
