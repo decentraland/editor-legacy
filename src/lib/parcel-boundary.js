@@ -83,8 +83,8 @@ export default class ParcelBoundary {
         } else {
           result.push(
             new THREE.Box3(
-              new THREE.Vector3(b.min.x * PARCEL_SIZE, -HEIGHT, b.min.z * PARCEL_SIZE),
-              new THREE.Vector3(b.max.x * PARCEL_SIZE, HEIGHT, b.max.z * PARCEL_SIZE)
+              new THREE.Vector3(v.x * PARCEL_SIZE, -HEIGHT, v.y * PARCEL_SIZE),
+              new THREE.Vector3((v.x + 1) * PARCEL_SIZE, HEIGHT, (v.y + 1) * PARCEL_SIZE)
             )
           )
         }
@@ -109,6 +109,14 @@ export default class ParcelBoundary {
       let valid = true
       let bbox = new THREE.Box3().setFromObject(obj)
 
+      if (bbox.isEmpty()) {
+        return
+      }
+
+      if (!isFinite(bbox.size().length())) {
+        return
+      }
+
       // Must be in bounds
       if (!bounds.containsBox(bbox)) {
         valid = false
@@ -116,7 +124,7 @@ export default class ParcelBoundary {
 
       // Must not intersect with any holes
       holes.forEach((hole) => {
-        if (bounds.intersect(hole)) {
+        if (hole.intersectsBox(bbox)) {
           valid = false
         }
       })
