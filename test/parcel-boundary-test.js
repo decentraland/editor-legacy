@@ -53,6 +53,27 @@ test('box in range inside parent node not at origin', (t) => {
   t.end()
 })
 
+test('box not in range inside nested nodes', (t) => {
+  // This is normalized to 0,0
+  const parcels = [new THREE.Vector2(-50, 0)]
+  const geometry = new THREE.BoxGeometry(1, 1, 1)
+  const material = new THREE.MeshBasicMaterial({ color: 0xffff00 })
+  const mesh = new THREE.Mesh(geometry, material)
+  mesh.position.set(5, 5, 5)
+
+  const parent = new THREE.Object3D()
+  parent.position.set(-500, 0, 0)
+  parent.add(mesh)
+
+  const obj = new THREE.Object3D()
+  obj.add(parent)
+
+  const boundary = new ParcelBoundary(parcels, obj)
+
+  t.ok(!boundary.validate())
+  t.end()
+})
+
 test('valid with parcel far from origin', (t) => {
   const parcels = [new THREE.Vector2(-100, 0)]
   const geometry = new THREE.BoxGeometry(1, 1, 1)

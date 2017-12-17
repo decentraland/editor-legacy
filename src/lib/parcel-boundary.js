@@ -13,7 +13,7 @@ import assert from 'assert'
   The technique used it to generate a AABB around all the parcels, then
   test that the object3D fits inside the AABB.
 
-  If that test passes, we then iterate over the leaf nodes of the object3D
+  If that test passes, we then iterate over the child nodes of the object3D
   and check that the object3D does not collide with any of the 'holes'
   in the parcel boundary.
 
@@ -100,12 +100,7 @@ export default class ParcelBoundary {
 
     this.invalidObjects = []
 
-    this.object3D.traverse((obj) => {
-      if (obj.children.length > 0) {
-        // Only process leaf nodes
-        return
-      }
-
+    this.object3D.children.forEach((obj) => {
       let valid = true
       let bbox = new THREE.Box3().setFromObject(obj)
 
