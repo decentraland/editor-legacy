@@ -45,7 +45,7 @@ class IPFSLoader extends React.Component {
     if (!this.props.ethereum.success && newProps.ethereum.success) {
       const connected = newProps.ethereum.success
       const isMainnet = connected && newProps.ethereum.network === 'main'
-      console.log(isMainnet)
+      // Only needed while Editor is not used on mainnet
       if (isMainnet) {
         this.setState({
           loading: false,
@@ -54,11 +54,11 @@ class IPFSLoader extends React.Component {
         return
       }
 
-      this.parcelQuery()
+      this.loadParcels()
     }
   }
 
-  parcelQuery = () => {
+  loadParcels = () => {
       const query = queryString.parse(location.search)
 
       if (!query.parcels) {
@@ -72,11 +72,7 @@ class IPFSLoader extends React.Component {
       const parcels = query.parcels.split(';')
       const coordinatesArray = parcels.map(a => a.split(',')).map(a => ({x: a[0], y: a[1]}))
 
-      this.loadParcels(coordinatesArray)
-  }
-
-  loadParcels (coordinates) {
-    this.props.actions.loadManyParcelRequest(coordinates)
+      this.props.actions.loadManyParcelRequest(coordinatesArray)
   }
 
   intro() {
