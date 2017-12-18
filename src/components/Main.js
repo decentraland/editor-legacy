@@ -22,8 +22,6 @@ import '../styles/main.less';
 import IPFSLoader from './containers/IpfsLoader'
 import IPFSSaveScene from './containers/IpfsSaveScene'
 import PublishParcels from './containers/PublishParcels'
-import Patch from '../../vendor/patch'
-import Apply from '../../vendor/apply'
 import WebrtcClient from '../lib/webrtc-client'
 import { importEntity } from '../actions/entity';
 import { store } from './store'
@@ -113,51 +111,6 @@ export default class Main extends React.Component {
     var config = {attributes: true, childList: true, characterData: true};
     observer.observe(this.state.sceneEl, config);
     observer.observe(this.getRoot(), config);
-
-    // Watch for changes and stream over webrtc
-    var patcher = new Patch(window, this.getRoot(), (events) => {
-      webrtcClient.sendPatch(events)
-    })
-
-    var apply = new Apply(this.getRoot(), patcher);
-
-    webrtcClient.on('connect', (user) => {
-      console.log(user)
-    })
-
-    // Sent once a connection is established, sends the startedAt
-    // time of the other clients webrtc connection, so if we have
-    // a newer copy of the scene than the other user, we send them
-    // a snapshot
-    webrtcClient.on('hello', (packet) => {
-
-      // We started editing the scene first, so send a snapshot
-      // with all the data-uuids and current scene state
-      if (webrtcClient.startedAt < packet.startedAt) {
-        packet.user.send({
-          type: 'snapshot',
-          html: this.getRoot().innerHTML,
-          rootUUID: this.getRoot().getAttribute('data-uuid')
-        })
-      }
-    })
-
-    if (MULTIUSER_ENABLED) {
-      webrtcClient.on('snapshot', (packet) => {
-        console.log('Got snapshot...', packet.rootUUID)
-        this.loadParcel(packet.html, packet.rootUUID)
-      })
-
-      const parser = new DOMParser()
-
-      webrtcClient.on('patch', (packet) => {
-        const doc = parser.parseFromString(packet.patch, 'application/xml')
-        const message = doc.querySelector('patch')
-        apply.onMessage(message);
-      })
-    }
-
-    webrtcClient.connect()
 
     Events.on('opentexturesmodal', function (selectedTexture, textureOnClose) {
       this.setState({selectedTexture: selectedTexture, isModalTexturesOpen: true, textureOnClose: textureOnClose});
