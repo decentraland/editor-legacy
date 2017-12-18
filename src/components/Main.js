@@ -90,7 +90,7 @@ export default class Main extends React.Component {
     }
 
     Events.on('togglesidebar', event => {
-      console.log("Klikol som nanieco")
+      console.log("Clicked on something")
       if (event.which == 'all') {
         if (this.state.visible.scenegraph || this.state.visible.attributes) {
           this.state.visible.scenegraph = this.state.visible.attributes = false;
@@ -170,6 +170,7 @@ export default class Main extends React.Component {
     });
 
     Events.on('entitiesselected', entities => {
+      console.log("Setting multiple entities: ", entities)
       this.setState({multipleEntities: entities});
     });
 

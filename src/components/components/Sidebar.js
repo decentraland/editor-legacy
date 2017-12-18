@@ -50,15 +50,33 @@ export default class Sidebar extends React.Component {
       this.setState({entity: newProps.entity});
     }
 
+    if (!newProps.multipleEntities) return
+
+    if (!this.state.multipleEntities && newProps.multipleEntities && newProps.multipleEntities.length > 0) {
+      newProps.multipleEntities.forEach(entity => {
+        entity.addEventListener('componentchanged', this.componentChanged);
+        entity.addEventListener('componentinitialized', this.componentCreated);
+      })
+      this.setState({multipleEntities: newProps.multipleEntities})
+    }
+
     if (this.state.multipleEntities && this.state.multipleEntities.length !== newProps.multipleEntities.length) {
-      console.log(this.state.multipleEntities)
+      this.state.multipleEntities.forEach(entity => {
+        entity.removeEventListener('componentchanged', this.componentChanged);
+        entity.removeEventListener('componentinitialized', this.componentCreated);
+      })
+      newProps.multipleEntities.forEach(entity => {
+        entity.addEventListener('componentchanged', this.componentChanged);
+        entity.addEventListener('componentinitialized', this.componentCreated);
+      })
       this.setState({multipleEntities: newProps.multipleEntities})
     }
   }
 
   render () {
+    console.log("Sidebar props: ", this.props)
     const { entity, multipleEntities } = this.state;
-    console.log(multipleEntities)
+
     const visible = this.props.visible;
     if (entity && visible) {
       return (

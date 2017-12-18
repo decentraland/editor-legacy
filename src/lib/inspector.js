@@ -231,6 +231,10 @@ Inspector.prototype = {
       this.selectEntity(entity, false);
     });
 
+    Events.on('entitiesselected', entities => {
+      this.selectEntity(entities[entities.length - 1], false);
+    });
+
     Events.on('inspectormodechanged', active => {
       this.inspectorActive = active;
       this.sceneHelpers.visible = this.inspectorActive;

@@ -79,6 +79,7 @@ export default class SceneGraph extends React.Component {
       const element = this.state.options[i];
 
       if (shiftKey) {
+        found = true;
         console.log("Multiselecting")
         this.setState(prevState => {
           const multipleValues = prevState.multipleValues
@@ -88,10 +89,9 @@ export default class SceneGraph extends React.Component {
             console.log('Doesnt include, so adding')
             multipleValues.push(value)
             selectedUUIDs.push(value.object3D.uuid)
+            Events.emit('entitiesselected', multipleValues, true)
           }
 
-          Events.emit('entitiesselected', multipleValues, true)
-          found = true;
           return {
             multipleValues,
             selectedUUIDs
@@ -110,7 +110,7 @@ export default class SceneGraph extends React.Component {
     }
 
     if (!found) {
-      this.setState({value: null, selectedIndex: -1});
+      this.setState({value: null, selectedIndex: -1, multipleValues: [], selectedUUIDs: []});
     }
     ga('send', 'event', 'SceneGraph', 'selectEntity');
   }

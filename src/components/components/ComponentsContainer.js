@@ -19,7 +19,7 @@ export default class ComponentsContainer extends React.Component {
 
   render () {
     const { entity, multipleEntities } = this.props;
-
+    //console.log(multipleEntities)
     if (multipleEntities) {
       return (
         <div className='components'>
