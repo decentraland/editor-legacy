@@ -41,8 +41,10 @@ export default class SceneGraph extends React.Component {
     super(props);
     this.state = {
       value: this.props.value || '',
+      multipleValues: [],
       options: [],
       selectedIndex: -1,
+      selectedUUIDs: [],
       filterText: '',
       tab: 'outliner'
     };
@@ -60,18 +62,45 @@ export default class SceneGraph extends React.Component {
       if (self) { return; }
       this.setValue(entity);
     });
+
+    // Events.on('entitieselected', (entities, self) => {
+    //   if (self) { return; }
+    //   this.setMultipleValues(entities);
+    // });
+
     Events.on('entityidchanged', this.rebuildOptions);
     document.addEventListener('componentremoved', this.rebuildOptions);
     Events.on('dommodified', this.rebuildOptions);
   }
 
-  setValue = value => {
+  setValue = (value, shiftKey) => {
     let found = false;
     for (let i = 0; i < this.state.options.length; i++) {
       const element = this.state.options[i];
-      if (element.value === value) {
-        this.setState({value: value, selectedIndex: i});
 
+      if (shiftKey) {
+        console.log("Multiselecting")
+        this.setState(prevState => {
+          const multipleValues = prevState.multipleValues
+          const selectedUUIDs = prevState.selectedUUIDs
+
+          if (!selectedUUIDs.includes(value.object3D.uuid) || value === element) {
+            console.log('Doesnt include, so adding')
+            multipleValues.push(value)
+            selectedUUIDs.push(value.object3D.uuid)
+          }
+
+          Events.emit('entitiesselected', multipleValues, true)
+          found = true;
+          return {
+            multipleValues,
+            selectedUUIDs
+          }
+        });
+      }
+
+      if (!shiftKey && element.value === value) {
+        this.setState({value: value, selectedIndex: i, multipleValues: [value], selectedUUIDs: [value.object3D.uuid]});
         if (this.props.onChange) {
           this.props.onChange(value);
         }
@@ -239,7 +268,7 @@ export default class SceneGraph extends React.Component {
 
         const className = classnames({
           option: true,
-          active: option.value === this.state.value,
+          active: option.value === this.state.value || this.state.selectedUUIDs.includes(entity.object3D.uuid),
           novisible: !visible
         });
 
@@ -250,7 +279,7 @@ export default class SceneGraph extends React.Component {
 
         return (
           <div key={idx} className={className} value={option.value}
-            onClick={() => this.setValue(option.value)}>
+            onClick={(e) => this.setValue(option.value, e.shiftKey)}>
             <span>{visibility} {collapse}{pad} &lt;{option.tagName}<span className="name">{entityName ? ` ${entityName}` : ''}</span>
             <span dangerouslySetInnerHTML={{__html: option.extra}}></span>&gt;</span>
               <span className="icons">
@@ -288,17 +317,17 @@ export default class SceneGraph extends React.Component {
         <Toolbar/>
 
         <ul className='scenegraph__tabs'>
-          <li 
+          <li
             className={this.state.tab === 'outliner' && 'active'}
             onClick={() => this.setState({ tab: 'outliner' })}>Outliner</li>
-          <li 
+          <li
             className={this.state.tab === 'poly' && 'active'}
             onClick={() => this.setState({ tab: 'poly' })}>Poly</li>
         </ul>
 
         { this.state.tab === 'poly' && <ModelSidebar entity={this.state.entity} visible={true}/> }
 
-        { this.state.tab === 'outliner' && 
+        { this.state.tab === 'outliner' &&
           <div>
             <div className='scenegraph-toolbar'>
               <div className='search'>

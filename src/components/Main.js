@@ -45,6 +45,7 @@ export default class Main extends React.Component {
     this.state = {
       loading: true,
       entity: null,
+      multipleEntities: null,
       inspectorEnabled: true,
       isModalTexturesOpen: false,
       sceneEl: AFRAME.scenes[0],
@@ -89,6 +90,7 @@ export default class Main extends React.Component {
     }
 
     Events.on('togglesidebar', event => {
+      console.log("Klikol som nanieco")
       if (event.which == 'all') {
         if (this.state.visible.scenegraph || this.state.visible.attributes) {
           this.state.visible.scenegraph = this.state.visible.attributes = false;
@@ -167,6 +169,10 @@ export default class Main extends React.Component {
       this.setState({entity: entity});
     });
 
+    Events.on('entitiesselected', entities => {
+      this.setState({multipleEntities: entities});
+    });
+
     Events.on('inspectormodechanged', enabled => {
       this.setState({inspectorEnabled: enabled});
     });
@@ -217,8 +223,10 @@ export default class Main extends React.Component {
   render () {
     var scene = this.state.sceneEl;
     const showScenegraph = this.state.visible.scenegraph ? null : <div className="toggle-sidebar left"><a onClick={() => {this.state.visible.scenegraph = true; this.forceUpdate()}} className='fa fa-plus' title='Show scenegraph'></a></div>;
-    const showAttributes = !this.state.entity || this.state.visible.attributes ? null : <div className="toggle-sidebar right"><a onClick={() => {this.state.visible.attributes = true; this.forceUpdate()}} className='fa fa-plus' title='Show components'></a></div>;
-
+    const showAttributes = !this.state.entity || !this.state.multipleEntities || this.state.visible.attributes ? null : <div className="toggle-sidebar right"><a onClick={() => {this.state.visible.attributes = true; this.forceUpdate()}} className='fa fa-plus' title='Show components'></a></div>;
+    console.log(this.state.entity)
+    console.log(this.state.multipleEntities)
+    console.log(this.state.visible)
     const getSceneHtml = () => createScene(this.getRoot())
 
     let toggleButtonText = 'Inspect Scene';
@@ -245,7 +253,7 @@ export default class Main extends React.Component {
           {showAttributes}
           <div id='right-panels'>
             <ToolBar/>
-            <ComponentsSidebar entity={this.state.entity} visible={this.state.visible.attributes} getSceneHtml={getSceneHtml}/>
+            <ComponentsSidebar entity={this.state.entity} visible={this.state.visible.attributes} getSceneHtml={getSceneHtml} multipleEntities={this.state.multipleEntities}/>
           </div>
         </div>
         <ModalHelp isOpen={this.state.isHelpOpen} onClose={this.onCloseHelpModal}/>

@@ -18,7 +18,15 @@ export default class ComponentsContainer extends React.Component {
   }
 
   render () {
-    const entity = this.props.entity;
+    const { entity, multipleEntities } = this.props;
+
+    if (multipleEntities) {
+      return (
+        <div className='components'>
+          <CommonComponents multipleEntities={multipleEntities}/>
+        </div>
+      );
+    }
     if (entity.isScene) {
       return (
         <div className='components'>
@@ -30,6 +38,7 @@ export default class ComponentsContainer extends React.Component {
     const renderedComponents = Object.keys(components).filter(function (key) {
       return (DEFAULT_COMPONENTS.indexOf(key) === -1) && (HIDDEN_COMPONENTS.indexOf(key) === -1);
     }).sort().map(function (key) {
+      console.log(key, components[key])
       return <Component
         component={components[key]}
         entity={entity}

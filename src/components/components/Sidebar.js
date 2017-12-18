@@ -13,7 +13,8 @@ export default class Sidebar extends React.Component {
     super(props);
     this.state = {
       open: false,
-      entity: props.entity
+      entity: props.entity,
+      multipleEntities: props.multipleEntities
     };
   }
 
@@ -48,19 +49,33 @@ export default class Sidebar extends React.Component {
       }
       this.setState({entity: newProps.entity});
     }
+
+    if (this.state.multipleEntities && this.state.multipleEntities.length !== newProps.multipleEntities.length) {
+      console.log(this.state.multipleEntities)
+      this.setState({multipleEntities: newProps.multipleEntities})
+    }
   }
 
   render () {
-    const entity = this.state.entity;
+    const { entity, multipleEntities } = this.state;
+    console.log(multipleEntities)
     const visible = this.props.visible;
     if (entity && visible) {
       return (
         <div id='sidebar'>
-          <ComponentsContainer entity={this.state.entity} getSceneHtml={this.props.getSceneHtml} />
+          <ComponentsContainer entity={entity} getSceneHtml={this.props.getSceneHtml} />
         </div>
       );
-    } else {
-      return <div/>;
     }
+
+    if (multipleEntities && visible) {
+      return (
+        <div id='sidebar'>
+          <ComponentsContainer multipleEntities={multipleEntities} getSceneHtml={this.props.getSceneHtml} />
+        </div>
+      );
+    }
+
+    return <div/>
   }
 }
