@@ -166,6 +166,7 @@ export default class Main extends React.Component {
     }.bind(this));
 
     Events.on('entityselected', entity => {
+      console.log("Entity I get in Main.js: ", entity)
       this.setState({entity: entity});
     });
 

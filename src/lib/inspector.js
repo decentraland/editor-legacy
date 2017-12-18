@@ -232,7 +232,7 @@ Inspector.prototype = {
     });
 
     Events.on('entitiesselected', entities => {
-      this.selectEntity(entities[entities.length - 1], false);
+      // Todo: make selection of multiple items
     });
 
     Events.on('inspectormodechanged', active => {

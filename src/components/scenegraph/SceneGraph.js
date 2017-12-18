@@ -60,13 +60,8 @@ export default class SceneGraph extends React.Component {
 
     Events.on('entityselected', (entity, self) => {
       if (self) { return; }
-      this.setValue(entity);
+      this.setValue(entity, false);
     });
-
-    // Events.on('entitieselected', (entities, self) => {
-    //   if (self) { return; }
-    //   this.setMultipleValues(entities);
-    // });
 
     Events.on('entityidchanged', this.rebuildOptions);
     document.addEventListener('componentremoved', this.rebuildOptions);
@@ -85,7 +80,7 @@ export default class SceneGraph extends React.Component {
           const multipleValues = prevState.multipleValues
           const selectedUUIDs = prevState.selectedUUIDs
 
-          if (!selectedUUIDs.includes(value.object3D.uuid) || value === element) {
+          if (!selectedUUIDs.includes(value.object3D.uuid)) {
             console.log('Doesnt include, so adding')
             multipleValues.push(value)
             selectedUUIDs.push(value.object3D.uuid)
@@ -100,6 +95,7 @@ export default class SceneGraph extends React.Component {
       }
 
       if (!shiftKey && element.value === value) {
+        console.log("Klikam niekde vedla?")
         this.setState({value: value, selectedIndex: i, multipleValues: [value], selectedUUIDs: [value.object3D.uuid]});
         if (this.props.onChange) {
           this.props.onChange(value);
@@ -108,9 +104,10 @@ export default class SceneGraph extends React.Component {
         found = true;
       }
     }
-
+    console.log("Found?", found)
     if (!found) {
       this.setState({value: null, selectedIndex: -1, multipleValues: [], selectedUUIDs: []});
+      Events.emit('entitiesselected', null, true)
     }
     ga('send', 'event', 'SceneGraph', 'selectEntity');
   }

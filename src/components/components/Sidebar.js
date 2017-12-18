@@ -50,7 +50,10 @@ export default class Sidebar extends React.Component {
       this.setState({entity: newProps.entity});
     }
 
-    if (!newProps.multipleEntities) return
+    if (!newProps.multipleEntities) {
+      this.setState({multipleEntities: null})
+      return
+    }
 
     if (!this.state.multipleEntities && newProps.multipleEntities && newProps.multipleEntities.length > 0) {
       newProps.multipleEntities.forEach(entity => {
@@ -76,7 +79,7 @@ export default class Sidebar extends React.Component {
   render () {
     console.log("Sidebar props: ", this.props)
     const { entity, multipleEntities } = this.state;
-
+    console.log("Sidebar - multipleEntities: ", multipleEntities)
     const visible = this.props.visible;
     if (entity && visible) {
       return (
