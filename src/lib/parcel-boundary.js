@@ -100,26 +100,33 @@ export default class ParcelBoundary {
 
     this.invalidObjects = []
 
+    const offset = this.object3D.position.clone().multiplyScalar(-1).add(
+      new THREE.Vector3(5, 0, 5)
+    )
+
     this.object3D.children.forEach((obj) => {
       let valid = true
-      let bbox = new THREE.Box3().setFromObject(obj)
+      let objBounds = new THREE.Box3().setFromObject(obj)
 
-      if (bbox.isEmpty()) {
+      // Subtract parent object offset
+      objBounds.translate(offset)
+
+      if (objBounds.isEmpty()) {
         return
       }
 
-      if (!isFinite(bbox.size().length())) {
+      if (!isFinite(objBounds.getSize().length())) {
         return
       }
 
       // Must be in bounds
-      if (!bounds.containsBox(bbox)) {
+      if (!bounds.containsBox(objBounds)) {
         valid = false
       }
 
       // Must not intersect with any holes
       holes.forEach((hole) => {
-        if (hole.intersectsBox(bbox)) {
+        if (hole.intersectsBox(objBounds)) {
           valid = false
         }
       })

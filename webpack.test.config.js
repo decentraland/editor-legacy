@@ -49,7 +49,7 @@ module.exports = {
     new WebpackTapeRun({
       tapeRun: {
         browser: 'electron'
-      },
+      }
       // reporter: 'tap-spec'
     })
   ]

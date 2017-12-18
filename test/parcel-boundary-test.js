@@ -23,10 +23,14 @@ test('box in range', (t) => {
   const geometry = new THREE.BoxGeometry(1, 1, 1)
   const material = new THREE.MeshBasicMaterial({ color: 0xffff00 })
   const mesh = new THREE.Mesh(geometry, material)
-  mesh.position.set(5, 5, 5)
+  mesh.position.set(0, 0, 0)
 
   const obj = new THREE.Object3D()
   obj.add(mesh)
+
+  const scene = new THREE.Scene()
+  scene.add(obj)
+  scene.updateMatrixWorld()
 
   const boundary = new ParcelBoundary(parcels, obj)
 
@@ -40,12 +44,16 @@ test('box in range inside parent node not at origin', (t) => {
   const geometry = new THREE.BoxGeometry(1, 1, 1)
   const material = new THREE.MeshBasicMaterial({ color: 0xffff00 })
   const mesh = new THREE.Mesh(geometry, material)
-  mesh.position.set(5, 5, 5)
+  mesh.position.set(0, 0, 0)
 
   // We subtract the parent node translation off the child nodes
   const obj = new THREE.Object3D()
   obj.position.set(-500, 0, 0)
   obj.add(mesh)
+
+  const scene = new THREE.Scene()
+  scene.add(obj)
+  scene.updateMatrixWorld()
 
   const boundary = new ParcelBoundary(parcels, obj)
 
@@ -68,6 +76,10 @@ test('box not in range inside nested nodes', (t) => {
   const obj = new THREE.Object3D()
   obj.add(parent)
 
+  const scene = new THREE.Scene()
+  scene.add(obj)
+  scene.updateMatrixWorld()
+
   const boundary = new ParcelBoundary(parcels, obj)
 
   t.ok(!boundary.validate())
@@ -79,10 +91,14 @@ test('valid with parcel far from origin', (t) => {
   const geometry = new THREE.BoxGeometry(1, 1, 1)
   const material = new THREE.MeshBasicMaterial({ color: 0xffff00 })
   const mesh = new THREE.Mesh(geometry, material)
-  mesh.position.set(5, 5, 5)
+  mesh.position.set(0, 0, 0)
 
   const obj = new THREE.Object3D()
   obj.add(mesh)
+
+  const scene = new THREE.Scene()
+  scene.add(obj)
+  scene.updateMatrixWorld()
 
   const boundary = new ParcelBoundary(parcels, obj)
 
@@ -121,7 +137,7 @@ test('generate holes', (t) => {
   const geometry = new THREE.BoxGeometry(1, 1, 1)
   const material = new THREE.MeshBasicMaterial({ color: 0xffff00 })
   const mesh = new THREE.Mesh(geometry, material)
-  mesh.position.set(15, 0, 5)
+  mesh.position.set(10, 0, 0)
 
   const obj = new THREE.Object3D()
   obj.add(mesh)
@@ -130,17 +146,10 @@ test('generate holes', (t) => {
 
   // One hole
   t.equal(boundary.getHoles().length, 1)
-
   const hole = boundary.getHoles()[0]
-
   // Hole is at 10,-h,10
-  t.ok(hole.min.equals(
-    new THREE.Vector3(10, -1024, 10)
-  ))
-  t.ok(hole.max.equals(
-    new THREE.Vector3(20, 1024, 20)
-  ))
-
+  t.ok(hole.min.equals(new THREE.Vector3(10, -1024, 10)))
+  t.ok(hole.max.equals(new THREE.Vector3(20, 1024, 20)))
   // Object is not in the hole
   t.ok(boundary.validate())
 
