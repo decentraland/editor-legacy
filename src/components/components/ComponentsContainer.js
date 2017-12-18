@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import AddComponent from './AddComponent';
 import Component from './Component';
 import CommonComponents from './CommonComponents';
+import MultiselectComponents from './multiselect-components'
 import DEFAULT_COMPONENTS from './DefaultComponents';
 import MetadataForm from '../containers/MetadataForm'
 
@@ -19,11 +20,10 @@ export default class ComponentsContainer extends React.Component {
 
   render () {
     const { entity, multipleEntities } = this.props;
-    //console.log(multipleEntities)
     if (multipleEntities) {
       return (
         <div className='components'>
-          <CommonComponents multipleEntities={multipleEntities}/>
+          <MultiselectComponents entities={multipleEntities}/>
         </div>
       );
     }
@@ -38,7 +38,6 @@ export default class ComponentsContainer extends React.Component {
     const renderedComponents = Object.keys(components).filter(function (key) {
       return (DEFAULT_COMPONENTS.indexOf(key) === -1) && (HIDDEN_COMPONENTS.indexOf(key) === -1);
     }).sort().map(function (key) {
-      console.log(key, components[key])
       return <Component
         component={components[key]}
         entity={entity}
