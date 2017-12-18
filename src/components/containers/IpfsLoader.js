@@ -35,38 +35,18 @@ class IPFSLoader extends React.Component {
     }
   }
 
-  componentDidMount() {
-    const query = queryString.parse(location.search)
-
-    if (!query.parcels) {
-      this.setState({
-        loading: false,
-        error: 'No parcels specified'
-      })
-      return
-    }
-
-    const parcels = query.parcels.split(';')
-    const coordinatesArray = parcels.map(a => a.split(',')).map(a => ({x: a[0], y: a[1]}))
-
-    this.loadParcels(coordinatesArray)
-  }
-
   componentDidUpdate() {
     if (this.props.ipfs.newScene) {
       Events.emit('injectscenebound')
     }
   }
 
-  loadParcels (coordinates) {
-    // Hack... needs to wait until web3 is ready
-    // and then fire JUST ONCE
-
-    setTimeout(() => {
-      const connected = this.props.ethereum.success
-      const isMainnet = connected && this.props.ethereum.network === 'main'
-
-      if (connected && isMainnet) {
+  componentWillReceiveProps(newProps) {
+    if (!this.props.ethereum.success && newProps.ethereum.success) {
+      const connected = newProps.ethereum.success
+      const isMainnet = connected && newProps.ethereum.network === 'main'
+      console.log(isMainnet)
+      if (isMainnet) {
         this.setState({
           loading: false,
           error: 'Your MetaMask is currently set to mainnet!'
@@ -74,11 +54,29 @@ class IPFSLoader extends React.Component {
         return
       }
 
-      if (connected && !isMainnet) {
-        this.props.actions.loadManyParcelRequest(coordinates)
+      this.parcelQuery()
+    }
+  }
+
+  parcelQuery = () => {
+      const query = queryString.parse(location.search)
+
+      if (!query.parcels) {
+        this.setState({
+          loading: false,
+          error: 'No parcels specified'
+        })
         return
       }
-    }, 1000)
+
+      const parcels = query.parcels.split(';')
+      const coordinatesArray = parcels.map(a => a.split(',')).map(a => ({x: a[0], y: a[1]}))
+
+      this.loadParcels(coordinatesArray)
+  }
+
+  loadParcels (coordinates) {
+    this.props.actions.loadManyParcelRequest(coordinates)
   }
 
   intro() {

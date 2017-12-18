@@ -15,6 +15,7 @@ function ipfs(state = INITIAL_STATE.ipfs, action) {
       return {
         loading: false,
         newScene: false,
+        success: true,
         scene: action.scene,
         metadata: action.metadata,
         hash: action.hash
@@ -28,6 +29,7 @@ function ipfs(state = INITIAL_STATE.ipfs, action) {
     case types.saveScene.success:
       return {
         loading: false,
+        success: true,
         sceneName: action.sceneName,
         metadata: action.metadata,
         hash: action.hash
@@ -60,6 +62,7 @@ function parcelState(state = {}, action) {
     case types.loadMeta.success:
       return {
         loading: false,
+        success: true,
         metadata: action.metadata
       };
     case types.loadMeta.failed:
