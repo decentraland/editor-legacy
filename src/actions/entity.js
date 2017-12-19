@@ -78,6 +78,32 @@ export function updateEntity (entity, propertyName, value) {
 }
 
 /**
+ * Update multiple selected components.
+ * @param {Array} array of Entities.
+ * @param {string} property - Property name.
+ * @param {string|number} value - New value.
+ */
+export function updateMultupleEntities (entities, propertyName, value) {
+  console.log(entities, propertyName, value)
+  if (entities) {
+    entities.map(entity => {
+      if (value) {
+        var params = entity.getAttribute(propertyName);
+        console.log(params)
+        const updatedValue = {
+          x: params.x + value.x,
+          y: params.y + value.y,
+          z: params.z + value.z
+        }
+        // Set property.
+        entity.setAttribute(propertyName, updatedValue);
+      }
+    })
+    //Events.emit('multipleobjectschanged', entities.map(e => e.object3D))
+  }
+}
+
+/**
  * Remove an entity
  * @param  {Element} entity Entity to remove.
  * @param  {boolean} force (Optional) If true it won't ask for confirmation

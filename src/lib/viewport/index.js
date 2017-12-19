@@ -372,6 +372,10 @@ function Viewport (inspector) {
     Events.emit('objectchanged', inspector.selectedEntity.object3D);
   });
 
+  Events.on('selectedentitiescomponentschanged', () => {
+    Events.emit('multipleobjectschanged', inspector.multipleSelectedEntities.map(e => e.object3D));
+  });
+
   Events.on('objectremoved', object => {
     object.traverse(child => {
       objects.splice(objects.indexOf(child), 1);
