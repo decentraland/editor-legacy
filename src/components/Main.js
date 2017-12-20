@@ -172,12 +172,15 @@ export default class Main extends React.Component {
     Events.on('entitiesselected', entities => {
       // Extend each entity with snapshot of attributes
       // that are updatable by multi-update feature
-      entities.map(entity => {
-        AFRAME.utils.extend(entity, {
-          positionSnapshot: entity.getAttribute('position'),
-          scaleSnapshot: entity.getAttribute('scale')
+      if (entities) {
+        entities.map(entity => {
+          AFRAME.utils.extend(entity, {
+            positionSnapshot: entity.getAttribute('position'),
+            scaleSnapshot: entity.getAttribute('scale')
+          })
         })
-      })
+      }
+
       this.setState({multipleEntities: entities});
     });
 
