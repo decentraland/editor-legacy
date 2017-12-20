@@ -166,12 +166,18 @@ export default class Main extends React.Component {
     }.bind(this));
 
     Events.on('entityselected', entity => {
-      console.log("Entity I get in Main.js: ", entity)
       this.setState({entity: entity});
     });
 
     Events.on('entitiesselected', entities => {
-      console.log("Setting multiple entities: ", entities)
+      // Extend each entity with snapshot of attributes
+      // that are updatable by multi-update feature
+      entities.map(entity => {
+        AFRAME.utils.extend(entity, {
+          positionSnapshot: entity.getAttribute('position'),
+          scaleSnapshot: entity.getAttribute('scale')
+        })
+      })
       this.setState({multipleEntities: entities});
     });
 

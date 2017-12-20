@@ -80,26 +80,25 @@ export function updateEntity (entity, propertyName, value) {
 /**
  * Update multiple selected components.
  * @param {Array} array of Entities.
- * @param {string} property - Property name.
+ * @param {string} attributeName - Attribute name of updated entity.
+ * @param {string} propertyName - Property name that will be updated.
  * @param {string|number} value - New value.
  */
-export function updateMultupleEntities (entities, propertyName, value) {
-  console.log(entities, propertyName, value)
+export function updateMultupleEntities (entities, attributeName, propertyName, value) {
   if (entities) {
     entities.map(entity => {
       if (value) {
-        var params = entity.getAttribute(propertyName);
-        console.log(params)
-        const updatedValue = {
-          x: params.x + value.x,
-          y: params.y + value.y,
-          z: params.z + value.z
-        }
-        // Set property.
-        entity.setAttribute(propertyName, updatedValue);
+        var params = entity.getAttribute(attributeName);
+        var snapshot = entity[`${attributeName}Snapshot`]
+        // Update initial value (snapshot) of the property
+        const updatedValue = Object.assign({}, params, {
+          [propertyName]: snapshot[propertyName] + value[propertyName]
+        })
+        // Set attribute.
+        entity.setAttribute(attributeName, updatedValue);
       }
     })
-    //Events.emit('multipleobjectschanged', entities.map(e => e.object3D))
+    Events.emit('multipleobjectschanged', entities.map(e => e.object3D))
   }
 }
 
