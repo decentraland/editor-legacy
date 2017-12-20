@@ -37,6 +37,10 @@ export default class Sidebar extends React.Component {
     Events.emit('selectedentitycomponentchanged', event.detail);
   }
 
+  multiselectComponentChanged = () => {
+    Events.emit('selectedentitiescomponentschanged', this.state.multipleEntities);
+  }
+
   componentWillReceiveProps (newProps) {
     if (this.state.entity !== newProps.entity) {
       if (this.state.entity) {
@@ -57,29 +61,24 @@ export default class Sidebar extends React.Component {
 
     if (!this.state.multipleEntities && newProps.multipleEntities && newProps.multipleEntities.length > 0) {
       newProps.multipleEntities.forEach(entity => {
-        entity.addEventListener('componentchanged', this.componentChanged);
-        entity.addEventListener('componentinitialized', this.componentCreated);
+        entity.addEventListener('componentchanged', this.multiselectComponentChanged);
       })
       this.setState({multipleEntities: newProps.multipleEntities})
     }
 
     if (this.state.multipleEntities && this.state.multipleEntities.length !== newProps.multipleEntities.length) {
       this.state.multipleEntities.forEach(entity => {
-        entity.removeEventListener('componentchanged', this.componentChanged);
-        entity.removeEventListener('componentinitialized', this.componentCreated);
+        entity.removeEventListener('componentchanged', this.multiselectComponentChanged);
       })
       newProps.multipleEntities.forEach(entity => {
-        entity.addEventListener('componentchanged', this.componentChanged);
-        entity.addEventListener('componentinitialized', this.componentCreated);
+        entity.addEventListener('componentchanged', this.multiselectComponentChanged);
       })
       this.setState({multipleEntities: newProps.multipleEntities})
     }
   }
 
   render () {
-    console.log("Sidebar props: ", this.props)
     const { entity, multipleEntities } = this.state;
-    console.log("Sidebar - multipleEntities: ", multipleEntities)
     const visible = this.props.visible;
     if (entity && visible) {
       return (

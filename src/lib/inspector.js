@@ -218,6 +218,18 @@ Inspector.prototype = {
       Events.emit('entityselected', entity);
     }
   },
+  selectMultipleEntities: function (entities, emit) {
+    this.selectedEntities = entities;
+    if (entities) {
+      this.selectMultiple(entities);
+    } else {
+      this.selectMultiple(null);
+    }
+
+    if (emit === undefined) {
+      Events.emit('entitiesselected', entities);
+    }
+  },
   initEvents: function () {
     window.addEventListener('keydown', evt => {
       // Alt + Ctrl + i: Shorcut to toggle the inspector
@@ -281,8 +293,13 @@ Inspector.prototype = {
     this.selected = object;
     Events.emit('objectselected', object);
   },
+  selectMultiple: function (entities) {
+    this.selectedMultiple = entities;
+    Events.emit('multipleobjectsselected', entities);
+  },
   deselect: function () {
     this.select(null);
+    this.selectMultiple(null);
   },
   /**
    * Reset the current scene, removing its content.
