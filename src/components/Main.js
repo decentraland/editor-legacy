@@ -169,11 +169,11 @@ export default class Main extends React.Component {
       this.setState({entity: entity});
     });
 
-    Events.on('entitiesselected', entities => {
+    Events.on('entitiesselected', (multipleEntities) => {
       // Extend each entity with snapshot of attributes
       // that are updatable by multi-update feature
-      if (entities) {
-        entities.map(entity => {
+      if (multipleEntities) {
+        Object.entries(multipleEntities).forEach(([uuid, entity]) => {
           AFRAME.utils.extend(entity, {
             positionSnapshot: entity.getAttribute('position'),
             scaleSnapshot: entity.getAttribute('scale')
@@ -181,7 +181,7 @@ export default class Main extends React.Component {
         })
       }
 
-      this.setState({multipleEntities: entities});
+      this.setState({multipleEntities});
     });
 
     Events.on('inspectormodechanged', enabled => {
@@ -235,7 +235,7 @@ export default class Main extends React.Component {
     var scene = this.state.sceneEl;
     const showScenegraph = this.state.visible.scenegraph ? null : <div className="toggle-sidebar left"><a onClick={() => {this.state.visible.scenegraph = true; this.forceUpdate()}} className='fa fa-plus' title='Show scenegraph'></a></div>;
     const showAttributes = !this.state.entity || !this.state.multipleEntities || this.state.visible.attributes ? null : <div className="toggle-sidebar right"><a onClick={() => {this.state.visible.attributes = true; this.forceUpdate()}} className='fa fa-plus' title='Show components'></a></div>;
-
+    const entitiesArray = this.state.multipleEntities && Object.entries(this.state.multipleEntities).map(([uuid, entity]) => entity)
     const getSceneHtml = () => createScene(this.getRoot())
 
     let toggleButtonText = 'Inspect Scene';
@@ -262,7 +262,7 @@ export default class Main extends React.Component {
           {showAttributes}
           <div id='right-panels'>
             <ToolBar/>
-            <ComponentsSidebar entity={this.state.entity} visible={this.state.visible.attributes} getSceneHtml={getSceneHtml} multipleEntities={this.state.multipleEntities}/>
+            <ComponentsSidebar entity={this.state.entity} visible={this.state.visible.attributes} getSceneHtml={getSceneHtml} multipleEntities={entitiesArray}/>
           </div>
         </div>
         <ModalHelp isOpen={this.state.isHelpOpen} onClose={this.onCloseHelpModal}/>

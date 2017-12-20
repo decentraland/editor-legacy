@@ -41,10 +41,9 @@ export default class SceneGraph extends React.Component {
     super(props);
     this.state = {
       value: this.props.value || '',
-      multipleValues: [],
+      multipleEntities: [],
       options: [],
       selectedIndex: -1,
-      selectedUUIDs: [],
       filterText: '',
       tab: 'outliner'
     };
@@ -73,27 +72,29 @@ export default class SceneGraph extends React.Component {
     for (let i = 0; i < this.state.options.length; i++) {
       const element = this.state.options[i];
 
-      if (shiftKey) {
+      if (shiftKey && element.value.object3D.uuid === value.object3D.uuid) {
         found = true;
+        // Handle selecting/deselecting
         this.setState(prevState => {
-          const multipleValues = prevState.multipleValues
-          const selectedUUIDs = prevState.selectedUUIDs
+          const multipleEntities = prevState.multipleEntities
 
-          if (!selectedUUIDs.includes(value.object3D.uuid)) {
-            multipleValues.push(value)
-            selectedUUIDs.push(value.object3D.uuid)
-            Events.emit('entitiesselected', multipleValues, true)
+          const updatedState = {}
+          if (multipleEntities[value.object3D.uuid]) {
+            // If it's already selected, deselect it
+            delete multipleEntities[value.object3D.uuid]
+            updatedState.multipleEntities = multipleEntities
+          } else {
+            // If not yet selected, select it
+            updatedState.multipleEntities = {...prevState.multipleEntities, [value.object3D.uuid]: value}
           }
 
-          return {
-            multipleValues,
-            selectedUUIDs
-          }
-        });
+          Events.emit('entitiesselected', updatedState.multipleEntities)
+          return updatedState
+        })
       }
 
       if (!shiftKey && element.value === value) {
-        this.setState({value: value, selectedIndex: i, multipleValues: [value], selectedUUIDs: [value.object3D.uuid]});
+        this.setState({value: value, selectedIndex: i, multipleEntities: {}});
         if (this.props.onChange) {
           this.props.onChange(value);
         }
@@ -103,8 +104,8 @@ export default class SceneGraph extends React.Component {
     }
     console.log("Found?", found)
     if (!found) {
-      this.setState({value: null, selectedIndex: -1, multipleValues: [], selectedUUIDs: []});
-      Events.emit('entitiesselected', null, true)
+      this.setState({value: null, selectedIndex: -1, multipleEntities: {}});
+      Events.emit('entitiesselected', null)
     }
     ga('send', 'event', 'SceneGraph', 'selectEntity');
   }
@@ -262,7 +263,7 @@ export default class SceneGraph extends React.Component {
 
         const className = classnames({
           option: true,
-          active: option.value === this.state.value || this.state.selectedUUIDs.includes(entity.object3D.uuid),
+          active: option.value === this.state.value || this.state.multipleEntities[entity.object3D.uuid],
           novisible: !visible
         });
 
