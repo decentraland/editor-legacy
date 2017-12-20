@@ -373,7 +373,7 @@ function Viewport (inspector) {
   });
 
   Events.on('selectedentitiescomponentschanged', () => {
-    Events.emit('multipleobjectschanged', inspector.multipleSelectedEntities.map(e => e.object3D));
+    Events.emit('multipleobjectschanged', inspector.selectedEntities.map(e => e.object3D));
   });
 
   Events.on('objectremoved', object => {
