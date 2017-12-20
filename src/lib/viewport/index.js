@@ -372,8 +372,8 @@ function Viewport (inspector) {
     Events.emit('objectchanged', inspector.selectedEntity.object3D);
   });
 
-  Events.on('selectedentitiescomponentschanged', () => {
-    Events.emit('multipleobjectschanged', inspector.selectedEntities.map(e => e.object3D));
+  Events.on('selectedentitiescomponentschanged', (entities) => {
+    Events.emit('multipleobjectschanged', entities.map(e => e.object3D));
   });
 
   Events.on('objectremoved', object => {
