@@ -373,7 +373,8 @@ function Viewport (inspector) {
   });
 
   Events.on('selectedentitiescomponentschanged', (entities) => {
-    Events.emit('multipleobjectschanged', entities.map(e => e.object3D));
+    // TODO: fix empty entities array
+    //Events.emit('multipleobjectschanged', entities.map(e => e.object3D));
   });
 
   Events.on('objectremoved', object => {

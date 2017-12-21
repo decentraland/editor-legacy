@@ -41,7 +41,7 @@ export default class SceneGraph extends React.Component {
     super(props);
     this.state = {
       value: this.props.value || '',
-      multipleEntities: [],
+      multipleEntities: {},
       options: [],
       selectedIndex: -1,
       filterText: '',
@@ -76,18 +76,29 @@ export default class SceneGraph extends React.Component {
         found = true;
         // Handle selecting/deselecting
         this.setState(prevState => {
-          const multipleEntities = prevState.multipleEntities
+          // If there was single-selected value before, add it to the selection.
+          const multipleEntities = prevState.value
+            ? {...prevState.multipleEntities, [prevState.value.object3D.uuid]: prevState.value}
+            : prevState.multipleEntities
 
-          const updatedState = {}
+          const updatedState = {value: null, selectedIndex: -1}
           if (multipleEntities[value.object3D.uuid]) {
             // If it's already selected, deselect it
             delete multipleEntities[value.object3D.uuid]
-            updatedState.multipleEntities = multipleEntities
+            // Fallback to single-select if only one value is selected
+            const values = Object.values(multipleEntities)
+            if (values.length > 1) {
+              updatedState.multipleEntities = multipleEntities
+              Events.emit('entityselected', null, true);
+            } else {
+              updatedState.value = values[0]
+              Events.emit('entityselected', updatedState.value, true);
+            }
           } else {
             // If not yet selected, select it
-            updatedState.multipleEntities = {...prevState.multipleEntities, [value.object3D.uuid]: value}
+            updatedState.multipleEntities = {...multipleEntities, [value.object3D.uuid]: value}
+            Events.emit('entityselected', null, true);
           }
-
           Events.emit('entitiesselected', updatedState.multipleEntities)
           return updatedState
         })
@@ -102,7 +113,7 @@ export default class SceneGraph extends React.Component {
         found = true;
       }
     }
-    console.log("Found?", found)
+
     if (!found) {
       this.setState({value: null, selectedIndex: -1, multipleEntities: {}});
       Events.emit('entitiesselected', null)
