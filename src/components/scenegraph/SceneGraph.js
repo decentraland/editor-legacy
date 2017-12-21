@@ -126,7 +126,9 @@ export default class SceneGraph extends React.Component {
   }
 
   rebuildOptions = () => {
-    const options = [{static: true, value: this.props.scene, tagName: 'a-scene', hasChildren: true}];
+    // We're assuming that first children is always a parcel a-entity
+    const parcel = this.props.scene.children[0]
+    const options = [{static: true, value: parcel, tagName: 'a-entity', hasChildren: true}];
 
     function treeIterate (element, depth) {
       if (!element) { return; }
@@ -175,7 +177,7 @@ export default class SceneGraph extends React.Component {
         }
       }
     }
-    treeIterate(this.props.scene);
+    treeIterate(parcel);
     this.setState({options: options});
   }
 
