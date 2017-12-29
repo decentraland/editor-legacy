@@ -11,7 +11,7 @@ export function importEntity (entity, node) {
 
   var temp = entity.cloneNode()
   var clone = entity.cloneNode()
-
+  console.log(clone)
   // <a-entity /> => <a-entity></a-entity>
   var parser = new DOMParser()
   var doc = parser.parseFromString(node.outerHTML, 'text/xml')
@@ -116,6 +116,87 @@ export function removeEntity (entity, force) {
       AFRAME.INSPECTOR.selectEntity(closest);
     }
   }
+}
+
+export function groupEntities (entities) {
+  const group = document.createElement('a-entity')
+  console.log(group)
+  entities.forEach(entity => {
+    group.appendChild(entity)
+    // Array.from(entity.childNodes).forEach((child) => {
+    //   if (child.nodeType === 1) {
+    //     removeEntity(child, true)
+    //   }
+    // })
+
+    // var temp = entity.cloneNode()
+    // var clone = entity.cloneNode()
+
+    // <a-entity /> => <a-entity></a-entity>
+    // var parser = new DOMParser()
+    // var doc = parser.parseFromString(group.outerHTML, 'text/xml')
+    // console.log(group)
+    // console.log(doc)
+    // Array.from(document.querySelector('a-scene').children).forEach(child => {
+    //   temp.appendChild(child)
+    // })
+
+    // clone.innerHTML = temp.innerHTML
+
+    // Array.from(clone.children).forEach((child) => {
+    //   child.addEventListener('loaded', function (e) {
+    //     Events.emit('dommodified')
+    //   })
+
+    //   child.addEventListener('loaded', function () {
+    //     Events.emit('dommodified')
+    //     window.inspector.addObject(child.object3D)
+    //   })
+
+    //   entity.appendChild(child)
+    //   group.appendChild(entity)
+    // })
+
+  })
+  console.log(group.children)
+  console.log(group.innerHTML)
+  console.log(entities[0].parentNode)
+  // document.querySelector('a-entity#parcel').appendChild(group)
+  // console.log(document.querySelector('a-entity#parcel').children)
+  Array.from(group.childNodes).forEach((child) => {
+    if (child.nodeType === 1) {
+      removeEntity(child, true)
+    }
+  })
+
+  var temp = group.cloneNode()
+  var clone = group.cloneNode()
+
+  // // <a-entity /> => <a-entity></a-entity>
+  // var parser = new DOMParser()
+  // var doc = parser.parseFromString(entities[0].parentNode, 'text/xml')
+  // console.log(group)
+  // console.log(doc)
+  Array.from(document.querySelector('a-scene').children).forEach(child => {
+    temp.appendChild(child)
+  })
+
+  clone.innerHTML = temp.innerHTML
+  console.log(clone.innerHTML)
+  Array.from(clone.children).forEach((child) => {
+    child.addEventListener('loaded', function (e) {
+      Events.emit('dommodified')
+    })
+
+    child.addEventListener('loaded', function () {
+      Events.emit('dommodified')
+      window.inspector.addObject(child.object3D)
+    })
+
+    group.appendChild(child)
+  })
+
+  //Events.emit('dommodified')
 }
 
 function findClosestEntity (entity) {

@@ -244,7 +244,7 @@ Inspector.prototype = {
     });
 
     Events.on('entitiesselected', entities => {
-      // Todo: make selection of multiple items
+      this.selectMultiple(entities)
     });
 
     Events.on('inspectormodechanged', active => {
@@ -254,6 +254,14 @@ Inspector.prototype = {
 
     Events.on('createnewentity', definition => {
       this.createNewEntity(definition);
+    });
+
+    Events.on('creategroup', entities => {
+      this.createGroup(entities);
+    });
+
+    Events.on('ungroup', group => {
+      this.ungroup(group);
     });
 
     Events.on('selectedentitycomponentchanged', event => {
@@ -295,6 +303,7 @@ Inspector.prototype = {
   },
   selectMultiple: function (entities) {
     this.selectedMultiple = entities;
+    console.log("Multiple entities selected: ", this.selectedMultiple)
     Events.emit('multipleobjectsselected', entities);
   },
   deselect: function () {
@@ -332,6 +341,42 @@ Inspector.prototype = {
     this.parcelEl.appendChild(entity);
 
     return entity;
+  },
+  createGroup: function (entities) {
+    const group = document.createElement('a-entity')
+    group.setAttribute('position', '0 0 0')
+
+    group.addEventListener('loaded', () => {
+      this.addEntity(group)
+    });
+
+    this.parcelEl.appendChild(group)
+
+    entities.forEach(entity => {
+      const clone = entity.cloneNode()
+      group.object3D.add(clone.object3D)
+      group.appendChild(clone)
+      this.removeObject(entity.object3D)
+      this.parcelEl.removeChild(entity)
+    })
+    Events.emit('dommodified')
+
+    return group
+  },
+  ungroup: function (group) {
+    Array.from(group.children).forEach((entity) => {
+      const clone = entity.cloneNode()
+      // TODO: apply position/rotation/scale changes
+      // that was applied on group's <a-entity>
+      clone.addEventListener('loaded', () => {
+        this.addEntity(clone)
+      });
+
+      this.parcelEl.appendChild(clone)
+    })
+    this.removeObject(group.object3D)
+    this.parcelEl.removeChild(group)
+    Events.emit('dommodified')
   },
   addEntity: function (entity) {
     this.addObject(entity.object3D);

@@ -77,6 +77,10 @@ export default class CommonComponents extends React.Component {
     }
   }
 
+  ungroup = () => {
+    Events.emit('ungroup', this.props.entity)
+  }
+
   render () {
     const entity = this.props.entity;
     if (!entity) { return <div></div>; }
@@ -100,6 +104,11 @@ export default class CommonComponents extends React.Component {
           </div>
           {this.renderCommonAttributes()}
           {this.renderEntityEditor()}
+          {entity.childElementCount > 0 ? (
+            <div className='row'>
+              <button onClick={this.ungroup}>Ungroup</button>
+            </div>
+          ) : ''}
         </div>
       </Collapsible>
     );
