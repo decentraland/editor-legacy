@@ -1,10 +1,9 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import Collapsible from '../Collapsible'
-import {groupEntities, updateMultupleEntities} from '../../actions/entity'
+import {updateMultupleEntities} from '../../actions/entity'
 import Events from '../../lib/Events'
 import Vec3Widget from '../widgets/Vec3Widget'
-import BooleanWidget from '../widgets/BooleanWidget'
 
 export default class MultiselectComponents extends React.Component {
   static propTypes = {
@@ -28,10 +27,7 @@ export default class MultiselectComponents extends React.Component {
   }
 
   makeGroup = () => {
-    const { entities } = this.props
-    console.log(entities)
-    //groupEntities(this.props.entities)
-    Events.emit('creategroup', entities)
+    Events.emit('creategroup', this.props.entities)
   }
 
   renderCommonAttributes () {

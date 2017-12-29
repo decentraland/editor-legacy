@@ -303,7 +303,6 @@ Inspector.prototype = {
   },
   selectMultiple: function (entities) {
     this.selectedMultiple = entities;
-    console.log("Multiple entities selected: ", this.selectedMultiple)
     Events.emit('multipleobjectsselected', entities);
   },
   deselect: function () {
