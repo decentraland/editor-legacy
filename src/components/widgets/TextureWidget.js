@@ -245,6 +245,7 @@ export default class TextureWidget extends React.Component {
       <span className='texture'>
         <div className='texture-uploader'>
           <canvas ref='canvas' width='32' height='24' title={hint}></canvas>
+          {this.state.value || <a title={hint} className='button fa fa-upload'></a>}
           <input  type='file' onChange={this.readFile.bind(this)} />
         </div>
 

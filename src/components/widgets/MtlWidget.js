@@ -125,7 +125,7 @@ export default class MtlWidget extends React.Component {
     return (
       <span className='texture'>
         <div className='texture-uploader'>
-          <canvas ref='canvas' width='32' height='24' title={hint}></canvas>
+          {this.state.value ? <canvas ref='canvas' width='32' height='24' title={hint}></canvas> : <a title={hint} className='button fa fa-upload'></a>}
           <input title='Multiselect the .mtl file and associated textures to upload all files to ipfs' type='file' multiple onChange={this.readFile.bind(this)} />
         </div>
         <input className='map_value string' type='text' title={hint} value={this.state.value} onChange={this.onChange}/>

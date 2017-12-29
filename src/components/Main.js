@@ -20,14 +20,13 @@ import {getSceneName, injectCSS, injectJS} from '../lib/utils';
 import '../styles/main.less';
 
 import IPFSLoader from './containers/IpfsLoader'
-import IPFSSaveScene from './containers/IpfsSaveScene'
 import PublishParcels from './containers/PublishParcels'
 import Patch from '../../vendor/patch'
 import Apply from '../../vendor/apply'
 import WebrtcClient from '../lib/webrtc-client'
 import { importEntity } from '../actions/entity';
 import { store } from './store'
-import { getParcelArray, createScene, parseParcel } from '../lib/utils'
+import { getParcelArray, parseParcel } from '../lib/utils'
 
 // Debugging...
 const MULTIUSER_ENABLED = false
@@ -193,9 +192,9 @@ export default class Main extends React.Component {
     });
 
     Events.on('savescene', val => {
-      this.storedContent = createScene(this.getRoot())
       this.setState({ saveScene: true });
     });
+
     Events.on('savedismiss', val => {
       this.setState({ saveScene: false });
     });
@@ -247,7 +246,6 @@ export default class Main extends React.Component {
     return (
       <div>
         { this.state.loading && <IPFSLoader reportParcel={this.loadParcel}/> }
-        { this.state.saveScene && <IPFSSaveScene ref='save' content={this.storedContent} /> }
         { this.state.publishParcels && <PublishParcels /> }
         <div id='aframe-inspector-panels' className={this.state.inspectorEnabled ? '' : 'hidden'}>
           <ModalTextures ref='modaltextures' isOpen={this.state.isModalTexturesOpen} selectedTexture={this.state.selectedTexture} onClose={this.onModalTextureOnClose}/>

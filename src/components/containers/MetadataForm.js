@@ -1,3 +1,5 @@
+/* globals Element */
+
 import React from 'react'
 import { Creatable } from 'react-select'
 import { connect } from '../store'
@@ -154,13 +156,19 @@ class MetadataForm extends React.Component {
       saving: true
     })
 
-    const html = createScene(document.querySelector('a-entity#parcel'))
+    const parcel = document.querySelector('a-entity#parcel')
+    assert(parcel instanceof Element)
+
+    const html = createScene(parcel, true)
+    assert(typeof html === 'string')
+
+    const aframe = createScene(parcel, false)
     assert(typeof html === 'string')
 
     const metadata = this.getMetadata(event)
     assert(typeof metadata === 'object')
 
-    saveScene(html, metadata)
+    saveScene(html, aframe, metadata)
       .then((hash) => {
         const parcels = getParcelArray()
         return ethService.updateManyParcelsMetadata(parcels, hash)

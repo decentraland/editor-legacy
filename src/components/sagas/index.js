@@ -56,9 +56,10 @@ export function* handleBindName (action) {
   }
 }
 
-export async function saveScene (content, metadata) {
+export async function saveScene (html, aframe, metadata) {
   const files = []
-  files.push({ data: new Buffer(content).toString('base64'), path: 'parcel.aframe' })
+  files.push({ data: new Buffer(html).toString('base64'), path: 'parcel.html' })
+  files.push({ data: new Buffer(aframe).toString('base64'), path: 'parcel.aframe' })
   // if metadata is available, add it to the files array
   if (metadata) {
     files.push({ data: new Buffer(JSON.stringify(metadata)).toString('base64'), path: 'scene.json' })
