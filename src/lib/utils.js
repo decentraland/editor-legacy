@@ -120,8 +120,9 @@ function getParcelArray () {
   })
 }
 
-function createScene (root) {
-  const xmlString = `<html>
+function createScene (root, includePreview) {
+  const xmlString = includePreview
+  ? `<html>
   <head>
     <script src='https://client.decentraland.today/preview.js'>
     </script>
@@ -130,6 +131,7 @@ function createScene (root) {
     <a-scene />
   </body>
 </html>`
+  : '<a-scene />'
 
   const parser = new DOMParser()
   const doc = parser.parseFromString(xmlString, 'text/xml')

@@ -13,7 +13,7 @@ test('createScene', (t) => {
         <div>hi friend you're <blink>cool</blink></div>
       </a-billboard>`
 
-  const xml = utils.createScene(element)
+  const xml = utils.createScene(element, true)
 
   // Returns string
   t.ok(xml)
